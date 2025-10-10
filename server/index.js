@@ -24,8 +24,6 @@ app.use("/", (req, res) => {
     res.send("Hi");
 });
 
-console.log(supabase);
-
 app.listen(port, () => {
     console.log(`Website đang chạy trên cổng ${port}`)
 })
