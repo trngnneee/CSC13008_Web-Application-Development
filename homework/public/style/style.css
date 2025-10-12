@@ -1,0 +1,288 @@
+/* Reset */
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-image: url("../img/bg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #111;
+}
+
+/* Header */
+header {
+    background: #48A2C9;
+    color: #1E4E62;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 1000;
+}
+
+nav a {
+    color: black;
+    margin-left: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-weight: 880;
+    font-size: 28px;
+}
+
+nav a:hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: rgba(107, 114, 128, 0.3);
+    z-index: -1;
+}
+
+/* Home */
+.home h1 {
+    text-align: center;
+    font-size: 76px;
+    color: #FBC83A;
+    font-weight: 900;
+}
+
+.buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin: 0 10px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-login {
+    display: inline-block;
+    width: 241px;
+    height: 70px;
+    line-height: 70px;
+    background: #063F5C;
+    color: #DBB753;
+    text-align: center;
+    font-weight: 830;
+    font-size: 32px;
+    border-radius: 50px;
+}
+
+.btn-create {
+    display: inline-block;
+    width: 423px;
+    height: 70px;
+    line-height: 70px;
+    background: #065f46;
+    color: white;
+    text-align: center;
+    font-weight: 830;
+    font-size: 32px;
+    border-radius: 50px;
+}
+
+/* vùng chứa icon */
+.icons {
+    position: relative;
+    height: 520px;
+}
+
+/* animation bay lên khi load */
+.icon {
+    opacity: 0;
+    transform: translateY(140px);
+    animation: flyUp 3s cubic-bezier(.2, .8, .2, 1) forwards;
+}
+
+/* trì hoãn từng icon để bay lệch nhịp */
+.icon.delay-0 {
+    animation-delay: 0s;
+}
+
+.icon.delay-1 {
+    animation-delay: .18s;
+}
+
+.icon.delay-2 {
+    animation-delay: .36s;
+}
+
+@keyframes flyUp {
+    0% {
+        transform: translateY(140px);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* GIỮ nguyên vị trí riêng của bạn */
+.icon1 {
+    position: absolute;
+    left: 155px;
+    bottom: 50px;
+    width: 420px;
+}
+
+.icon2 {
+    position: absolute;
+    left: 550px;
+    bottom: 150px;
+    width: 450px;
+}
+
+.icon3 {
+    position: absolute;
+    right: 260px;
+    bottom: 50px;
+    width: 410px;
+}
+
+nav a.active {
+    color: #facc15;
+    /* vàng */
+    font-weight: 900;
+    /* đậm hơn */
+}
+
+/* ----- OUR TEAM SECTION ----- */
+.about h2 {
+    text-align: center;
+    font-size: 76px;
+    color: #FBC83A;
+    font-weight: 900;
+    margin-bottom: 60px;
+}
+
+/* Khung trắng chính */
+.member {
+    display: grid;
+    grid-template-columns: 160px 1fr 1.25fr;
+    /* avatar | info | bio */
+    gap: 24px;
+    align-items: center;
+    background: #fff;
+    border-radius: 22px;
+    padding: 26px 32px;
+    margin: 20px auto;
+    width: calc(100vw - 500px);
+    /* cách 20px hai bên */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng hover phóng nhẹ */
+.member:hover {
+    transform: scale(1.02);
+}
+
+/* Ảnh đại diện */
+.member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Tên và vai trò */
+.member h3 {
+    margin: 0 0 6px;
+    font-weight: 900;
+    font-size: 36px;
+    color: #111;
+}
+
+.member .role {
+    margin: 0 0 14px;
+    font-size: 20px;
+    color: #000000;
+}
+
+/* Icon mạng xã hội */
+.member .socials {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.member-socials a {
+    display: inline-flex;
+    width: 50px;
+    height: 50px;
+    font-size: 42px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #111;
+    font-size: 28px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.member .socials a:hover {
+    transform: translateY(-2px);
+}
+
+/* Đoạn mô tả bên phải */
+.member .bio {
+    margin: 0;
+    color: #4b5563;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Responsive: co lại khi nhỏ hơn 900px */
+@media (max-width: 900px) {
+    .member {
+        grid-template-columns: 120px 1fr;
+        grid-template-areas:
+            "avatar main"
+            "bio bio";
+    }
+
+    .member img {
+        grid-area: avatar;
+        width: 120px;
+        height: 120px;
+    }
+
+    .member .bio {
+        grid-area: bio;
+        margin-top: 10px;
+    }
+}
+
+.about-subtext {
+    text-align: center;
+    font-size: 22px;
+    color: #ffffff;
+    /* hoặc #222 nếu nền sáng */
+    font-weight: 500;
+    margin-top: -50px;
+    /* kéo gần hơn tiêu đề nếu muốn */
+    margin-bottom: 40px;
+    /* cách xuống khung member */
+}
