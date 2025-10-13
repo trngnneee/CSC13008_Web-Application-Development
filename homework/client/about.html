@@ -9,11 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
-    <header>
+    <script>
+        AOS.init();
+    </script>
+
+    <header data-aos="fade-down" data-aos-delay="300">
         <div class="logo">Web<br>App</div>
         <nav>
             <a href="/" class="nav-link">Home</a>
@@ -22,14 +27,14 @@
     </header>
 
     <main class="about">
-        <h2>OUR TEAM</h2>
-        <p class="about-subtext">
+        <h2 data-aos="fade-up">OUR TEAM</h2>
+        <p class="about-subtext" data-aos="fade-up" data-aos-delay="100">
             We are two students that team project and build project together.
         </p>
-        <div class="member">
+        <div class="member" data-aos="fade-up" data-aos-delay="200">
             <img class="member-avatar" src="/img/dk.png" alt="Đăng Khoa">
             <div class="member-main">
-                <h3 class="member-name">Đăng Khoa</h3>
+                <h3 class="member-name">Dang Dang Khoa</h3>
                 <p class="member-role">Designer, Backend Dev</p>
                 <div class="member-socials">
                     <a href="https://github.com/khoavadienq" target="_blank" rel="noopener noreferrer"><i
@@ -47,10 +52,10 @@
         </div>
 
 
-        <div class="member">
+        <div class="member" data-aos="fade-up" data-aos-delay="300">
             <img class="member-avatar" src="/img/tn.png" alt="Trường Nguyên">
             <div class="member-main">
-                <h3 class="member-name">Trường Nguyên</h3>
+                <h3 class="member-name">Dang Truong Nguyen</h3>
                 <p class="member-role">Fullstack Dev</p>
                 <div class="member-socials">
                     <a href="https://github.com/trngnneee" target="_blank" rel="noopener noreferrer"><i

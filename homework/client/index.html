@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web App - Home</title>
     <link rel="stylesheet" href="/style/style.css?v=1">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
-    <header>
+    <script>
+        AOS.init();
+    </script>
+
+    <header data-aos="fade-down" data-aos-delay="300">
         <div class="logo">Web<br>App</div>
         <nav>
             <a href="/" class="nav-link active">Home</a>
@@ -20,8 +25,8 @@
     </header>
 
     <main class="home">
-        <h1>Discover Our Innovative<br>Web Application</h1>
-        <div class="buttons">
+        <h1 data-aos="fade-up">Discover Our Innovative<br>Web Application</h1>
+        <div class="buttons" data-aos="fade-up" data-aos-delay="300">
             <a href="#" class="btn btn-login">LOG IN</a>
             <a href="#" class="btn btn-create">CREATE ACCOUNT</a>
         </div>
