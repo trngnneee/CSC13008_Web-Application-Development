@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { StatusFilter } from "./components/statusFilter"
-import { Funnel, Trash2 } from "lucide-react";
+import { Funnel } from "lucide-react";
 import { CreatedByFilter } from "./components/createdByFilter";
 import { DateFilter } from "./components/dateFilter";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,8 @@ export const DashboardFilter = ({ showCreatedBy=true, showCategory=true }) => {
   const [category, setCategory] = useState("");
 
   return (
-    <div className="bg-white rounded-[14px] border-[0.6px] border-[#D5D5D5] flex items-stretch overflow-hidden text-sm font-medium">
-      <div className="flex flex-1 items-center gap-2 p-2 border-r-[0.6px] border-l-[#D5D5D5] w-[50px] justify-center text-[#2B3674]">
+    <div className="bg-white rounded-[14px] border-[0.6px] border-[#D5D5D5] flex items-stretch overflow-hidden text-sm font-medium w-3/4">
+      <div className="flex flex-1 items-center gap-2 p-2 border-r-[0.6px] border-l-[#D5D5D5] w-[50px] justify-center text-[var(--main-color)]">
         <Funnel />
         <div className="">Bộ lọc</div>
       </div>
@@ -47,8 +47,7 @@ export const DashboardFilter = ({ showCreatedBy=true, showCategory=true }) => {
       />
 
       <div className="flex flex-1 items-center gap-2 w-[200px] justify-center">
-        <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-red-400 rounded-none shadow-none cursor-pointer">
-          <Trash2 strokeWidth="2"/>
+        <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-red-400 rounded-none shadow-none cursor-pointer font-semibold">
           <div>Xóa bộ lọc</div>
         </Button>
       </div>

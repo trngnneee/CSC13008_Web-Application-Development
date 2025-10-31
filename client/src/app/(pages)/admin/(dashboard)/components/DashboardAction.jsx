@@ -9,12 +9,12 @@ export const DashboardAction = ({ createLink, trashLink }) => {
 
   return (
     <>
-      <Button onClick={() => router.push(createLink)} variant="outline" className="aspect-square max-sm:p-0">
+      <Button onClick={() => router.push(createLink)} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
         <PlusIcon className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
         <span className="max-sm:sr-only">Tạo mới</span>
       </Button>
       <Button onClick={() => router.push(trashLink)} variant="destructive">
-        <TrashIcon className="-ms-1 opacity-60" size={16} aria-hidden="true" />
+        <TrashIcon className="-ms-1" size={16} aria-hidden="true" />
         Thùng rác
       </Button>
     </>

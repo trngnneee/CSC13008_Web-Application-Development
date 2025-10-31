@@ -2,6 +2,7 @@ import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardAction } from "../components/DashboardAction";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
+import UserTable from "./components/UserTable";
 
 export default function AdminUser() {
   return (
@@ -19,6 +20,8 @@ export default function AdminUser() {
             trashLink={"/admin/user/trash"}
           />
         </div>
+
+        <UserTable />
       </div>
     </>
   )

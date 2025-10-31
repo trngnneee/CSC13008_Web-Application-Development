@@ -16,11 +16,11 @@ export default function AdminDashboardLayout({ children }){
         <DashboardHeader />
         <div className="flex relative">
           <DashboardSider />
-          <div className="m-6">
+          <div className="m-6 flex-1">
             <DashboardTitle
               title={AdminDashboardVariable.find((item) => item.value === lastParam)?.label}
             />
-            <div className="mt-6">
+            <div className="mt-6 w-full">
               {children}
             </div>
           </div>

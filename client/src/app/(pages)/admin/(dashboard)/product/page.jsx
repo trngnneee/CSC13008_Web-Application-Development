@@ -2,6 +2,7 @@ import { DashboardAction } from "../components/DashboardAction";
 import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
+import ProductTable from "./components/ProductTable";
 
 export default function AdminProduct() {
   return (
@@ -16,6 +17,8 @@ export default function AdminProduct() {
             trashLink={"/admin/product/trash"}
           />
         </div>
+
+        <ProductTable />
       </div>
     </>
   )

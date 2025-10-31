@@ -39,12 +39,12 @@ export const DashboardSider = () => {
             return (
               <Link href={item.link} className="relative" key={index}>
                 <div className={cn(
-                  "bg-[#4880FF] w-[5px] absolute left-0 top-0 bottom-0 rounded-r",
+                  "bg-[var(--main-color)] w-[5px] absolute left-0 top-0 bottom-0 rounded-r",
                   pathName === item.link ? "block" : "hidden"
                 )}></div>
                 <div className={cn(
-                  "flex items-center bg-[#4880FF] hover:bg-[#487fffe3] py-4 pl-3 rounded-[6px] gap-4 ml-5 mr-3",
-                  pathName === item.link ? "bg-[#4880FF]" : "bg-white text-[#404040] hover:bg-[#F5F6FA]"
+                  "flex items-center bg-[var(--main-color)] hover:bg-[var(--main-hover)] py-4 pl-3 rounded-[6px] gap-4 ml-5 mr-3",
+                  pathName === item.link ? "bg-[var(--main-color)]" : "bg-white text-gray-400 hover:bg-[#F5F6FA]"
                 )}>
                   <item.Icon />
                   <div className="text-sm font-medium -translate-y-0.5">{title}</div>

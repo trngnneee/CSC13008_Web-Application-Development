@@ -2,6 +2,7 @@ import { DashboardFilter } from "../components/DashboardFilter/DashboardFilter";
 import { DashboardAction } from "../components/DashboardAction";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
+import CategoryTable from "./components/CategoryTable";
 
 export default function AdminCategory() {
   return (
@@ -18,6 +19,8 @@ export default function AdminCategory() {
             trashLink={"/admin/category/trash"}
           />
         </div>
+
+        <CategoryTable />
       </div>
     </>
   )

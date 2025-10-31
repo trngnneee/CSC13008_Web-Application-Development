@@ -14,7 +14,7 @@ export const CategoryFilter = ({ category, setCategory, show = true }) => {
     <div className="flex flex-1 items-center gap-2 border-r-[0.6px] border-l-[#D5D5D5] w-full justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-[#2B3674] rounded-none shadow-none">
+          <Button className="flex items-center gap-2 p-4 bg-white hover:bg-white text-[var(--main-color)] rounded-none shadow-none">
             {"-- Danh mục --"}
             <ChevronDownIcon
               className="-me-1 opacity-60"

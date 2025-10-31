@@ -23,7 +23,7 @@ export const DashboardHeader = () => {
               <AvatarFallback>Admin</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-bold text-sm text-[#404040]">Le Van A</div>
+              <div className="font-bold text-sm text-[var(--main-color)]">Le Van A</div>
               <div className="text-[#565656] font-semibold text-[12px]">Admin</div>
             </div>
           </div>

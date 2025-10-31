@@ -10,7 +10,7 @@ export default function AdminRegisterPage() {
   
   return (
     <>
-      <div className="font-bold text-[36px] text-[#2B3674]">Xác thực OTP</div>
+      <div className="font-bold text-[36px] text-[var(--main-color)]">Xác thực OTP</div>
       <div className="text-gray-400 mb-10">Nhập OTP được gửi đến email để tiếp tục</div>
       <form>
         <div className="flex justify-center mb-[33px]">
@@ -19,9 +19,9 @@ export default function AdminRegisterPage() {
             setOtp={setOtp}
           />
         </div>
-        <Button className="w-full bg-[#2B3674] hover:bg-[#1e2758be]">Xác thực OTP</Button>
+        <Button className="w-full bg-[var(--main-color)] hover:bg-[var(--main-hover)]">Xác thực OTP</Button>
       </form>
-      <div className="mt-[26px] text-[#2B3674] text-center">Đã có tài khoản? <Link className="font-bold hover:underline" href="/admin/account/login">Đăng nhập</Link></div>
+      <div className="mt-[26px] text-[var(--main-color)] text-center">Đã có tài khoản? <Link className="font-bold hover:underline" href="/admin/account/login">Đăng nhập</Link></div>
     </>
   );
 }
