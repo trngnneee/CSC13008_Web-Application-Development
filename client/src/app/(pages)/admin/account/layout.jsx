@@ -5,7 +5,7 @@ import { ChevronLeft } from "lucide-react";
 export default function AdminAccountLayout({ children }){
   return (
     <>
-      <div className="flex h-[calc(100vh-3rem)] m-6 border border-gray-300 rounded-[20px] overflow-hidden shadow-xl">
+      <div className="flex h-[calc(100vh-3rem)] m-6 border border-gray-300 rounded-[20px] overflow-hidden shadow-xl bg-white">
         <BackgroundSider/>
         <div className="w-2/5 flex flex-col justify-center items-center relative">
           <Link href="/" className="flex items-center justify-center gap-[5px] text-gray-400 absolute top-5 left-3">

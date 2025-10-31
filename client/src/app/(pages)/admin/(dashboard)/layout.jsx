@@ -12,7 +12,7 @@ export default function AdminDashboardLayout({ children }){
 
   return (
     <>
-      <div className="bg-[#F5F6FA]">
+      <div>
         <DashboardHeader />
         <div className="flex relative">
           <DashboardSider />
