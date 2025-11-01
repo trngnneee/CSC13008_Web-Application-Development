@@ -1,11 +1,14 @@
 import dotenv from 'dotenv';
 import express from 'express';
-dotenv.config();
-import { createClient } from '@supabase/supabase-js'
 import cors from 'cors';
 
+import clientRoutes from './routes/client/index.routes.js';
+import adminRoutes from './routes/admin/index.routes.js';
+
 const app = express();
-const port = 3000;
+const port = 10000;
+
+dotenv.config();
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -14,16 +17,14 @@ app.use(cors({
     credentials: true
 }));
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY
-)
-
 app.use(express.json());
-app.use("/", (req, res) => {
-    res.send("Hi");
+
+app.get('/', (req, res) => {
+    res.send("Welcome to SnapBid's API system!")
 });
+app.use('/api', clientRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(port, () => {
-    console.log(`Website đang chạy trên cổng ${port}`)
+    console.log(`API is running on port ${port}`)
 })
