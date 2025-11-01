@@ -20,7 +20,7 @@ export default function AdminDashboardLayout({ children }){
             <DashboardTitle
               title={AdminDashboardVariable.find((item) => item.value === lastParam)?.label}
             />
-            <div className="mt-6 w-full">
+            <div className="w-full">
               {children}
             </div>
           </div>
