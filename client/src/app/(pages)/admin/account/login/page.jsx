@@ -1,15 +1,78 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { adminLogin } from "@/lib/adminAPI/account";
+import { toastHandler } from "@/lib/toastHandler";
+import JustValidate from "just-validate";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminLoginPage() {
+  const router = useRouter();
+  const [rememberLogin, setRememberLogin] = useState(false);
+  
+  useEffect(() => {
+    const validation = new JustValidate("#adminLoginForm");
+    validation
+      .addField('#email', [
+        {
+          rule: 'required',
+          errorMessage: 'Email bắt buộc!'
+        },
+        {
+          rule: 'email',
+          errorMessage: 'Email sai định dạng!',
+        },
+      ])
+      .addField('#password', [
+        {
+          rule: 'required',
+          errorMessage: 'Vui lòng nhập mật khẩu!',
+        },
+        {
+          validator: (value) => value.length >= 8,
+          errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
+        },
+        {
+          validator: (value) => /[A-Z]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
+        },
+        {
+          validator: (value) => /[a-z]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
+        },
+        {
+          validator: (value) => /\d/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+        },
+        {
+          validator: (value) => /[@$!%*?&]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+        },
+      ])
+      .onSuccess((event) => {
+        event.preventDefault();
+
+        const finalData = {
+          email: event.target.email.value,
+          password: event.target.password.value,
+          rememberPassword: rememberLogin
+        }
+
+        const promise = adminLogin(finalData);
+        toastHandler(promise, router, "/admin/dashboard");
+      })
+  }, [])
+
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-color)]">Đăng nhập</div>
       <div className="text-gray-400 mb-10">Nhập email và mật khẩu để đăng nhập</div>
-      <form>
+      <form id="adminLoginForm">
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="email" className="text-sm font-medium text-[var(--main-color)] ">Email*</Label>
           <Input
@@ -29,8 +92,8 @@ export default function AdminLoginPage() {
         </div>
         <div className="flex justify-between items-center mb-[33px]">
           <div className="flex items-center gap-[11px]">
-            <Checkbox htmlFor="rememberLogin" className="data-[state=checked]:bg-[var(--main-color)]" />
-            <Label id="rememberLogin" name="rememberLogin" className="text-sm text-[var(--main-color)]">Ghi nhớ đăng nhập</Label>
+            <Checkbox id="rememberLogin" className="data-[state=checked]:bg-[var(--main-color)]" checked={rememberLogin} onCheckedChange={setRememberLogin} />
+            <Label htmlFor="rememberLogin" name="rememberLogin" className="text-sm text-[var(--main-color)]">Ghi nhớ đăng nhập</Label>
           </div>
           <Link href="/admin/account/forgot-password" className="text-sm text-[var(--main-color)] font-medium hover:underline">Quên mật khẩu?</Link>
         </div>
