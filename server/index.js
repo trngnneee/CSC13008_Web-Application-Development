@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 
@@ -7,8 +9,6 @@ import adminRoutes from './routes/admin/index.routes.js';
 
 const app = express();
 const port = 10000;
-
-dotenv.config();
 
 app.use(cors({
     origin: 'http://localhost:5173',

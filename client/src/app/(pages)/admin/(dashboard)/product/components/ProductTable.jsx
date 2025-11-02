@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { AdminDeleteButton } from "../../components/TableButton/DeleteButton";
-import { AdminEditButton } from "../../components/TableButton/EditButton";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProductTable() {
@@ -86,7 +85,6 @@ export default function ProductTable() {
                 </div>
               </td>
               <td className="p-3 flex items-center justify-center gap-2">
-                <AdminEditButton />
                 <AdminDeleteButton />
               </td>
             </tr>

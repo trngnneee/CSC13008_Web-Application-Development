@@ -30,7 +30,7 @@ export const DashboardSider = () => {
 
   return (
     <>
-      <div className="w-1/6 bg-white h-[calc(100vh-80px)] fix top-0 left-0 border-r border-[#E0E0E0]">
+      <div className="w-1/6 bg-white h-[100vh] sticky top-0 left-0 border-r border-[#E0E0E0]">
         <div className="text-white mt-[11px] flex flex-col gap-2.5">
           {navList.map((item, index) => {
             const lastParam = item.link.split('/').filter(Boolean).pop();
