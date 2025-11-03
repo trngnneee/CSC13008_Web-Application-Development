@@ -34,3 +34,59 @@ export const adminLogin = async (finalData) => {
 
   return data;
 }
+
+export const adminForgotPassword = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData)
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Gửi OTP thất bại");
+  }
+
+  return data;
+}
+
+export const adminOTPPassword = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/otp-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData),
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Xác thực OTP thất bại");
+  }
+
+  return data;
+}
+
+export const adminResetPassword = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData),
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Đổi mật khẩu thất bại");
+  }
+
+  return data;
+}

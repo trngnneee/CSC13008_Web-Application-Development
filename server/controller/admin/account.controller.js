@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
-import { addUser, findUserToEmail } from "./../../service/user.service.js"
+import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP } from "./../../service/user.service.js"
 import jwt from "jsonwebtoken"
+import { OTPGenerate } from "../../helper/otp.helper.js";
 
 export const registerPost = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -101,8 +102,7 @@ export const verifyTokenGet = async (req, res) => {
     }
 
     const decoded = jwt.decode(token, process.env.JWT_SECRET);
-    if (decoded == null)
-    {
+    if (decoded == null) {
       res.clearCookie("adminToken");
       return res.json({
         code: "error",
@@ -139,4 +139,76 @@ export const verifyTokenGet = async (req, res) => {
       message: error
     })
   }
+}
+
+export const forgotPasswordPost = async (req, res) => {
+  const { email } = req.body;
+
+  const otp = OTPGenerate(6);
+
+  const record = await saveOTP({ email, otp });
+  if (record) {
+    return res.json({
+      code: "success",
+      message: "Đã gửi OTP về email!"
+    })
+  }
+  else return res.json({
+    code: "error",
+    message: "Lỗi gửi OTP về email!"
+  })
+}
+
+export const otpPasswordPost = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const record = await verifyOTP({ email, otp });
+
+  if (record.success == false) return res.json({
+    code: "error",
+    message: record.message
+  });
+
+  const existUser = await findUserToEmail(email);
+
+  const token = jwt.sign(
+    {
+      id_user: existUser.id_user,
+      email: existUser.email
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '1d'
+    }
+  );
+
+  res.cookie("adminToken", token, {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+  });
+
+  res.json({
+    code: "success",
+    message: "Xác thực OTP thành công!"
+  })
+}
+
+export const resetPasswordPost = async (req, res) => {
+  const { password } = req.body;
+
+  const salt = bcrypt.genSaltSync(10);
+  const hashPassword = bcrypt.hashSync(password, salt);
+
+  const record = await resetPassword(req.account.email, hashPassword);
+  if (record) return res.json({
+    code: "success",
+    message: "Đổi mật khẩu thành công!"
+  })
+  else return res.json({
+    code: "error",
+    message: "Đổi mật khẩu thất bại"
+  })
 }
