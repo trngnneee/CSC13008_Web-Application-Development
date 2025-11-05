@@ -1,5 +1,6 @@
 import express from "express";
 import accountRoutes from "./account.routes.js";
+import categoryRoutes from "./category.routes.js";
 
 const router = express.Router();
 
@@ -8,8 +9,13 @@ router.get("/", (req, res) => {
 })
 
 router.use(
-  "/account", 
+  "/account",
   accountRoutes
+)
+
+router.use(
+  "/category",
+  categoryRoutes
 )
 
 export default router;
