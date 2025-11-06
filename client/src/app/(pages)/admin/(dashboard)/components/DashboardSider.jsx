@@ -9,10 +9,6 @@ import { usePathname } from "next/navigation";
 export const DashboardSider = () => {
   const navList = [
     {
-      Icon: CircleGauge,
-      link: "/admin/dashboard"
-    },
-    {
       Icon: Grid2X2,
       link: "/admin/category"
     },

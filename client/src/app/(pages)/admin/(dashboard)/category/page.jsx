@@ -6,7 +6,7 @@ import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
 import CategoryTable from "./components/CategoryTable";
 import { useRouter } from "next/navigation";
-import { PlusIcon } from "lucide-react";
+import { Download, PlusIcon } from "lucide-react";
 
 export default function AdminCategory() {
   const router = useRouter();
@@ -23,6 +23,10 @@ export default function AdminCategory() {
           <Button onClick={() => router.push("/admin/category/create")} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
             <PlusIcon className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
             <span className="max-sm:sr-only">Tạo mới</span>
+          </Button>
+          <Button onClick={() => router.push("/admin/category/import")} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
+            <Download />
+            <span className="max-sm:sr-only">Import dữ liệu</span>
           </Button>
         </div>
 

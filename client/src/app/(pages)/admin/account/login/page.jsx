@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
         }
 
         const promise = adminLogin(finalData);
-        toastHandler(promise, router, "/admin/dashboard");
+        toastHandler(promise, router, "/admin/category");
       })
   }, [])
 

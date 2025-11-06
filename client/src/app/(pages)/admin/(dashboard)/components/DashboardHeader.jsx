@@ -9,7 +9,7 @@ export const DashboardHeader = () => {
     <>
       <div className="bg-white h-20 flex items-center border-b border-b-[#E0E0E0]">
         <div className="container mx-auto flex items-center justify-between">
-          <div className="w-[200px] h-[50px] overflow-hidden">
+          <div className="w-[200px] overflow-hidden">
             <img
               src="/logo.png"
               className="w-full h-full object-cover"
