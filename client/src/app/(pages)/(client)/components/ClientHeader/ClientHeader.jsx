@@ -1,8 +1,13 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { NavBar } from "./components/NavBar";
 import { SearchBar } from "./components/SearchBar";
+import { useRouter } from "next/navigation";
 
 export const ClientHeader = () => {
+  const router = useRouter();
+  
   return (
     <>
       <div className="container mx-auto flex justify-between items-center my-[27px]">
@@ -15,7 +20,7 @@ export const ClientHeader = () => {
         <NavBar />
         <div className="flex items-center gap-2.5">
           <SearchBar />
-          <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">
+          <Button onClick={() => router.push("/account/login")} className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">
             Đăng nhập
           </Button>
         </div>
