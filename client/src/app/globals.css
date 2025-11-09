@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,10 +46,16 @@
 @theme{
   --main-color: #2B3674;
   --main-hover: #1e2758be;
+  --main-client-color: #004663;
+  --main-client-hover: #004663be;
 }
 
-*{
+.admin{
   font-family: "Nunito Sans", sans-serif;
+}
+
+.client{
+  font-family: "Roboto Mono", monospace;
 }
 
 :root {
