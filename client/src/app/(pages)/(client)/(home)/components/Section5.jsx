@@ -12,7 +12,7 @@ export const Section5 = () => {
             <div className="text-[20px] mb-[30px]">
               Tại SnapBid, chúng tôi tin rằng mua sắm không chỉ là trao đổi – mà còn là trải nghiệm. <br/> Chúng tôi cam kết mang đến cho bạn một nền tảng đấu giá trực tuyến an toàn, minh bạch và dễ sử dụng, nơi bạn có thể khám phá những món đồ độc đáo và quý hiếm từ khắp nơi trên thế giới. 
             </div>
-            <Button className="bg-transparent hover:bg-[#00000018] border border-black shadow-none text-black">Tìm hiểu thêm</Button>
+            <Button className="bg-transparent hover:bg-[#00000018] border border-black shadow-none text-black hover:scale-[1.02] transition-all duration-300">Tìm hiểu thêm</Button>
           </div>
         </div>
       </div>
