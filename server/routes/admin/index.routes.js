@@ -1,6 +1,7 @@
 import express from "express";
 import accountRoutes from "./account.routes.js";
-import categoryRoutes from "./product.routes.js";
+import categoryRoutes from "./category.routes.js";
+import productRoutes from "./product.routes.js";
 
 const router = express.Router();
 
@@ -16,6 +17,11 @@ router.use(
 router.use(
   "/category",
   categoryRoutes
+)
+
+router.use(
+  "/product",
+  productRoutes
 )
 
 export default router;

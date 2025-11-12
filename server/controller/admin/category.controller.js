@@ -1,36 +1,6 @@
-import * as parseHelper from "../../helper/parse.helper.js";
-import { insertProducts, getAllCategory, insertCategory } from "../../service/category.service.js";
-
-export async function uploadCSVCategory(req, res, next) {
-    try {
-        // 1) đã nhận file
-        const file = req.file; // nếu dùng fields/any thì lấy từ req.files[...]
-        if (!file || !file.buffer?.length) {
-            return res.status(400).json({ code: "error", message: "File rỗng" });
-        }
-
-        // 2) parse CSV → map field thiếu = null
-        const { records, unknownColumns, missingColumns } =
-            parseHelper.parseProductsCsv(file.buffer);
-
-        // 3) insert DB (ID tự tăng)
-        const { inserted, skipped_empty, total, failed, errors } =
-            await insertProducts(records);
-
-        // 4) trả kết quả
-        return res.json({
-            total,
-            inserted,
-            skipped_empty,
-            failed,
-            errors,
-            unknownColumns,
-            missingColumns,
-        });
-    } catch (err) {
-        next(err);
-    }
-}
+import * as categoryService from "../../service/category.service.js";
+import * as productService from "../../service/product.service.js";
+import db from "../../config/database.config.js";
 
 export const getCategoryList = async (req, res) => {
     let filter = {};
@@ -45,7 +15,7 @@ export const getCategoryList = async (req, res) => {
         filter.limit = 5;
     }
 
-    const rawData = await getAllCategory(filter);
+    const rawData = await categoryService.getAllCategory(filter);
 
     let categoryList = [];
     for (const item of rawData)
@@ -69,7 +39,7 @@ export const getCategoryList = async (req, res) => {
 export const createCategory = async (req, res) => {
     const { name, parent } = req.body;
 
-    await insertCategory(name, parent);
+    await categoryService.insertCategory(name, parent);
 
     res.json({
         code: "success",
@@ -85,3 +55,29 @@ export const getTotalPage = async (req, res) => {
         data: Math.ceil(rawData.length / 5)
     })
 }
+
+export const deleteCategory = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    await db.transaction(async (trx) => {
+      const nameCat = await categoryService.getCategoryName(id, trx);
+      if (!nameCat) {
+        return res.status(404).json({ message: "Không tìm thấy category." });
+      }
+      const deletedProducts = await productService.deleteProductByCategoryName(nameCat, trx);
+      const deletedCategories = await categoryService.deleteCategoryID(id, trx);
+
+      return res.status(200).json({
+        message: `Đã xóa category "${nameCat}" và ${deletedProducts} sản phẩm liên quan.`,
+        deletedProducts,
+        deletedCategories,
+      });
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: "Lỗi khi xóa category và products liên quan.",
+      error: e?.message || e,
+    });
+  }
+};

@@ -68,3 +68,12 @@ export async function insertListProducts(records, chunkSize = 500) {
     skipped_empty: 0,
   };
 }
+
+export const deleteProductID = async (id) => {
+    return db("product").where("id_product", id).del();
+}
+
+export const deleteProductByCategoryName = async (categoryName, trx = null) => {
+  const kx = trx ? trx : db;
+  return kx("product").where("name_category", categoryName).del();
+}

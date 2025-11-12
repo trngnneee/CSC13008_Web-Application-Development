@@ -16,4 +16,6 @@ const upload = multer({
 
 router.post("/upload-csv", upload.single("file"), productController.uploadCSVProduct);
 
+router.delete("/delete/:id", productController.deleteProductByID);
+
 export default router;

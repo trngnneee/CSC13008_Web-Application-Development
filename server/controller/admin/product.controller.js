@@ -1,5 +1,5 @@
 import { parseProductsCsv } from "../../helper/parse.helper.js";
-import { insertListProducts } from "../../service/product.service.js";
+import * as productService from "../../service/product.service.js";
 
 export async function uploadCSVProduct(req, res, next) {
   try {
@@ -9,7 +9,7 @@ export async function uploadCSVProduct(req, res, next) {
     }
     
     const { records, unknownColumns, missingColumns } = await parseProductsCsv(fileBuf);
-    const result = await insertListProducts(records);
+    const result = await productService.insertListProducts(records);
 
     res.json({
       ...result,
@@ -19,4 +19,13 @@ export async function uploadCSVProduct(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+export const deleteProductByID = async (req, res) => {
+    const id = req.params.id;
+    await productService.deleteProductID(id);
+    res.json({
+        code: "success",
+        message: "Xóa sản phẩm thành công",
+    })
 }

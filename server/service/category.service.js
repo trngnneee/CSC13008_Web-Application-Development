@@ -32,3 +32,14 @@ export const getAllCategory = (filter = {}) => {
     }
     return query;
 };
+
+export const getCategoryName = async (id, trx = null) => {
+  const kx = trx || db;
+  const row = await kx("category").select("name_category").where("id_category", id).first();
+  return row?.name_category || null;
+};
+
+export const deleteCategoryID = async (id, trx = null) => {
+  const kx = trx || db;
+  return kx("category").where("id_category", id).del();
+};
