@@ -48,7 +48,7 @@ export const createCategory = async (req, res) => {
 }
 
 export const getTotalPage = async (req, res) => {
-    const rawData = await getAllCategory(); 
+    const rawData = await categoryService.getAllCategory(); 
     res.json({
         code: "success",
         message: "Lấy tổng số trang thành công",
@@ -60,40 +60,28 @@ export const deleteCategory = async (req, res) => {
   const id = req.params.id;
 
   try {
-    // Kiểm tra root 
-    const rootName = await categoryService.getCategoryName(id);
-    if (!rootName) {
-      return res.status(404).json({ message: "Không tìm thấy category." });
+    const result = await categoryService.deleteCategoryTree(id);
+
+    if (!result) {
+      return res.status(404).json({ 
+        code: "error",
+        message: "Không tìm thấy category."
+      });
     }
 
-    let deletedProducts = 0;
-    let deletedCategories = 0;
-
-    await db.transaction(async (trx) => {
-      // lấy toàn bộ id của subtree 
-      const allIds = await categoryService.getDescendantCategoryIds(id, trx);
-
-      // lấy ấy toàn bộ name_category tương ứng 
-      const allNames = await categoryService.getCategoryNamesByIds(allIds, trx);
-
-      for (const name of allNames) {
-        deletedProducts += await productService.deleteProductByCategoryName(name, trx);
-      }
-
-      for (const catId of allIds) {
-        deletedCategories += await categoryService.deleteCategoryID(catId, trx);
-      }
-    });
-
     return res.status(200).json({
-      message: `Đã xóa category "${rootName}" và toàn bộ cây con.`,
-      deletedProducts,
-      deletedCategories,
+      code: "success",
+      message: `Đã xóa category "${result.rootName}" và toàn bộ cây con.`,
+      data: {
+        deletedProducts: result.deletedProducts,
+        deletedCategories: result.deletedCategories
+      }
     });
   } catch (e) {
     return res.status(500).json({
+      code: "error",
       message: "Lỗi khi xóa category (và các con).",
-      error: e?.message || e,
+      data: e?.message || e,
     });
   }
 };

@@ -1,5 +1,5 @@
 import db from "../config/database.config.js";
-
+import * as productService from "./product.service.js";
 
 export async function isInCategory(name) {
     if (!name) return null;
@@ -85,4 +85,33 @@ export const getCategoryNamesByIds = async (ids, trx = null) => {
     .select("name_category")
     .whereIn("id_category", ids);
   return rows.map(r => r.name_category);
+};
+
+export const deleteCategoryTree = async (id) => {
+  // Lấy tên gốc
+  const rootName = await getCategoryName(id);
+  if (!rootName) return null;
+
+  let deletedProducts = 0;
+  let deletedCategories = 0;
+
+  await db.transaction(async (trx) => {
+    // Lấy tất cả id con cháu
+    const allIds = await getDescendantCategoryIds(id, trx);
+
+    // Lấy tên các category theo id
+    const allNames = await getCategoryNamesByIds(allIds, trx);
+
+    // Xóa sản phẩm theo tên category
+    for (const name of allNames) {
+      deletedProducts += await productService.deleteProductByCategoryName(name, trx);
+    }
+
+    // Xóa category theo id
+    for (const catId of allIds) {
+      deletedCategories += await deleteCategoryID(catId, trx);
+    }
+  });
+
+  return { rootName, deletedProducts, deletedCategories };
 };
