@@ -1,5 +1,5 @@
 import * as parseHelper from "../../helper/parse.helper.js";
-import { insertProducts } from "../../service/category.service.js";
+import { insertProducts, getAllCategory, addSingleCategory } from "../../service/category.service.js";
 
 export async function uploadCSVCategory(req, res, next) {
     try {
@@ -30,4 +30,35 @@ export async function uploadCSVCategory(req, res, next) {
     } catch (err) {
         next(err);
     }
+}
+
+export const getCategoryList = async (req, res) => {
+    const rawData = await getAllCategory();
+
+    let categoryList = [];
+    for (const item of rawData)
+    {
+        categoryList.push({
+            id: item.id_category,
+            name: item.name_category,
+            id_parent: item.id_parent_category
+        });
+    }
+
+    res.json({
+        code: "success",
+        message: "Lấy danh sách danh mục thành công",
+        data: categoryList
+    })
+}
+
+export const createCategory = async (req, res) => {
+    const { name, parent } = req.body;
+
+    await addSingleCategory(name, parent);
+
+    res.json({
+        code: "success",
+        message: "Tạo danh mục thành công",
+    })
 }

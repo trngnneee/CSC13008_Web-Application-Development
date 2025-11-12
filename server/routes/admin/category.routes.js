@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 
-import * as catagoryController from "../../controller/admin/categogy.controller.js";
+import * as categoryController from "../../controller/admin/categogy.controller.js";
 
 const router = express.Router();
 
@@ -14,6 +14,10 @@ const upload = multer({
     },
 });
 
-router.post("/upload-csv", upload.single("file"), catagoryController.uploadCSVCategory);
+router.post("/upload-csv", upload.single("file"), categoryController.uploadCSVCategory);
+
+router.get("/list", categoryController.getCategoryList);
+
+router.post("/create", categoryController.createCategory);
 
 export default router;

@@ -25,3 +25,14 @@ export async function insertProducts(records, chunkSize = 500) {
         skipped_empty: 0,
     };
 }
+
+export const getAllCategory = () => {
+    return db("category").select("*");
+}
+
+export const addSingleCategory = (name, parent) => {
+    return db("category").insert({
+        name_category: name,
+        id_parent_category: parent
+    });
+}
