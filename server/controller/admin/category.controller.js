@@ -60,24 +60,57 @@ export const deleteCategory = async (req, res) => {
   const id = req.params.id;
 
   try {
-    await db.transaction(async (trx) => {
-      const nameCat = await categoryService.getCategoryName(id, trx);
-      if (!nameCat) {
-        return res.status(404).json({ message: "Không tìm thấy category." });
-      }
-      const deletedProducts = await productService.deleteProductByCategoryName(nameCat, trx);
-      const deletedCategories = await categoryService.deleteCategoryID(id, trx);
+    // Kiểm tra root 
+    const rootName = await categoryService.getCategoryName(id);
+    if (!rootName) {
+      return res.status(404).json({ message: "Không tìm thấy category." });
+    }
 
-      return res.status(200).json({
-        message: `Đã xóa category "${nameCat}" và ${deletedProducts} sản phẩm liên quan.`,
-        deletedProducts,
-        deletedCategories,
-      });
+    let deletedProducts = 0;
+    let deletedCategories = 0;
+
+    await db.transaction(async (trx) => {
+      // lấy toàn bộ id của subtree 
+      const allIds = await categoryService.getDescendantCategoryIds(id, trx);
+
+      // lấy ấy toàn bộ name_category tương ứng 
+      const allNames = await categoryService.getCategoryNamesByIds(allIds, trx);
+
+      for (const name of allNames) {
+        deletedProducts += await productService.deleteProductByCategoryName(name, trx);
+      }
+
+      for (const catId of allIds) {
+        deletedCategories += await categoryService.deleteCategoryID(catId, trx);
+      }
+    });
+
+    return res.status(200).json({
+      message: `Đã xóa category "${rootName}" và toàn bộ cây con.`,
+      deletedProducts,
+      deletedCategories,
     });
   } catch (e) {
     return res.status(500).json({
-      message: "Lỗi khi xóa category và products liên quan.",
+      message: "Lỗi khi xóa category (và các con).",
       error: e?.message || e,
     });
   }
+};
+
+
+export const deleteCategoryList = async (req, res) => {
+  const { ids } = req.body;
+  await db.transaction(async (trx) => {
+    for (const id of ids) {
+      const nameCat = await categoryService.getCategoryName(id, trx);
+      if (nameCat) {
+        await productService.deleteProductByCategoryName(nameCat, trx);
+        await categoryService.deleteCategoryID(id, trx);
+      }
+    }
+    return res.status(200).json({
+      message: `Đã xóa danh sách category và products liên quan.`,
+    });
+  });
 };
