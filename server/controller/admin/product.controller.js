@@ -12,9 +12,13 @@ export async function uploadCSVProduct(req, res, next) {
     const result = await productService.insertListProducts(records);
 
     res.json({
-      ...result,
-      unknownColumns,
-      missingColumns,
+      code: "success",
+      message: "Upload sản phẩm thành công",
+      data: {
+        ...result,
+        unknownColumns,
+        missingColumns,
+      }
     });
   } catch (e) {
     next(e);
@@ -23,9 +27,17 @@ export async function uploadCSVProduct(req, res, next) {
 
 export const deleteProductByID = async (req, res) => {
     const id = req.params.id;
-    await productService.deleteProductID(id);
-    res.json({
-        code: "success",
-        message: "Xóa sản phẩm thành công",
-    })
+    try{
+        await productService.deleteProductID(id);
+        res.json({
+            code: "success",
+            message: "Xóa sản phẩm thành công",
+        })
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi xóa sản phẩm.",
+            data: e?.message || e,
+        });
+    }
 }

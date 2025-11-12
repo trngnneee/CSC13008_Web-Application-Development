@@ -58,7 +58,6 @@ export const getTotalPage = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
   const id = req.params.id;
-
   try {
     const result = await categoryService.deleteCategoryTree(id);
 
@@ -86,19 +85,56 @@ export const deleteCategory = async (req, res) => {
   }
 };
 
-
 export const deleteCategoryList = async (req, res) => {
   const { ids } = req.body;
-  await db.transaction(async (trx) => {
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({
+      code: "error",
+      message: "Danh sách ID không hợp lệ.",
+    });
+  }
+
+  try {
+    const result = [];
+
     for (const id of ids) {
-      const nameCat = await categoryService.getCategoryName(id, trx);
-      if (nameCat) {
-        await productService.deleteProductByCategoryName(nameCat, trx);
-        await categoryService.deleteCategoryID(id, trx);
+      try {
+        const resDelete = await categoryService.deleteCategoryTree(id);
+        if (resDelete) {
+          result.push({
+            id,
+            rootName: resDelete.rootName,
+            deletedProducts: resDelete.deletedProducts,
+            deletedCategories: resDelete.deletedCategories,
+            status: "success",
+          });
+        } else {
+          result.push({
+            id,
+            status: "not_found",
+            message: "Không tìm thấy category.",
+          });
+        }
+      } catch (err) {
+        result.push({
+          id,
+          status: "error",
+          message: err?.message || err,
+        });
       }
     }
+
     return res.status(200).json({
-      message: `Đã xóa danh sách category và products liên quan.`,
+      code: "success",
+      message: "Hoàn tất xử lý xóa danh sách category.",
+      data: result,
     });
-  });
+  } catch (e) {
+    return res.status(500).json({
+      code: "error",
+      message: "Lỗi khi xóa danh sách category.",
+      data: e?.message || e,
+    });
+  }
 };

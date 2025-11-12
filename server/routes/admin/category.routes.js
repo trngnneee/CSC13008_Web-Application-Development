@@ -12,6 +12,6 @@ router.get("/total-page", categoryController.getTotalPage);
 
 router.delete("/delete/:id", categoryController.deleteCategory);
 
-router.delete("delete", categoryController.deleteCategoryList);
+router.delete("/delete-list", categoryController.deleteCategoryList);
 
 export default router;
