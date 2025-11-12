@@ -10,12 +10,12 @@ export async function isInCategory(name) {
     return row?.id_category ?? null;  
 }
 
-export async function insertCategory(name_category) {
+export async function insertCategory(name_category, parent) {
   const name = name_category?.trim();
   if (!name) return null;
 
   const [row] = await db("category")
-    .insert({ name_category: name })
+    .insert({ name_category: name, id_parent_category: parent })
     .onConflict("name_category")
     .merge()    
     .returning(["id_category"]);
@@ -32,10 +32,3 @@ export const getAllCategory = (filter = {}) => {
     }
     return query;
 };
-
-export const addSingleCategory = (name, parent) => {
-    return db("category").insert({
-        name_category: name,
-        id_parent_category: parent
-    });
-}

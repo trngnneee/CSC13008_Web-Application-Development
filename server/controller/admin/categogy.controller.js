@@ -1,5 +1,5 @@
 import * as parseHelper from "../../helper/parse.helper.js";
-import { insertProducts, getAllCategory, addSingleCategory } from "../../service/category.service.js";
+import { insertProducts, getAllCategory, insertCategory } from "../../service/category.service.js";
 
 export async function uploadCSVCategory(req, res, next) {
     try {
@@ -69,7 +69,7 @@ export const getCategoryList = async (req, res) => {
 export const createCategory = async (req, res) => {
     const { name, parent } = req.body;
 
-    await addSingleCategory(name, parent);
+    await insertCategory(name, parent);
 
     res.json({
         code: "success",
