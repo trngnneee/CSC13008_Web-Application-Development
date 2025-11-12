@@ -33,15 +33,29 @@ export async function uploadCSVCategory(req, res, next) {
 }
 
 export const getCategoryList = async (req, res) => {
-    const rawData = await getAllCategory();
+    let filter = {};
+
+    if (req.query.keyword) {
+        filter.keyword = req.query.keyword;
+    }
+
+    if (req.query.page)
+    {
+        filter.page = parseInt(req.query.page);
+        filter.limit = 5;
+    }
+
+    const rawData = await getAllCategory(filter);
 
     let categoryList = [];
     for (const item of rawData)
     {
+        const parentInfo = categoryList.find(cate => cate.id === item.id_parent_category);
         categoryList.push({
             id: item.id_category,
             name: item.name_category,
-            id_parent: item.id_parent_category
+            id_parent: item.id_parent_category,
+            parent_name: parentInfo ? parentInfo.name : null,
         });
     }
 
@@ -60,5 +74,14 @@ export const createCategory = async (req, res) => {
     res.json({
         code: "success",
         message: "Tạo danh mục thành công",
+    })
+}
+
+export const getTotalPage = async (req, res) => {
+    const rawData = await getAllCategory(); 
+    res.json({
+        code: "success",
+        message: "Lấy tổng số trang thành công",
+        data: Math.ceil(rawData.length / 5)
     })
 }

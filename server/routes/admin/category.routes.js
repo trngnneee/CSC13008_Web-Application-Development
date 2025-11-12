@@ -20,4 +20,6 @@ router.get("/list", categoryController.getCategoryList);
 
 router.post("/create", categoryController.createCategory);
 
+router.get("/total-page", categoryController.getTotalPage);
+
 export default router;
