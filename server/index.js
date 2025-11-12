@@ -8,8 +8,15 @@ import cookieParser from 'cookie-parser';
 import clientRoutes from './routes/client/index.routes.js';
 import adminRoutes from './routes/admin/index.routes.js';
 
+import http from 'http';
+import { Server } from 'socket.io';
+import * as socketService from './service/socket.service.js'
+
 const app = express();
 const port = 10000;
+
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.use(cors({
     origin: [

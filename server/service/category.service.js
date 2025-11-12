@@ -1,27 +1,22 @@
 import db from "../config/database.config.js";
 
-export async function insertProducts(records, chunkSize = 500) {
-    const prepared = records.map(r => {
-        if (Array.isArray(r.url_img) && r.url_img.length === 0) {
-            return { ...r, url_img: null };
-        }
-        return r;
-    });
 
-    let inserted = 0;
-    for (let i = 0; i < prepared.length; i += chunkSize) {
-        const chunk = prepared.slice(i, i + chunkSize);
-        if (!chunk.length) continue;
+export async function isInCategory(name) {
+    if (!name) return null;
+    const row = await db("category")
+    .select("id_category")
+    .where("name_category", name)
+    .first();
+    return row?.id_category ?? null;  
+}
 
-        await db("product").insert(chunk);
-        inserted += chunk.length;
-    }
+export async function insertCategory(name_category) {
+  const name = name_category?.trim();
+  if (!name) return null;
 
-    return {
-        total: records.length,
-        inserted,
-        failed: 0,
-        errors: [],
-        skipped_empty: 0,
-    };
+  const [row] = await db("category")
+    .insert({ name_category: name })
+    .onConflict("name_category")
+    .merge()    
+    .returning(["id_category"]);
 }
