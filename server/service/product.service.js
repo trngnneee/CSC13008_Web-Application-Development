@@ -77,3 +77,17 @@ export const deleteProductByCategoryName = async (categoryName, trx = null) => {
   const kx = trx ? trx : db;
   return kx("product").where("name_category", categoryName).del();
 }
+
+export const insertProduct = async (productData) => {
+  const dbProduct = mapCsvRecordToDbProduct(productData);
+
+  try {
+    const [newProduct] = await db("product")
+      .insert(dbProduct)
+      .returning(["id_product", "name"]);
+
+    return newProduct;
+  } catch (e) {
+    throw e;
+  }
+};

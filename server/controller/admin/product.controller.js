@@ -41,3 +41,19 @@ export const deleteProductByID = async (req, res) => {
         });
     }
 }
+export const insertProduct = async (req, res) => {
+    const productData = req.body;
+    try{
+        await productService.insertProduct(productData);
+        res.json({
+            code: "success",
+            message: "Thêm sản phẩm thành công",
+        })
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi thêm sản phẩm.",
+            data: e?.message || e,
+        });
+    }
+}
