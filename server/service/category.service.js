@@ -20,3 +20,22 @@ export async function insertCategory(name_category) {
     .merge()    
     .returning(["id_category"]);
 }
+
+export const getAllCategory = (filter = {}) => {
+    const query = db("category").select("*");
+    if (filter.keyword) {
+        query.where("name_category", "like", `%${filter.keyword}%`);
+    }
+    if (filter.page && filter.limit) {
+        const offset = (filter.page - 1) * filter.limit;
+        query.offset(offset).limit(filter.limit);
+    }
+    return query;
+};
+
+export const addSingleCategory = (name, parent) => {
+    return db("category").insert({
+        name_category: name,
+        id_parent_category: parent
+    });
+}

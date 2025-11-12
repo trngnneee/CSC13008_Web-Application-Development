@@ -12,7 +12,7 @@ export function middleware(req) {
   ];
 
   if (token && publicPaths.some(path => pathname.startsWith(path))) {
-    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    return NextResponse.redirect(new URL("/admin/category", req.url));
   }
 
   if (!token && pathname.startsWith("/admin") && !publicPaths.some(path => pathname.startsWith(path))) {

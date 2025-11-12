@@ -1,7 +1,16 @@
+"use client"
+
 import { Input } from "@/components/ui/input"
 import { ArrowRightIcon, SearchIcon } from "lucide-react"
+import { useEffect, useState } from "react";
 
-export const DashboardSearch = () => {
+export const DashboardSearch = ({ onFilterChange }) => {
+  const [keyword, setKeyword] = useState("");
+
+  useEffect(() => {
+    onFilterChange((prev) => ({ ...prev, keyword }));
+  }, [keyword]);
+
   return (
     <div className="*:not-first:mt-2">
       <div className="relative">
@@ -10,6 +19,8 @@ export const DashboardSearch = () => {
           className="peer ps-9 pe-9 bg-white"
           placeholder="Tìm kiếm..."
           type="search"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
         />
         <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
           <SearchIcon size={16} />
