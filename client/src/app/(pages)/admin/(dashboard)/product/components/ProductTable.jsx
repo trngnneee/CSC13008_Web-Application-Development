@@ -8,21 +8,13 @@ export default function ProductTable() {
       id: 1,
       name: "Sản phẩm 1",
       image: "https://i.imgur.com/2yaf2wb.jpeg",
-      position: 1,
-      status: "Hoạt động",
-      creator: "Lê Văn A",
-      updater: "Lê Văn A",
-      time: "16:30 - 20/10/2024",
-    },
-    {
-      id: 2,
-      name: "Sản phẩm 2",
-      image: "https://i.imgur.com/2yaf2wb.jpeg",
-      position: 2,
-      status: "Tạm dừng",
-      creator: "Lê Văn B",
-      updater: "Lê Văn B",
-      time: "16:30 - 20/10/2024",
+      category: 1,
+      price: 1000,
+      startingPrice: 800,
+      buyNowPrice: 1200,
+      startTime: "2024-10-20 16:30",
+      endTime: "2024-10-27 16:30",
+      step: 50,
     }
   ];
 
@@ -36,10 +28,13 @@ export default function ProductTable() {
             </th>
             <th className="p-3 text-left">Tên sản phẩm</th>
             <th className="p-3 text-left">Ảnh đại diện</th>
-            <th className="p-3 text-center">Vị trí</th>
-            <th className="p-3 text-center">Trạng thái</th>
-            <th className="p-3 text-left">Tạo bởi</th>
-            <th className="p-3 text-left">Cập nhật bởi</th>
+            <th className="p-3 text-center">Danh mục</th>
+            <th className="p-3 text-center">Giá</th>
+            <th className="p-3 text-center">Giá khởi điểm</th>
+            <th className="p-3 text-center">Giá mua ngay</th>
+            <th className="p-3 text-center">Bắt đầu</th>
+            <th className="p-3 text-center">Kết thúc</th>
+            <th className="p-3 text-center">Bước nhảy</th>
             <th className="p-3 text-center">Hành động</th>
           </tr>
         </thead>
@@ -60,30 +55,13 @@ export default function ProductTable() {
                   className="w-10 h-10 object-cover rounded-md"
                 />
               </td>
-              <td className="p-3 text-center">{item.position}</td>
-              <td className="p-3 text-center">
-                {item.status === "Hoạt động" ? (
-                  <Badge variant="secondary" className="bg-emerald-100 text-emerald-600 border-none">
-                    Hoạt động
-                  </Badge>
-                ) : (
-                  <Badge variant="destructive" className="bg-red-100 text-red-600 border-none">
-                    Tạm dừng
-                  </Badge>
-                )}
-              </td>
-              <td className="p-3">
-                <div className="flex flex-col">
-                  <span>{item.creator}</span>
-                  <span className="text-xs text-gray-400">{item.time}</span>
-                </div>
-              </td>
-              <td className="p-3">
-                <div className="flex flex-col">
-                  <span>{item.updater}</span>
-                  <span className="text-xs text-gray-400">{item.time}</span>
-                </div>
-              </td>
+              <td className="p-3 text-center">{item.category}</td>
+              <td className="p-3 text-center">{item.price}</td>
+              <td className="p-3 text-center">{item.startingPrice}</td>
+              <td className="p-3 text-center">{item.buyNowPrice}</td>
+              <td className="p-3 text-center text-[12px] text-gray-500">{item.startTime}</td>
+              <td className="p-3 text-center text-[12px] text-gray-500">{item.endTime}</td>
+              <td className="p-3 text-center">{item.step}</td>
               <td className="p-3 flex items-center justify-center gap-2">
                 <AdminDeleteButton />
               </td>

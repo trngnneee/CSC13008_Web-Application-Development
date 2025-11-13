@@ -35,11 +35,16 @@ export default function AdminCategory() {
     setFilter(newFilter);
   }
 
+  const [selectedItem, setSelectedItem] = useState([]);
+
   return (
     <>
       <div className="mt-6">
         <div className="mt-[15px] flex items-center gap-5">
-          <DashboardMultipleApply />
+          <DashboardMultipleApply
+            selectedItem={selectedItem}
+            api={`${process.env.NEXT_PUBLIC_API_URL}/admin/category/delete-list`}
+          />
           <DashboardSearch
             onFilterChange={handleFilterChange}
           />
@@ -51,6 +56,8 @@ export default function AdminCategory() {
 
         <CategoryTable
           filter={filter}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
         />
 
         <div className="mt-5">
