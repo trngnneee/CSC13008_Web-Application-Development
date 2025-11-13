@@ -14,4 +14,5 @@ router.get("/total-page", checkParentCat, categoryController.getTotalPage);
 router.delete("/delete/:id", checkParentCat, categoryController.deleteCategory);
 
 router.delete("/delete-list", checkParentCat, categoryController.deleteCategoryList);
+
 export default router;

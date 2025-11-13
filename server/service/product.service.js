@@ -91,3 +91,7 @@ export const insertProduct = async (productData) => {
     throw e;
   }
 };
+
+export const getAllProducts = async () => {
+    return db("product").select("*");
+}

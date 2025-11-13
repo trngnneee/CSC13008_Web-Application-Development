@@ -1,11 +1,7 @@
 import express from "express";
-import * as userService from "../../service/user.service.js";
-
+import * as userController from "../../controller/client/user.controller.js";
 const router = express.Router();
 
-router.get("/get-all-users", async (req, res) => {
-  const users = await userService.getAllUsers();
-  console.log(users);
-});
+router.get("/get-all-users", userController.getAllUsers);
 
 export default router;
