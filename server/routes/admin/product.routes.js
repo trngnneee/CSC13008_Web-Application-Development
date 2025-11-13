@@ -17,7 +17,7 @@ const upload = multer({
 
 router.post("/upload-csv", upload.single("file"), productController.uploadCSVProduct);
 
-router.delete("/delete/:id", productController.deleteProductByID);
+router.delete("/delete/:id", checkParentCat, productController.deleteProductByID);
 
 router.post("/create", checkParentCat, productController.insertProduct);
 
