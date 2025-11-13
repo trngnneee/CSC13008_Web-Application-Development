@@ -1,5 +1,6 @@
 import { isInCategory } from "../../service/category.service.js";
 
+//To check category 
 export const checkParentCat = async (req, res, next) => {
     try {
         const parentName = req.body.parentName;
@@ -11,7 +12,7 @@ export const checkParentCat = async (req, res, next) => {
         if (!parentId) {
             return res.status(400).json({
                 code: "error",
-                message: `Parent category '${parentName}' không tồn tại.`,
+                message: `Category '${parentName}' không tồn tại.`,
             });
         }
         req.body.parentId = parentId;

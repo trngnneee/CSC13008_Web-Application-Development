@@ -93,3 +93,8 @@ export const resetPassword = async (email, password) => {
 
   return updatedUser;
 };
+
+export const getAllUsers = async () => {
+  const users = await db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
+  return users;
+}

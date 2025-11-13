@@ -21,4 +21,6 @@ router.delete("/delete/:id", productController.deleteProductByID);
 
 router.post("/create", checkParentCat, productController.insertProduct);
 
+router.get("/get-all-products", productController.getAllProducts);
+
 export default router;

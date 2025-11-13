@@ -57,3 +57,20 @@ export const insertProduct = async (req, res) => {
         });
     }
 }
+
+export const getAllProducts = async (req, res) => {
+    try {
+        const products = await productService.getAllProducts();
+        res.json({
+            code: "success",
+            message: "Lấy danh sách sản phẩm thành công",
+            data: Math.ceil(products.length / 5),
+        });
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy danh sách sản phẩm.",
+            data: e?.message || e,
+        });
+    }
+};

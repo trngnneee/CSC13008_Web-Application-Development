@@ -1,5 +1,5 @@
 import express from "express";
-import * as userService from "../../service/user.service.js";
+import * as userRoute from "./user.routes.js";
 
 const router = express.Router();
 
@@ -7,9 +7,6 @@ router.get("/", (req, res) => {
   res.send("Welcome to the Client API of SnapBid!");
 })
 
-router.get("/users", async (req, res) => {
-  const users = await userService.getAllUsers();
-  console.log(users);
-});
+router.use("/users", userRoute.getAllUsers);
 
 export default router;
