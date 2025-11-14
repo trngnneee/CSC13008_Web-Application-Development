@@ -1,22 +1,27 @@
-import { Badge } from "@/components/ui/badge";
 import { AdminDeleteButton } from "../../components/TableButton/DeleteButton";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
+import { productList } from "@/lib/adminAPI/product";
 
-export default function ProductTable() {
-  const data = [
-    {
-      id: 1,
-      name: "Sản phẩm 1",
-      image: "https://i.imgur.com/2yaf2wb.jpeg",
-      category: 1,
-      price: 1000,
-      startingPrice: 800,
-      buyNowPrice: 1200,
-      startTime: "2024-10-20 16:30",
-      endTime: "2024-10-27 16:30",
-      step: 50,
-    }
-  ];
+export default function ProductTable({ filter }) {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      let params = "";
+      if (filter.keyword) {
+        params += `?keyword=${filter.keyword}`;
+      }
+      if (filter.page) {
+        params += params ? `&page=${filter.page}` : `?page=${filter.page}`;
+      }
+      const promise = await productList(params);
+      if (promise.code == "success")
+      {
+        setData(promise.data);
+      }
+    } 
+    fetchData();
+  }, [filter])
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200 mt-6">
@@ -39,9 +44,9 @@ export default function ProductTable() {
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
+          {data.length > 0 && data.map((item) => (
             <tr
-              key={item.id}
+              key={item.id_product}
               className="border-b hover:bg-gray-50 transition-colors"
             >
               <td className="p-3 text-center">
@@ -50,20 +55,22 @@ export default function ProductTable() {
               <td className="p-3">{item.name}</td>
               <td className="p-3">
                 <img
-                  src={item.image}
+                  src={item.avatar}
                   alt={item.name}
                   className="w-10 h-10 object-cover rounded-md"
                 />
               </td>
-              <td className="p-3 text-center">{item.category}</td>
-              <td className="p-3 text-center">{item.price}</td>
-              <td className="p-3 text-center">{item.startingPrice}</td>
-              <td className="p-3 text-center">{item.buyNowPrice}</td>
-              <td className="p-3 text-center text-[12px] text-gray-500">{item.startTime}</td>
-              <td className="p-3 text-center text-[12px] text-gray-500">{item.endTime}</td>
-              <td className="p-3 text-center">{item.step}</td>
+              <td className="p-3 text-center">{item.name_category}</td>
+              <td className="p-3 text-center">{parseInt(item.price).toLocaleString("vi-VN")}</td>
+              <td className="p-3 text-center">{parseInt(item.starting_price).toLocaleString("vi-VN")}</td>
+              <td className="p-3 text-center">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")}</td>
+              <td className="p-3 text-center text-[12px] text-gray-500">{(new Date(item.posted_date_time)).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
+              <td className="p-3 text-center text-[12px] text-gray-500">{(new Date(item.end_date_time)).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
+              <td className="p-3 text-center">{parseInt(item.pricing_step).toLocaleString("vi-VN")}</td>
               <td className="p-3 flex items-center justify-center gap-2">
-                <AdminDeleteButton />
+                <AdminDeleteButton
+                  api={`${process.env.NEXT_PUBLIC_API_URL}/admin/product/delete/${item.id_product}`}
+                />
               </td>
             </tr>
           ))}

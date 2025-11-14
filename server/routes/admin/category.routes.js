@@ -9,7 +9,7 @@ router.get("/list", categoryController.getCategoryList);
 
 router.post("/create", checkParentCat, categoryController.createCategory);
 
-router.get("/total-page", checkParentCat, categoryController.getTotalPage);
+router.get("/total-page", categoryController.getTotalPage);
 
 router.delete("/delete/:id", checkParentCat, categoryController.deleteCategory);
 

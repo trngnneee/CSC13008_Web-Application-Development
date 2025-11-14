@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
 import ProductTable from "./components/ProductTable";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { productTotalPage } from "@/lib/adminAPI/product";
+import DashboardPagination from "../components/DashboardPagination";
 
 export default function AdminProduct() {
   const router = useRouter();
@@ -16,12 +18,22 @@ export default function AdminProduct() {
   })
 
   const [totalPage, setTotalPage] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await productTotalPage();
+      if (promise.code == "success") {
+        setTotalPage(promise.data)
+      }
+    }
+    fetchData();
+  }, [])
+
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   }
 
   const [selectedItems, setSelectedItems] = useState([]);
-  
+
   return (
     <>
       <div className="mt-6">
@@ -39,7 +51,17 @@ export default function AdminProduct() {
           </Button>
         </div>
 
-        <ProductTable />
+        <ProductTable
+          filter={filter}
+        />
+
+        <div className="mt-5">
+          <DashboardPagination
+            currentPage={filter.page}
+            totalPages={totalPage}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
       </div>
     </>
   )

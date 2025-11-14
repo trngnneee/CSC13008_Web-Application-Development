@@ -17,10 +17,12 @@ const upload = multer({
 
 router.post("/upload-csv", upload.single("file"), productController.uploadCSVProduct);
 
-router.delete("/delete/:id", checkParentCat, productController.deleteProductByID);
+router.delete("/delete/:id", productController.deleteProductByID);
 
 router.post("/create", checkParentCat, productController.insertProduct);
 
-router.get("/get-all-products", productController.getAllProducts);
+router.get("/total-page", productController.getTotalPage);
+
+router.get("/list", productController.getProductList);
 
 export default router;

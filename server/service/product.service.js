@@ -92,6 +92,14 @@ export const insertProduct = async (productData) => {
   }
 };
 
-export const getAllProducts = async () => {
-    return db("product").select("*");
+export const getAllProducts = async (filter = {}) => {
+    const query = db("product").select("*");
+    if (filter.keyword) {
+        query.where("name", "like", `%${filter.keyword}%`);
+    }
+    if (filter.page && filter.limit) {
+        const offset = (filter.page - 1) * filter.limit;
+        query.offset(offset).limit(filter.limit);
+    }
+    return query;
 }

@@ -9,7 +9,6 @@ import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardPagination from "../components/DashboardPagination";
 import { getTotalPage } from "@/lib/adminAPI/category";
-import { set } from "date-fns";
 
 export default function AdminCategory() {
   const router = useRouter();
