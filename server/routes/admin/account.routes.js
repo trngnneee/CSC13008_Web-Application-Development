@@ -16,4 +16,6 @@ router.post("/otp-password", adminController.otpPasswordPost)
 
 router.post("/reset-password", adminMiddleware.verifyToken, adminController.resetPasswordPost);
 
+router.get("/verify-email", adminController.verifyEmailGet);
+
 export default router;

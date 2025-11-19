@@ -1,5 +1,8 @@
 import db from "../config/database.config.js";
 
+//Import lib
+import crypto from "crypto";
+
 db.raw("select now()")
   .then(r => console.log("✅ DB connected:", r.rows?.[0] || r))
   .catch(err => console.error("❌ DB connect error:", {
@@ -98,3 +101,42 @@ export const getAllUsers = async () => {
   const users = await db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
   return users;
 }
+
+export const createVerifyEmail = async (id_user) => {
+  if (!id_user) {
+    throw new Error("Thiếu thông tin bắt buộc: id_user");
+  }
+
+  const verifyToken = crypto.randomBytes(32).toString("hex") + id_user;
+  
+  const [record] = await db("verify_email")
+    .insert({
+      id_user,
+      token: verifyToken,
+      expire_at: db.raw(`NOW() + INTERVAL '5 minutes'`)
+    })
+    .returning(['id', 'id_user', 'token', 'expire_at']);
+
+  return record.token;
+}
+
+export const findVerifyEmailToken = async (token) => {
+  if (!token) throw new Error("Thiếu token");
+
+  const record = await db("verify_email")
+    .where({ token, used: false })
+    .andWhere("expire_at", ">", db.fn.now())
+    .first();
+
+  return record;
+};
+
+export const markVerifyTokenUsed = async (id) => {
+  await db("verify_email")
+    .where({ id_user: id })
+    .update({ used: true });
+
+  await db("user")
+    .where({ id_user: id })
+    .update({ status: 'active' });
+};

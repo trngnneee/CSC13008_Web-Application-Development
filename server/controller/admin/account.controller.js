@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
-import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP } from "./../../service/user.service.js"
+import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP, createVerifyEmail, findVerifyEmailToken, markVerifyTokenUsed } from "./../../service/user.service.js"
 import jwt from "jsonwebtoken"
 import { OTPGenerate } from "../../helper/otp.helper.js";
+import { sendVarifyMail } from "../../helper/mail.helper.js";
 
 export const registerPost = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -27,6 +28,9 @@ export const registerPost = async (req, res) => {
   });
 
   if (result) {
+    const verifyToken = await createVerifyEmail(result.id_user);
+    await sendVarifyMail(email, verifyToken);
+
     return res.json({
       code: "success",
       message: "Đăng ký thành công!"
@@ -211,4 +215,39 @@ export const resetPasswordPost = async (req, res) => {
     code: "error",
     message: "Đổi mật khẩu thất bại"
   })
+}
+
+export const verifyEmailGet = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.json({
+      code: "error",
+      message: "Token không tồn tại!"
+    })
+  }
+
+  try {
+    const record = await findVerifyEmailToken(token);
+
+    if (!record) {
+      return res.json({
+        code: "error",
+        message: "Token không hợp lệ hoặc đã hết hạn!"
+      })
+    }
+
+    await markVerifyTokenUsed(record.id_user);
+
+    res.json({
+      code: "success",
+      message: "Xác thực email thành công!"
+    })
+
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: error.message
+    })
+  }
 }
