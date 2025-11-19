@@ -18,6 +18,8 @@ const port = 10000;
 const server = http.createServer(app);
 const io = new Server(server);
 
+socketService.initSocket(io);
+
 app.use(cors({
     origin: [
         'http://localhost:3000'
@@ -36,6 +38,6 @@ app.get('/', (req, res) => {
 app.use('/api', clientRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.listen(port, () => {
-    console.log(`API is running on port ${port}`)
+server.listen(port, () => {
+    console.log(`API + Socket is running on port ${port}`)
 })
