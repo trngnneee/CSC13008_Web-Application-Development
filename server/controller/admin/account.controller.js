@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP, createVerifyEmail, findVerifyEmailToken, markVerifyTokenUsed } from "./../../service/user.service.js"
+import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP, createVerifyEmail, findVerifyEmailToken, markVerifyTokenUsed, changeUserRole } from "./../../service/user.service.js"
 import jwt from "jsonwebtoken"
 import { OTPGenerate } from "../../helper/otp.helper.js";
 import { sendVarifyMail } from "../../helper/mail.helper.js";
@@ -246,6 +246,26 @@ export const verifyEmailGet = async (req, res) => {
 
   } catch (error) {
     res.json({
+      code: "error",
+      message: error.message
+    })
+  }
+}
+
+export const changeRolePatch = async (req, res) => {
+  const { id_user } = req.params;
+  const { role } = req.body;
+
+  try {
+    const updatedUser = await changeUserRole(id_user, role);
+    if (updatedUser) {
+      return res.json({
+        code: "success",
+        message: "Cập nhật vai trò thành công!"
+      })
+    }
+  } catch (error) {
+    return res.json({
       code: "error",
       message: error.message
     })

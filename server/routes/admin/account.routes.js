@@ -18,4 +18,6 @@ router.post("/reset-password", adminMiddleware.verifyToken, adminController.rese
 
 router.get("/verify-email", adminController.verifyEmailGet);
 
+router.patch("/change-role/:id_user", adminController.changeRolePatch);
+
 export default router;

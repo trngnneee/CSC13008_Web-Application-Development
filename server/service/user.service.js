@@ -140,3 +140,20 @@ export const markVerifyTokenUsed = async (id) => {
     .where({ id_user: id })
     .update({ status: 'active' });
 };
+
+export const changeUserRole = async (id_user, role) => {
+  if (!id_user || !role) {
+    throw new Error("Thiếu thông tin bắt buộc: id_user, role");
+  }
+
+  const [updatedUser] = await db("user")
+    .where({ id_user })
+    .update({ role })
+    .returning(["id_user", "email", "fullname", "role"]);
+
+  if (!updatedUser) {
+    throw new Error("Không tìm thấy người dùng để cập nhật vai trò");
+  }
+
+  return updatedUser;
+}
