@@ -256,6 +256,13 @@ export const changeRolePatch = async (req, res) => {
   const { id_user } = req.params;
   const { role } = req.body;
 
+  if (!role || role !== "bidder" ) {
+    return res.json({
+      code: "error",
+      message: "Vai trò không hợp lệ!"
+    })
+  }
+
   try {
     const updatedUser = await changeUserRole(id_user, role);
     if (updatedUser) {
