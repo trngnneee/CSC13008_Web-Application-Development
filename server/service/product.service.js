@@ -70,7 +70,22 @@ export async function insertListProducts(records, chunkSize = 500) {
 }
 
 export const deleteProductID = async (id) => {
-    return db("product").where("id_product", id).del();
+    const product = await db("product")
+        .where("id_product", id)
+        .first();
+
+    if (!product) return null;
+
+    await db("product")
+        .where("id_product", id)
+        .del();
+
+    return product; 
+}
+
+export const deleteProductList = async (ids, trx = null) => {
+    const kx = trx ? trx : db;
+    return kx("product").whereIn("id_product", ids).del();
 }
 
 export const deleteProductByCategoryName = async (categoryName, trx = null) => {
@@ -102,4 +117,10 @@ export const getAllProducts = async (filter = {}) => {
         query.offset(offset).limit(filter.limit);
     }
     return query;
+}
+
+export const getProduct = async (id) => {
+    return db("product")
+        .where("id_product", id)
+        .first();
 }

@@ -3,6 +3,7 @@ import multer from "multer";
 
 import * as productController from "../../controller/admin/product.controller.js";
 import { checkParentCat } from "../../middleware/admin/verifyCat.middleware.js";
+import { verifyProductExists } from "../../middleware/admin/verifyProduct.middleware.js";
 
 const router = express.Router();
 
@@ -18,6 +19,8 @@ const upload = multer({
 router.post("/upload-csv", upload.single("file"), productController.uploadCSVProduct);
 
 router.delete("/delete/:id", productController.deleteProductByID);
+
+router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
 
 router.post("/create", checkParentCat, productController.insertProduct);
 

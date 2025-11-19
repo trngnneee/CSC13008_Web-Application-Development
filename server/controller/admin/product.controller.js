@@ -102,3 +102,27 @@ export const getProductList = async (req, res) => {
         });
     }
 }
+
+export const deleteAllProducts = async (req, res) => {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({
+            code: "error",
+            message: "Danh sách ID không hợp lệ.",
+        });
+    }
+
+   try {
+        await productService.deleteProductList(ids);
+        res.json({
+            code: "success",
+            message: "Xóa danh sách sản phẩm thành công",
+        });
+   } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi xóa danh sách sản phẩm.",
+        });
+   }
+}
