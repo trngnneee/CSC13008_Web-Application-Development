@@ -32,14 +32,14 @@ export default function AdminProduct() {
     setFilter(newFilter);
   }
 
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState([]);
 
   return (
     <>
       <div className="mt-6">
         <div className="mt-[15px] flex items-center gap-5">
           <DashboardMultipleApply
-            selectedItems={selectedItems}
+            selectedItem={selectedItem}
             api={`${process.env.NEXT_PUBLIC_API_URL}/admin/product/delete-list`}
           />
           <DashboardSearch
@@ -53,6 +53,8 @@ export default function AdminProduct() {
 
         <ProductTable
           filter={filter}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
         />
 
         <div className="mt-5">

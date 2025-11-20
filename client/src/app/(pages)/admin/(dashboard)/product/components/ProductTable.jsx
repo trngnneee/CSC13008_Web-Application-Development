@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { productList } from "@/lib/adminAPI/product";
 
-export default function ProductTable({ filter }) {
+export default function ProductTable({ filter, selectedItem, setSelectedItem }) {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -15,11 +15,10 @@ export default function ProductTable({ filter }) {
         params += params ? `&page=${filter.page}` : `?page=${filter.page}`;
       }
       const promise = await productList(params);
-      if (promise.code == "success")
-      {
+      if (promise.code == "success") {
         setData(promise.data);
       }
-    } 
+    }
     fetchData();
   }, [filter])
 
@@ -29,7 +28,17 @@ export default function ProductTable({ filter }) {
         <thead className="bg-gray-50 text-gray-600 font-medium border-b">
           <tr>
             <th className="p-3 w-10">
-              <Checkbox className="data-[state=checked]:bg-[var(--main-color)]"/>
+              <Checkbox
+                className="data-[state=checked]:bg-[var(--main-color)]"
+                checked={data.length > 0 && selectedItem.length === data.length}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setSelectedItem(data.map((item) => item.id_product));
+                  } else {
+                    setSelectedItem([]);
+                  }
+                }}
+              />
             </th>
             <th className="p-3 text-left">Tên sản phẩm</th>
             <th className="p-3 text-left">Ảnh đại diện</th>
@@ -50,7 +59,17 @@ export default function ProductTable({ filter }) {
               className="border-b hover:bg-gray-50 transition-colors"
             >
               <td className="p-3 text-center">
-                <Checkbox className="data-[state=checked]:bg-[var(--main-color)]"/>
+                <Checkbox
+                  className="data-[state=checked]:bg-[var(--main-color)]"
+                  checked={selectedItem.includes(item.id_product)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSelectedItem([...selectedItem, item.id_product]);
+                    } else {
+                      setSelectedItem(selectedItem.filter((id) => id !== item.id_product));
+                    }
+                  }}
+                />
               </td>
               <td className="p-3">{item.name}</td>
               <td className="p-3">
