@@ -1,6 +1,19 @@
 import cron from "node-cron";
-import db from "../config/database.config.js";
+import { deleteExpiredVerifyTokens, deleteExpiredForgotPasswordTokens } from './user.service.js';
 
 cron.schedule("*/5 * * * *", async () => {
-  await db("forgot_password").where("expire_at", "<=", db.fn.now()).del();
+  try {
+    const countEmailToken = await deleteExpiredVerifyTokens();
+    const countForgotToken = await deleteExpiredForgotPasswordTokens();
+
+    if (countForgotToken > 0) {
+      console.log(`🧹 Đã xoá ${countForgotToken} forgot password token hết hạn`);
+    }
+    if (countEmailToken > 0) {
+      console.log(`🧹 Đã xoá ${countEmailToken} verify email token hết hạn`);
+    }
+    
+  } catch (error) {
+    console.error("Cron error:", error);
+  }
 });

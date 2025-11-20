@@ -1,5 +1,9 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { ProductItem } from "../../components/ProductItem"
 import { SectionHeader } from "./SectionHeader"
+import { getSocket } from "@/lib/socket/socket"
 
 export const Section3 = () => {
   const data = [
@@ -33,10 +37,27 @@ export const Section3 = () => {
     },
   ]
 
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.emit("product:get", {});
+
+    socket.on("product:list", (data) => {
+      console.log("Received product list:", data);
+      setProducts(data);
+    });
+
+    return () => {
+      socket.off("product:list");
+    };
+  }, [])
+
   return (
     <>
       <div className="container mx-auto mt-[75px] border-b border-b-black pb-[120px] mb-[120px]">
-        <SectionHeader 
+        <SectionHeader
           title="Phiên đấu giá mới nhất"
           subtitle="Xem tất cả"
           link="#"
