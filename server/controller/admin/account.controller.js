@@ -239,6 +239,7 @@ export const verifyEmailGet = async (req, res) => {
 
     await markVerifyTokenUsed(record.id_user);
 
+    res.redirect(`${process.env.FRONTEND_URL}/admin/account/login`);
     res.json({
       code: "success",
       message: "Xác thực email thành công!"

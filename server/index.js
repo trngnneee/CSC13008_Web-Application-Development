@@ -22,7 +22,7 @@ socketService.initSocket(io);
 
 app.use(cors({
     origin: [
-        'http://localhost:3000'
+        process.env.FRONTEND_URL
     ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
