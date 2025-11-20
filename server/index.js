@@ -4,19 +4,24 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import http from 'http';
+import { Server } from 'socket.io';
 
 import clientRoutes from './routes/client/index.routes.js';
 import adminRoutes from './routes/admin/index.routes.js';
 
-import http from 'http';
-import { Server } from 'socket.io';
 import * as socketService from './service/socket.service.js'
 
 const app = express();
 const port = 10000;
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.FRONTEND_URL,
+        methods: ["GET", "POST", "PATCH", "DELETE"],
+    }
+});
 
 socketService.initSocket(io);
 
@@ -31,6 +36,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     res.send("Welcome to SnapBid's API system!")
