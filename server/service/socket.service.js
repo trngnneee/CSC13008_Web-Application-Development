@@ -5,8 +5,6 @@ let socketIoInstance = null;
 export function initSocket(io) {
     socketIoInstance = io;
     io.on("connection", (socket) => {
-        console.log("New client connected", socket.id)
-
         socket.on("product:get", async (filter) => {
             try {
                 const products = await getAllProducts(filter || {});
@@ -18,7 +16,6 @@ export function initSocket(io) {
         })
 
         socket.on("disconnect", () => {
-            console.log("Client disconnected", socket.id)
         })
     })
 }
