@@ -1,5 +1,6 @@
 import { Toaster } from "sonner";
 import "./../globals.css";
+import { socket } from "@/lib/socket";
 
 export const metadata = {
   title: "SnapBid",
