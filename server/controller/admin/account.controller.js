@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
-import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP, createVerifyEmail, findVerifyEmailToken, markVerifyTokenUsed, changeUserRole } from "./../../service/user.service.js"
 import jwt from "jsonwebtoken"
+import path from "path";
+
+import { addUser, findUserToEmail, resetPassword, saveOTP, verifyOTP, createVerifyEmail, findVerifyEmailToken, markVerifyTokenUsed, changeUserRole } from "./../../service/user.service.js"
 import { OTPGenerate } from "../../helper/otp.helper.js";
 import { sendVarifyMail } from "../../helper/mail.helper.js";
 
@@ -239,11 +241,9 @@ export const verifyEmailGet = async (req, res) => {
 
     await markVerifyTokenUsed(record.id_user);
 
-    res.json({
-      code: "success",
-      message: "Xác thực email thành công!"
-    })
-
+    return res.sendFile(
+      path.join(process.cwd(), "public", "change-direct.html")
+    );
   } catch (error) {
     res.json({
       code: "error",

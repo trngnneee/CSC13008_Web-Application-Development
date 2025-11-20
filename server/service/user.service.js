@@ -1,7 +1,5 @@
 import db from "../config/database.config.js";
-
-//Import lib
-import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 db.raw("select now()")
   .then(r => console.log("✅ DB connected:", r.rows?.[0] || r))
@@ -107,12 +105,20 @@ export const createVerifyEmail = async (id_user) => {
     throw new Error("Thiếu thông tin bắt buộc: id_user");
   }
 
-  const verifyToken = crypto.randomBytes(32).toString("hex") + id_user;
+   const token = jwt.sign(
+    {
+      id_user: id_user,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '1d'
+    }
+  );
   
   const [record] = await db("verify_email")
     .insert({
       id_user,
-      token: verifyToken,
+      token: token,
       expire_at: db.raw(`NOW() + INTERVAL '5 minutes'`)
     })
     .returning(['id', 'id_user', 'token', 'expire_at']);
@@ -156,4 +162,16 @@ export const changeUserRole = async (id_user, role) => {
   }
 
   return updatedUser;
+}
+
+export const deleteExpiredVerifyTokens = async () => {
+  return db("verify_email")
+    .where("expire_at", "<", db.raw("NOW()"))
+    .del();
+};
+
+export const deleteExpiredForgotPasswordTokens = async () => {
+  return db("forgot_password")
+    .where("expire_at", "<", db.raw("NOW()"))
+    .del();
 }
