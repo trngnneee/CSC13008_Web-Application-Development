@@ -33,7 +33,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
-
+    
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static('public'));
