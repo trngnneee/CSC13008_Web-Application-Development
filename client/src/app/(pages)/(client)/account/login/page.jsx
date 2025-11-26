@@ -4,17 +4,75 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { clientLogin } from "@/lib/clientAPI/account";
+import { toastHandler } from "@/lib/toastHandler";
+import JustValidate from "just-validate";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ClientLoginPage() {
+  const router = useRouter();
   const [rememberLogin, setRememberLogin] = useState(false);
+
+  useEffect(() => {
+    const validation = new JustValidate("#clientLoginForm");
+    validation
+      .addField('#email', [
+        {
+          rule: 'required',
+          errorMessage: 'Email bắt buộc!'
+        },
+        {
+          rule: 'email',
+          errorMessage: 'Email sai định dạng!',
+        },
+      ])
+      .addField('#password', [
+        {
+          rule: 'required',
+          errorMessage: 'Vui lòng nhập mật khẩu!',
+        },
+        {
+          validator: (value) => value.length >= 8,
+          errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
+        },
+        {
+          validator: (value) => /[A-Z]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
+        },
+        {
+          validator: (value) => /[a-z]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
+        },
+        {
+          validator: (value) => /\d/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+        },
+        {
+          validator: (value) => /[@$!%*?&]/.test(value),
+          errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+        },
+      ])
+      .onSuccess((event) => {
+        event.preventDefault();
+
+        const finalData = {
+          email: event.target.email.value,
+          password: event.target.password.value,
+          rememberPassword: rememberLogin
+        }
+
+        const promise = clientLogin(finalData);
+        toastHandler(promise, router, "/");
+      })
+  }, [])
 
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-client-color)]">Đăng nhập</div>
       <div className="text-gray-400 mb-5">Nhập email và mật khẩu để đăng nhập</div>
-      <form id="">
+      <form id="clientLoginForm">
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="email" className="text-sm font-medium text-[var(--main-client-color)] ">Email*</Label>
           <Input
