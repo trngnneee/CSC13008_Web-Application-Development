@@ -15,6 +15,11 @@ export const findUserToEmail = async (email) => {
   return existUser;
 };
 
+export const findUserById = async (id) => {
+  const user = await db('user').select('fullname', 'email', 'date_of_birth', 'role').where({ id_user: id }).first();
+  return user;
+};
+
 export const addUser = async ({ fullname, email, password, date_of_birth = null, role, status }) => {
   if (!fullname || !email || !password || !role || !status) {
     throw new Error('Thiếu thông tin bắt buộc: fullname, email, password, role, status');

@@ -8,7 +8,10 @@ router.get("/", (req, res) => {
   res.send("Welcome to the Client API of SnapBid!");
 })
 
-router.use("/users", userRoute);
+router.use(
+  "/users", 
+  userRoute
+);
 
 router.use(
   "/account",

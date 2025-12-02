@@ -180,3 +180,4 @@ export const deleteAllProducts = async (req, res) => {
         });
    }
 }
+

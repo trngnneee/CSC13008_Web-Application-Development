@@ -3,7 +3,15 @@ import { findUserToEmail } from "../../service/user.service.js"
 
 export const verifyToken = async (req, res, next) => {
   try {
-    const token = req.cookies.adminToken;
+    // Try to get token from cookies first, then from Authorization header
+    let token = req.cookies.adminToken;
+    
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
 
     if (!token) {
       return res.json({
