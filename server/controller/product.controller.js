@@ -1,5 +1,5 @@
-import { parseProductsCsv } from "../../helper/parse.helper.js";
-import * as productService from "../../service/product.service.js";
+import { parseProductsCsv } from "../helper/parse.helper.js";
+import * as productService from "../service/product.service.js";
 
 export async function uploadCSVProduct(req, res, next) {
     try {

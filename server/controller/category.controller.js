@@ -1,6 +1,6 @@
-import * as categoryService from "../../service/category.service.js";
-import * as productService from "../../service/product.service.js";
-import db from "../../config/database.config.js";
+import * as categoryService from "../service/category.service.js";
+import * as productService from "../service/product.service.js";
+import db from "../config/database.config.js";
 
 export const getCategoryList = async (req, res) => {
     let filter = {};
