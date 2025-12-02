@@ -181,3 +181,52 @@ export const deleteAllProducts = async (req, res) => {
    }
 }
 
+export const getProductListByCategory = async (req, res) => {
+    const { id_category } = req.params;
+
+    try {
+        let filter = {};
+
+        if (req.query.keyword) {
+            filter.keyword = req.query.keyword;
+        }
+
+        if (req.query.page) {
+            filter.page = parseInt(req.query.page);
+            filter.limit = 5;
+        }
+
+        const products = await productService.getProductsByCategory(id_category, filter);
+        
+        res.json({
+            code: "success",
+            message: "Lấy danh sách sản phẩm theo danh mục thành công",
+            data: products
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy danh sách sản phẩm theo danh mục.",
+            data: error?.message || error,
+        });
+    }
+}
+
+export const getTotalPageByCategory = async (req, res) => {
+    const { id_category } = req.params;
+
+    try {
+        const products = await productService.getProductsByCategory(id_category);
+        res.json({
+            code: "success",
+            message: "Lấy tổng số trang sản phẩm theo danh mục thành công",
+            data: Math.ceil(products.length / 5),
+        });
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy tổng số trang sản phẩm theo danh mục.",
+            data: e?.message || e,
+        });
+    }
+}

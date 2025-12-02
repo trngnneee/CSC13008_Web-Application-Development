@@ -160,3 +160,18 @@ export const updateProduct = async (id, productData) => {
 
   return updatedProduct;
 }
+
+export const getProductsByCategory = async (id_category, filter = {}) => {
+  const query = db("product").where("id_category", id_category);
+
+  if (filter.keyword) {
+    query.where("name", "like", `%${filter.keyword}%`);
+  }
+
+  if (filter.page && filter.limit) {
+    const offset = (filter.page - 1) * filter.limit;
+    query.offset(offset).limit(filter.limit);
+  }
+
+  return query;
+}
