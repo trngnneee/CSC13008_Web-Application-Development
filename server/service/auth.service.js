@@ -20,10 +20,10 @@ export const handleRegister = async (userData, role = "bidder") => {
   const { fullname, email, password } = userData;
 
   const existUser = await findUserToEmail(email);
-  if (existUser) {
+  if (existUser && existUser.role === "seller") {
     return {
       success: false,
-      message: "Email đã tồn tại trong hệ thống!"
+      message: "Email này đã được đăng ký với vai trò người bán. Không thể đăng ký vai trò khác!"
     };
   }
 
@@ -62,6 +62,14 @@ export const handleLogin = async (credentials) => {
     return {
       success: false,
       message: "Email không tồn tại trong hệ thống!"
+    };
+  }
+
+  // Nếu user là seller, không được phép đăng nhập
+  if (existUser.role === "seller") {
+    return {
+      success: false,
+      message: "Tài khoản này không được phép đăng nhập!"
     };
   }
 
