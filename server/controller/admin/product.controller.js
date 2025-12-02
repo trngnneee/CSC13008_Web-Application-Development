@@ -75,6 +75,60 @@ export const getTotalPage = async (req, res) => {
     }
 };
 
+export const getProductDetail = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const product = await productService.getProduct(id);
+        
+        if (!product) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy sản phẩm."
+            });
+        }
+
+        return res.json({
+            code: "success",
+            message: "Lấy chi tiết sản phẩm thành công",
+            data: product
+        });
+    } catch (e) {
+        return res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy chi tiết sản phẩm.",
+            data: e?.message || e
+        });
+    }
+};
+
+export const updateProduct = async (req, res) => {
+    const id = req.params.id;
+    const productData = req.body;
+
+    try {
+        const updatedProduct = await productService.updateProduct(id, productData);
+
+        if (!updatedProduct) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy sản phẩm."
+            });
+        }
+
+        return res.json({
+            code: "success",
+            message: "Cập nhập sản phẩm thành công",
+            data: updatedProduct
+        });
+    } catch (e) {
+        return res.status(500).json({
+            code: "error",
+            message: "Lỗi khi cập nhập sản phẩm.",
+            data: e?.message || e
+        });
+    }
+};
+
 export const getProductList = async (req, res) => {
     try {
         let filter = {};
@@ -98,7 +152,7 @@ export const getProductList = async (req, res) => {
         res.status(500).json({
             code: "error",
             message: "Lỗi khi lấy danh sách sản phẩm.",
-            data: e?.message || e,
+            data: error?.message || error,
         });
     }
 }

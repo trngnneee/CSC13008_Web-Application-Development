@@ -52,7 +52,7 @@ export async function insertListProducts(records, chunkSize = 500) {
               code: e1?.code,
               detail: e1?.detail,
               constraint: e1?.constraint,
-              rowPreview: { name: chunk[j]?.name, name_category: chunk[j]?.name_category },
+              rowPreview: { name: chunk[j]?.name, id_category: chunk[j]?.id_category },
             });
           }
         }
@@ -93,6 +93,11 @@ export const deleteProductByCategoryName = async (categoryName, trx = null) => {
   return kx("product").where("name_category", categoryName).del();
 }
 
+export const deleteProductByCategoryId = async (categoryId, trx = null) => {
+  const kx = trx ? trx : db;
+  return kx("product").where("id_category", categoryId).del();
+}
+
 export const insertProduct = async (productData) => {
   const dbProduct = mapCsvRecordToDbProduct(productData);
 
@@ -123,4 +128,35 @@ export const getProduct = async (id) => {
     return db("product")
         .where("id_product", id)
         .first();
+}
+
+export const updateProduct = async (id, productData) => {
+  const product = await db("product").where("id_product", id).first();
+  if (!product) return null;
+
+  const updateData = {};
+  
+  if (productData.name !== undefined) updateData.name = productData.name;
+  if (productData.id_category !== undefined) updateData.id_category = productData.id_category;
+  if (productData.avatar !== undefined) updateData.avatar = productData.avatar;
+  if (productData.price !== undefined) updateData.price = productData.price;
+  if (productData.immediate_purchase_price !== undefined) updateData.immediate_purchase_price = productData.immediate_purchase_price;
+  if (productData.posted_date_time !== undefined) updateData.posted_date_time = productData.posted_date_time;
+  if (productData.end_date_time !== undefined) updateData.end_date_time = productData.end_date_time;
+  if (productData.description !== undefined) updateData.description = productData.description;
+  if (productData.judge_point !== undefined) updateData.judge_point = productData.judge_point;
+  if (productData.pricing_step !== undefined) updateData.pricing_step = productData.pricing_step;
+  if (productData.starting_price !== undefined) updateData.starting_price = productData.starting_price;
+  if (productData.url_img !== undefined) updateData.url_img = productData.url_img;
+
+  if (Object.keys(updateData).length === 0) {
+    return product;
+  }
+
+  const [updatedProduct] = await db("product")
+    .where("id_product", id)
+    .update(updateData)
+    .returning("*");
+
+  return updatedProduct;
 }

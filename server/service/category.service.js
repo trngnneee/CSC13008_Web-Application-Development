@@ -52,14 +52,56 @@ export const deleteCategory = async (id) => {
   return category;
 };
 
-export const getCategoryInfo = async (id, trx = null) => {
-  const kx = trx || db;
-  const row = await kx("category")
-    .select("id_category as id", "name_category as name", "id_parent_category as parentId")
-    .where("id_category", id)
-    .first();
-  return row || null;
+export const getCategoryDetail = async (id) => {
+  const category = await db("category").where("id_category", id).first();
+  if (!category) return null;
+
+  let parentName = null;
+  if (category.id_parent_category) {
+    const parent = await db("category").where("id_category", category.id_parent_category).first();
+    parentName = parent?.name_category || null;
+  }
+
+  return {
+    id_category: category.id_category,
+    name_category: category.name_category,
+    id_parent_category: category.id_parent_category,
+    parent_name: parentName
+  };
 };
+
+export const updateCategory = async (id, { name_category, id_parent_category }) => {
+  const category = await db("category").where("id_category", id).first();
+  if (!category) return null;
+
+  const updateData = {};
+  if (name_category !== undefined && name_category !== null) {
+    updateData.name_category = name_category.trim();
+  }
+  if (id_parent_category !== undefined) {
+    updateData.id_parent_category = id_parent_category;
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    return category;
+  }
+
+  const [updatedCategory] = await db("category")
+    .where("id_category", id)
+    .update(updateData)
+    .returning("*");
+
+  return updatedCategory;
+};
+
+// export const getCategoryInfo = async (id, trx = null) => {
+//   const kx = trx || db;
+//   const row = await kx("category")
+//     .select("id_category as id", "name_category as name", "id_parent_category as parentId")
+//     .where("id_category", id)
+//     .first();
+//   return row || null;
+// };
 
 export const getDescendantCategoryIds = async (rootId, trx = null) => {
   const kx = trx || db;
@@ -107,12 +149,9 @@ export const deleteCategoryTree = async (id) => {
     // Lấy tất cả id con cháu
     const allIds = await getDescendantCategoryIds(id, trx);
 
-    // Lấy tên các category theo id
-    const allNames = await getCategoryNamesByIds(allIds, trx);
-
-    // Xóa sản phẩm theo tên category
-    for (const name of allNames) {
-      deletedProducts += await productService.deleteProductByCategoryName(name, trx);
+    // Xóa sản phẩm theo id category
+    for (const catId of allIds) {
+      deletedProducts += await productService.deleteProductByCategoryId(catId, trx);
     }
 
     // Xóa category theo id
@@ -123,13 +162,11 @@ export const deleteCategoryTree = async (id) => {
 
   return { rootName, deletedProducts, deletedCategories };
 };
-export const isCatHasProducts = async (id) => {
-  const categoryName = await getCategoryName(id);
-  if (!categoryName) return false;
 
+export const isCatHasProducts = async (id) => {
   const product = await db("product")
     .select("id_product")
-    .where("name_category", categoryName)
+    .where("id_category", id)
     .first(); 
 
   return !!product;

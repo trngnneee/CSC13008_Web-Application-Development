@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.get("/list", categoryController.getCategoryList);
 
+router.get("/:id", categoryController.getCategoryDetail);
+
+router.put("/:id", categoryController.updateCategory);
+
 router.post("/create", categoryController.createCategory);
 
 router.get("/total-page", categoryController.getTotalPage);

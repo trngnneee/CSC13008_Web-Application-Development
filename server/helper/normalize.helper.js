@@ -23,7 +23,7 @@ export function normalizeUrlImg(v) {
 
 export function mapCsvRecordToDbProduct(r) {
   return {
-    name_category: r.name_category ?? null,  
+    id_category: r.id_category ?? null,  
     avatar: r.avatar ?? null,
     name: r.name ?? null,
     price: r.price ?? null,

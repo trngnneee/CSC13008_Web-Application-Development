@@ -56,6 +56,70 @@ export const getTotalPage = async (req, res) => {
     })
 }
 
+export const getCategoryDetail = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const category = await categoryService.getCategoryDetail(id);
+        
+        if (!category) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy category."
+            });
+        }
+
+        return res.json({
+            code: "success",
+            message: "Lấy chi tiết category thành công",
+            data: category
+        });
+    } catch (e) {
+        return res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy chi tiết category.",
+            data: e?.message || e
+        });
+    }
+}
+
+export const updateCategory = async (req, res) => {
+    const id = req.params.id;
+    const { name_category, id_parent_category } = req.body;
+
+    try {
+        if (!name_category && id_parent_category === undefined) {
+            return res.status(400).json({
+                code: "error",
+                message: "Phải cung cấp ít nhất một trường để cập nhập."
+            });
+        }
+
+        const updatedCategory = await categoryService.updateCategory(id, {
+            name_category,
+            id_parent_category
+        });
+
+        if (!updatedCategory) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy category."
+            });
+        }
+
+        return res.json({
+            code: "success",
+            message: "Cập nhập category thành công",
+            data: updatedCategory
+        });
+    } catch (e) {
+        return res.status(500).json({
+            code: "error",
+            message: "Lỗi khi cập nhập category.",
+            data: e?.message || e
+        });
+    }
+}
+
 export const deleteCategory = async (req, res) => {
   const id = req.params.id;
   try {

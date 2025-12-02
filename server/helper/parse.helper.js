@@ -2,7 +2,7 @@ import { parse } from "csv-parse/sync";
 import * as CategoryService from "../service/category.service.js";
 
 export const PRODUCT_FIELDS = [
-  "name_category",
+  "id_category",
   "avatar",
   "name",
   "price",
@@ -85,13 +85,19 @@ const parseUrlArray = (v) => {
 const convertField = async (field, raw) => {
   const v = raw == null ? null : String(raw).trim();
   switch (field) {
-    case "name_category": {
+    case "id_category": {
       if (!v) return null;
+      // Nếu là UUID (36 ký tự), return trực tiếp
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)) {
+        return v;
+      }
+      // Nếu là tên category, tìm hoặc tạo mới và return id
       let catId = await CategoryService.isInCategory(v);
       if (!catId) {
-        catId = await CategoryService.insertCategory(v, null);
+        await CategoryService.insertCategory(v, null);
+        catId = await CategoryService.isInCategory(v);
       }
-      return v;
+      return catId;
     }
     case "avatar": return v || null;
     case "name": return v || null;
