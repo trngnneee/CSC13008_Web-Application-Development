@@ -20,4 +20,6 @@ router.get("/verify-email", adminController.verifyEmailGet);
 
 router.patch("/change-role/:id_user", adminController.changeRolePatch);
 
+router.get("/get-all-users", adminController.getAllUsersGet);
+
 export default router;

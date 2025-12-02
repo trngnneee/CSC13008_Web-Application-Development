@@ -44,6 +44,14 @@ export const deleteCategoryID = async (id, trx = null) => {
   return kx("category").where("id_category", id).del();
 };
 
+export const deleteCategory = async (id) => {
+  const category = await db("category").where("id_category", id).first();
+  if (!category) return null;
+  
+  await db("category").where("id_category", id).del();
+  return category;
+};
+
 export const getCategoryInfo = async (id, trx = null) => {
   const kx = trx || db;
   const row = await kx("category")
@@ -115,3 +123,14 @@ export const deleteCategoryTree = async (id) => {
 
   return { rootName, deletedProducts, deletedCategories };
 };
+export const isCatHasProducts = async (id) => {
+  const categoryName = await getCategoryName(id);
+  if (!categoryName) return false;
+
+  const product = await db("product")
+    .select("id_product")
+    .where("name_category", categoryName)
+    .first(); 
+
+  return !!product;
+}

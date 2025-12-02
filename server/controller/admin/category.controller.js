@@ -59,9 +59,18 @@ export const getTotalPage = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   const id = req.params.id;
   try {
-    const result = await categoryService.deleteCategoryTree(id);
+    // Kiểm tra category này hoặc category con có product không
+    if (await categoryService.isCatHasProducts(id)) {
+      return res.status(400).json({
+        code: "error",
+        message: "Không thể xóa category vì còn sản phẩm liên quan.",
+      });
+    }
 
-    if (!result) {
+    // Xóa chỉ category không có product
+    const deletedCategory = await categoryService.deleteCategory(id);
+
+    if (!deletedCategory) {
       return res.status(404).json({ 
         code: "error",
         message: "Không tìm thấy category."
@@ -70,16 +79,16 @@ export const deleteCategory = async (req, res) => {
 
     return res.status(200).json({
       code: "success",
-      message: `Đã xóa category "${result.rootName}" và toàn bộ cây con.`,
+      message: `Đã xóa category "${deletedCategory.name_category}" thành công.`,
       data: {
-        deletedProducts: result.deletedProducts,
-        deletedCategories: result.deletedCategories
+        id_category: deletedCategory.id_category,
+        name_category: deletedCategory.name_category
       }
     });
   } catch (e) {
     return res.status(500).json({
       code: "error",
-      message: "Lỗi khi xóa category (và các con).",
+      message: "Lỗi khi xóa category.",
       data: e?.message || e,
     });
   }

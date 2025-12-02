@@ -175,3 +175,19 @@ export const changeRolePatch = async (req, res) => {
     message: result.message
   });
 }
+
+export const getAllUsersGet = async (req, res) => {
+  const users = await getAllUsers();
+  if (!users) {
+    return res.json({
+      code: "error",
+      message: "Lấy danh sách người dùng thất bại"
+    });
+  }
+  
+  res.json({
+    code: "success",
+    message: "Lấy danh sách người dùng thành công",
+    data: users
+  });
+};

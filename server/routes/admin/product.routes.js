@@ -2,7 +2,6 @@ import express from "express";
 import multer from "multer";
 
 import * as productController from "../../controller/admin/product.controller.js";
-import { checkParentCat } from "../../middleware/admin/verifyCat.middleware.js";
 import { verifyProductExists } from "../../middleware/admin/verifyProduct.middleware.js";
 
 const router = express.Router();
@@ -22,7 +21,7 @@ router.delete("/delete/:id", productController.deleteProductByID);
 
 router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
 
-router.post("/create", checkParentCat, productController.insertProduct);
+router.post("/create", productController.insertProduct);
 
 router.get("/total-page", productController.getTotalPage);
 

@@ -20,10 +20,11 @@ export const handleRegister = async (userData, role = "bidder") => {
   const { fullname, email, password } = userData;
 
   const existUser = await findUserToEmail(email);
+
   if (existUser && existUser.role === "seller") {
     return {
       success: false,
-      message: "Email này đã được đăng ký với vai trò người bán. Không thể đăng ký vai trò khác!"
+      message: "Email này đã được đăng ký với vai trò người bán."
     };
   }
 
