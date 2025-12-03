@@ -1,5 +1,6 @@
 import db from "../config/database.config.js";
 import * as productService from "./product.service.js";
+import slugify from "slugify";
 
 export async function isInCategory(name) {
     if (!name) return null;
@@ -13,9 +14,10 @@ export async function isInCategory(name) {
 export async function insertCategory(name_category, parent) {
   const name = name_category?.trim();
   if (!name) return null;
+  const slug = slugify(name, { lower: true, strict: true });
 
   const [row] = await db("category")
-    .insert({ name_category: name, id_parent_category: parent })
+    .insert({ name_category: name, id_parent_category: parent, slug: slug })
     .onConflict("name_category")
     .merge()    
     .returning(["id_category"]);
@@ -24,7 +26,8 @@ export async function insertCategory(name_category, parent) {
 export const getAllCategory = (filter = {}) => {
     const query = db("category").select("*");
     if (filter.keyword) {
-        query.where("name_category", "like", `%${filter.keyword}%`);
+      const regex = new RegExp(filter.keyword, "i");
+      query.whereRaw("slug ~* ?", [regex.source]);
     }
     if (filter.page && filter.limit) {
         const offset = (filter.page - 1) * filter.limit;
