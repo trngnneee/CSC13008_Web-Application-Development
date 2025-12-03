@@ -208,3 +208,27 @@ export const deleteExpiredForgotPasswordTokens = async () => {
 export const deleteUserById = async (id) => {
   return db('user').where({ id_user: id }).del();
 }
+
+export const updateUserById = async (id, { fullname, date_of_birth, role }) => {
+  const user = await db('user').where({ id_user: id }).first();
+  if (!user) return null;
+
+  const updateData = {};
+  if (fullname !== undefined && fullname !== null) {
+    updateData.fullname = fullname.trim();
+    updateData.slug = slugify(fullname, { lower: true, strict: true, locale: 'vi' });
+  }
+  if (date_of_birth !== undefined && date_of_birth !== null) {
+    updateData.date_of_birth = date_of_birth;
+  }
+  if (role !== undefined && role !== null) {
+    updateData.role = role;
+  }
+
+  const [updatedUser] = await db('user')
+    .where({ id_user: id })
+    .update(updateData)
+    .returning(['id_user', 'fullname', 'slug', 'date_of_birth', 'role']);
+
+  return updatedUser;
+}

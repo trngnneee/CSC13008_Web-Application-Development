@@ -11,6 +11,8 @@ router.get("/total-page", userController.getTotalPage);
 
 router.get("/:id", userController.getUserDetail);
 
+router.put("/:id", userController.updateUserPut);
+
 router.post("/create", userController.createUserPost);
 
 router.delete("/delete/:id", userController.deleteUser);

@@ -78,6 +78,34 @@ export const getUserDetail = async (req, res) => {
         });
     }
 }
+export const updateUserPut = (req, res) => {
+    const id = req.params.id;
+    const { fullname, date_of_birth, role } = req.body;
+
+    userService.findUserById(id).then(async (user) => {
+        if (!user) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy người dùng!"
+            });
+        }
+        await userService.updateUserById(id, {
+            fullname,
+            date_of_birth,
+            role,
+        });
+        return res.status(200).json({
+            code: "success",
+            message: "Cập nhật người dùng thành công!"
+        });
+    }).catch((error) => {
+        res.status(500).json({
+            code: "error",
+            message: "Cập nhật người dùng thất bại!",
+            error: error.message
+        });
+    });
+}
 
 export const createUserPost = async (req, res) => {
     const existUser = await userService.findUserToEmailAndRole(req.body.email, req.body.role);

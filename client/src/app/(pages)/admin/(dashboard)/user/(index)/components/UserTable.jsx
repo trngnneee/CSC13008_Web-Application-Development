@@ -73,7 +73,7 @@ export default function UserTable({ filter, selectedItem, setSelectedItem }) {
                 <td className="p-3 text-center">{dateFormat(item.date_of_birth) || "-"}</td>
                 <td className="p-3 text-center">{roleVariable.find(role => role.value === item.role)?.label || "-"}</td>
                 <td className="p-3 flex items-center justify-center gap-2">
-                  <AdminEditButton />
+                  <AdminEditButton link={`/admin/user/update/${item.id_user}`} />
                   <AdminDeleteButton api={`${process.env.NEXT_PUBLIC_API_URL}/admin/user/delete/${item.id_user}`} />
                 </td>
               </tr>
