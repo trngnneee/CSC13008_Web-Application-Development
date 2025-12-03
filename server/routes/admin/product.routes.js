@@ -23,12 +23,13 @@ router.get("/list", productController.getProductList);
 
 // router.post("/create", productController.insertProduct);
 
+router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
+
 router.get("/:id", productController.getProductDetail);
 
 router.put("/:id", productController.updateProduct);
 
 router.delete("/delete/:id", productController.deleteProductByID);
 
-router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
 
 export default router;
