@@ -17,13 +17,17 @@ export const AdminDashboardVariable = [
   }
 ]
 
-export const AdminStatus = [
+export const roleVariable = [
   {
-    value: "active",
-    label: "Hoạt động",
+    label: "Bidder",
+    value: "bidder",
   },
-  { 
-    value: "inactive",
-    label: "Tạm dừng",
+  {
+    label: "Seller",
+    value: "seller",
+  },
+  {
+    label: "Admin",
+    value: "admin",
   }
 ]
