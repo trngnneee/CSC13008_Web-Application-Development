@@ -1,5 +1,6 @@
 import db from "../config/database.config.js";
 import jwt from "jsonwebtoken";
+import slugify from "slugify";
 
 db.raw("select now()")
   .then(r => console.log("✅ DB connected:", r.rows?.[0] || r))
@@ -44,6 +45,7 @@ export const addUser = async ({ fullname, email, password, date_of_birth = null,
     date_of_birth,
     role,
     status: status,
+    slug: slugify(fullname, { lower: true, strict: true, locale: 'vi' })
   };
 
   const [insertedUser] = await db('user')
@@ -112,8 +114,17 @@ export const resetPassword = async (email, password) => {
   return updatedUser;
 };
 
-export const getAllUsers = async () => {
-  const users = await db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
+export const getAllUsers = async (filter = {}) => {
+  const users = db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
+  if (filter.page && filter.limit)
+  {
+    const offset = (filter.page - 1) * filter.limit;
+    users.offset(offset).limit(filter.limit);
+  }
+  if (filter.keyword) {
+    const regex = new RegExp(filter.keyword, "i");
+        users.whereRaw("slug ~* ?", [regex.source]);
+  }
   return users;
 }
 

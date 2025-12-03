@@ -3,7 +3,17 @@ import * as userService from "../../service/user.service.js";
 
 export const getUserList = async (req, res) => {
     try {
-        const users = await userService.getAllUsers();
+        let filter = {};
+        if (req.query.page)
+        {
+            filter.page = parseInt(req.query.page);
+            filter.limit = 5;
+        }
+        if (req.query.keyword) {
+            filter.keyword = req.query.keyword;
+        }
+
+        const users = await userService.getAllUsers(filter);
         res.status(200).json({
             code: "success",
             message: "Lấy danh sách người dùng thành công!",

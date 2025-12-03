@@ -7,6 +7,8 @@ import UserTable from "./UserTable";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { adminUserTotalPage } from "@/lib/adminAPI/user";
+import DashboardPagination from "../../../components/DashboardPagination";
 
 export default function UserContent() {
   const router = useRouter();
@@ -17,13 +19,13 @@ export default function UserContent() {
 
   const [totalPage, setTotalPage] = useState();
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const promise = await productTotalPage();
-    //   if (promise.code == "success") {
-    //     setTotalPage(promise.data)
-    //   }
-    // }
-    // fetchData();
+    const fetchTotalPage = async () => {
+      const promise2 = await adminUserTotalPage();
+      if (promise2.code == "success") {
+        setTotalPage(promise2.data)
+      }
+    }
+    fetchTotalPage();
   }, [])
 
   const handleFilterChange = (newFilter) => {
@@ -45,7 +47,14 @@ export default function UserContent() {
           </Button>
         </div>
 
-        <UserTable />
+        <UserTable filter={filter} />
+      </div>
+      <div className="mt-5">
+        <DashboardPagination
+          currentPage={filter.page}
+          totalPages={totalPage}
+          onFilterChange={handleFilterChange}
+        />
       </div>
     </>
   )

@@ -14,7 +14,7 @@ export async function isInCategory(name) {
 export async function insertCategory(name_category, parent) {
   const name = name_category?.trim();
   if (!name) return null;
-  const slug = slugify(name, { lower: true, strict: true });
+  const slug = slugify(name, { lower: true, strict: true, locale: 'vi' });
 
   const [row] = await db("category")
     .insert({ name_category: name, id_parent_category: parent, slug: slug })
