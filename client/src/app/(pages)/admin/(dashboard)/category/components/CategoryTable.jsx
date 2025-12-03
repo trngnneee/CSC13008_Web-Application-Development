@@ -67,7 +67,7 @@ export default function CategoryTable({ filter, selectedItem, setSelectedItem })
               <td className="p-3">{item.name}</td>
               <td className="p-3">{item.parent_name ? <Badge variant="secondary">{item.parent_name}</Badge> : <Badge variant="outline">Danh mục gốc</Badge>}</td>
               <td className="p-3 flex items-center justify-center gap-2">
-                <AdminEditButton />
+                <AdminEditButton link={`/admin/category/update/${item.id}`} />
                 <AdminDeleteButton
                   api={`${process.env.NEXT_PUBLIC_API_URL}/admin/category/delete/${item.id}`}
                 />

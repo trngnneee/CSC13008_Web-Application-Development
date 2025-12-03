@@ -41,3 +41,35 @@ export const getTotalPage = async () => {
 
   return data;
 }
+
+export const getDetailCategory = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/category/${id}`, {
+    method: "GET"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy chi tiết danh mục thất bại");
+  }
+
+  return data;
+}
+
+export const updateCategory = async (id, finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/category/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Cập nhật chi tiết danh mục thất bại");
+  }
+
+  return data;
+}
