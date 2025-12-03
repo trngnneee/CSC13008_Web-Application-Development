@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const sendVarifyMail = async (toEmail, verifyToken) => {
+export const sendVarifyMail = async (toEmail, verifyToken, role = "bidder") => {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -13,7 +13,8 @@ export const sendVarifyMail = async (toEmail, verifyToken) => {
         }
     });
 
-    const verifyURL = `http://localhost:10000/api/admin/account/verify-email?token=${verifyToken}`;
+    const apiPath = role === "admin" ? "/admin" : "";
+    const verifyURL = `http://localhost:10000/api${apiPath}/account/verify-email?token=${verifyToken}`;
 
     const mailOptions = {
         from: process.env.EMAIL_NAME,

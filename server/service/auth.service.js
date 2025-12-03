@@ -5,6 +5,7 @@ import path from "path";
 import { 
   addUser, 
   findUserToEmail, 
+  findUserById,
   resetPassword, 
   saveOTP, 
   verifyOTP, 
@@ -16,10 +17,10 @@ import {
 import { OTPGenerate } from "../helper/otp.helper.js";
 import { sendVarifyMail } from "../helper/mail.helper.js";
 
-export const handleRegister = async (userData, role = "bidder") => {
+export const handleRegister = async (userData, role) => {
   const { fullname, email, password } = userData;
 
-  const existUser = await findUserToEmail(email);
+  const existUser = await findUserToEmail(email, role);
 
   if (existUser && existUser.role === "seller") {
     return {
@@ -40,8 +41,8 @@ export const handleRegister = async (userData, role = "bidder") => {
   });
 
   if (result) {
-    const verifyToken = await createVerifyEmail(result.id_user);
-    await sendVarifyMail(email, verifyToken);
+    const verifyToken = await createVerifyEmail(result.id_user, role);
+    await sendVarifyMail(email, verifyToken, role);
 
     return {
       success: true,
@@ -59,6 +60,7 @@ export const handleLogin = async (credentials) => {
   const { email, password, rememberPassword } = credentials;
 
   const existUser = await findUserToEmail(email);
+  
   if (!existUser) {
     return {
       success: false,
@@ -67,12 +69,12 @@ export const handleLogin = async (credentials) => {
   }
 
   // Nếu user là seller, không được phép đăng nhập
-  if (existUser.role === "seller") {
-    return {
-      success: false,
-      message: "Tài khoản này không được phép đăng nhập!"
-    };
-  }
+  // if (existUser.role === "seller") {
+  //   return {
+  //     success: false,
+  //     message: "Tài khoản này không được phép đăng nhập!"
+  //   };
+  // }
 
   if (!bcrypt.compareSync(password, existUser.password)) {
     return {
@@ -253,7 +255,7 @@ export const handleResetPassword = async (email, password) => {
   }
 };
 
-export const handleVerifyEmail = async (token, role) => {
+export const handleVerifyEmail = async (token) => {
   if (!token) {
     return {
       success: false,
@@ -271,14 +273,31 @@ export const handleVerifyEmail = async (token, role) => {
       };
     }
 
+    // Decode token để lấy role từ token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const tokenRole = decoded.role || "bidder";
+
+    const existUser = await findUserById(record.id_user);
+    if (!existUser) {
+      return {
+        success: false,
+        message: "Tài khoản không tồn tại!"
+      };
+    }
+
+    // Check user role khớp với token role
+    if (existUser.role !== tokenRole) {
+      return {
+        success: false,
+        message: `Token này dành cho role ${tokenRole}, nhưng tài khoản của bạn là role ${existUser.role}!`
+      };
+    }
+
     await markVerifyTokenUsed(record.id_user);
 
-    const fileName = role === "admin" ? "change-direct-admin.html" : "change-direct-client.html";
-    const filePath = path.join(process.cwd(), "public", fileName);
     return {
       success: true,
-      message: "Email verified successfully!",
-      filePath
+      message: "Email xác nhận thành công!"
     };
   } catch (error) {
     return {

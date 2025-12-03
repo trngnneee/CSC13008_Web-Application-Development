@@ -10,13 +10,19 @@ db.raw("select now()")
     port: err.port
   }));
 
-export const findUserToEmail = async (email) => {
-  const existUser = db('user').select('*').where({ email }).first();
-  return existUser;
+export const findUserToEmail = async (email, role) => {
+  let query = db('user').select('*').where({ email });
+  
+  // Chỉ filter role nếu role được pass vào
+  if (role) {
+    query = query.where({ role });
+  }
+  
+  return query.first();
 };
 
 export const findUserById = async (id) => {
-  const user = await db('user').select('fullname', 'email', 'date_of_birth', 'role').where({ id_user: id }).first();
+  const user = await db('user').select('*').where({ id_user: id }).first();
   return user;
 };
 
@@ -105,7 +111,7 @@ export const getAllUsers = async () => {
   return users;
 }
 
-export const createVerifyEmail = async (id_user) => {
+export const createVerifyEmail = async (id_user, role = "bidder") => {
   if (!id_user) {
     throw new Error("Thiếu thông tin bắt buộc: id_user");
   }
@@ -113,6 +119,7 @@ export const createVerifyEmail = async (id_user) => {
    const token = jwt.sign(
     {
       id_user: id_user,
+      role: role
     },
     process.env.JWT_SECRET,
     {

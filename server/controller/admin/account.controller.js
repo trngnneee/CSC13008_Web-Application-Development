@@ -8,6 +8,7 @@ import {
   handleVerifyEmail, 
   handleChangeRole 
 } from "../../service/auth.service.js";
+import path from "path";
 
 export const registerPost = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -145,7 +146,7 @@ export const resetPasswordPost = async (req, res) => {
 export const verifyEmailGet = async (req, res) => {
   const { token } = req.query;
 
-  const result = await handleVerifyEmail(token, "admin");
+  const result = await handleVerifyEmail(token);
   
   if (!result.success) {
     return res.json({
@@ -154,7 +155,8 @@ export const verifyEmailGet = async (req, res) => {
     });
   }
 
-  return res.sendFile(result.filePath);
+  const filePath = path.join(process.cwd(), "public", "change-direct-admin.html");
+  return res.sendFile(filePath);
 };
 
 export const changeRolePatch = async (req, res) => {
