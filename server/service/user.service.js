@@ -21,12 +21,18 @@ export const findUserToEmail = async (email, role) => {
   return query.first();
 };
 
+export const findUserToEmailAndRole = (email, role) => {
+  const existUser = db('user').select('*').where({ email, role }).first();
+  return existUser;
+}
+
 export const findUserById = async (id) => {
   const user = await db('user').select('*').where({ id_user: id }).first();
   return user;
 };
 
 export const addUser = async ({ fullname, email, password, date_of_birth = null, role, status }) => {
+  console.log({ fullname, email, password, date_of_birth, role, status });
   if (!fullname || !email || !password || !role || !status) {
     throw new Error('Thiếu thông tin bắt buộc: fullname, email, password, role, status');
   }

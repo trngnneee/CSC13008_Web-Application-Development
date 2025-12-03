@@ -115,7 +115,8 @@ export const insertProduct = async (productData) => {
 export const getAllProducts = async (filter = {}) => {
     const query = db("product").select("*");
     if (filter.keyword) {
-        query.where("name", "like", `%${filter.keyword}%`);
+        const regex = new RegExp(filter.keyword, "i");
+        query.whereRaw("slug ~* ?", [regex.source]);
     }
     if (filter.page && filter.limit) {
         const offset = (filter.page - 1) * filter.limit;

@@ -22,4 +22,6 @@ router.patch("/change-role/:id_user", adminController.changeRolePatch);
 
 router.get("/get-all-users", adminController.getAllUsersGet);
 
+router.get("/logout", adminController.logoutGet);
+
 export default router;
