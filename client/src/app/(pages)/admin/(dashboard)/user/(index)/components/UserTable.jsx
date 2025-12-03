@@ -6,6 +6,7 @@ import { AdminEditButton } from "../../../components/TableButton/EditButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { adminUserList } from "@/lib/adminAPI/user";
 import { roleVariable } from "@/config/variable";
+import { dateFormat } from "@/utils/date";
 
 export default function UserTable() {
   const [data, setData] = useState([]);
@@ -47,7 +48,7 @@ export default function UserTable() {
               </td>
               <td className="p-3">{item.fullname}</td>
               <td className="p-3 text-left">{item.email}</td>
-              <td className="p-3 text-center">{item.date_of_birth || "-"}</td>
+              <td className="p-3 text-center">{dateFormat(item.date_of_birth) || "-"}</td>
               <td className="p-3 text-center">{roleVariable.find(role => role.value === item.role)?.label || "-"}</td>
               <td className="p-3 flex items-center justify-center gap-2">
                 <AdminEditButton />

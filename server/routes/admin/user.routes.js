@@ -11,6 +11,8 @@ router.get("/total-page", userController.getTotalPage);
 
 router.get("/:id", userController.getUserDetail);
 
+router.post("/create", userController.createUserPost);
+
 router.use(
   "/upgrade-requests",
   upgradeRequestRoutes

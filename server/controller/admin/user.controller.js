@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import * as userService from "../../service/user.service.js";
 
 export const getUserList = async (req, res) => {
@@ -66,4 +67,31 @@ export const getUserDetail = async (req, res) => {
             error: error.message
         });
     }
+}
+
+export const createUserPost = async (req, res) => {
+    const existUser = await userService.findUserToEmailAndRole(req.body.email, req.body.role);
+    if (existUser) {
+        return res.status(400).json({
+            code: "error",
+            message: "Người dùng với email và vai trò này đã tồn tại!"
+        });
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(req.body.password, salt);
+
+    await userService.addUser({
+        fullname: req.body.fullname,
+        email: req.body.email,
+        password: hashPassword,
+        date_of_birth: req.body.date_of_birth,
+        role: req.body.role,
+        status: "active",
+    });
+
+    res.json({
+        code: "success",
+        message: "Tạo người dùng thành công!"
+    })
 }
