@@ -87,7 +87,7 @@ export default function ClientRegisterPage() {
         };
 
         const promise = clientRegister(finalData);
-        toastHandler(promise, router, '/account/login');
+        toastHandler(promise, router, '/account/initial');
       })
   }, [])
 
