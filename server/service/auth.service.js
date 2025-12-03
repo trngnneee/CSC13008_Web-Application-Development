@@ -273,7 +273,7 @@ export const handleVerifyEmail = async (token, role) => {
 
     await markVerifyTokenUsed(record.id_user);
 
-    const fileName = role === "admin" ? "change-direct.html" : "change-direct-client.html";
+    const fileName = role === "admin" ? "change-direct-admin.html" : "change-direct-client.html";
     const filePath = path.join(process.cwd(), "public", fileName);
     return {
       success: true,

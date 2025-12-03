@@ -52,3 +52,40 @@ export const clientForgotPassword = async (finalData) => {
 
   return data;
 }
+
+export const clientOTPPassword = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/otp-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Xác thực OTP thất bại");
+  }
+
+  return data;
+}
+
+export const clientResetPassword = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(finalData),
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Đổi mật khẩu thất bại");
+  }
+
+  return data;
+}
