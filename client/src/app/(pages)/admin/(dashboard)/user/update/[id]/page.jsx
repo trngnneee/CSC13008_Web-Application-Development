@@ -33,20 +33,19 @@ export default function AdminUpdateCreate() {
   const [date, setDate] = useState(new Date());
   const [submit, setSubmit] = useState(false);
 
-  const handleCalendarChange = ( _value, _e) => {
+  const handleCalendarChange = (_value, _e) => {
     const _event = {
       target: {
         value: _value,
       },
-    } 
+    }
     _e(_event);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const promise = await adminUserDetail(id);
-      if (promise.code == "success")
-      {
+      if (promise.code == "success") {
         setFullname(promise.data.fullname);
         setEmail(promise.data.email);
         setDate(promise.data.date_of_birth ? new Date(promise.data.date_of_birth) : null);
@@ -76,7 +75,7 @@ export default function AdminUpdateCreate() {
           rule: 'required',
           errorMessage: 'Email không được để trống',
         },
-        { 
+        {
           rule: 'email',
           errorMessage: 'Email không hợp lệ',
         },
@@ -87,9 +86,9 @@ export default function AdminUpdateCreate() {
           errorMessage: 'Vai trò không được để trống',
         },
       ])
-        .onSuccess(() => {
-          setSubmit(true);
-        });
+      .onSuccess(() => {
+        setSubmit(true);
+      });
   }, [])
 
   const handleSubmit = (e) => {
@@ -164,9 +163,15 @@ export default function AdminUpdateCreate() {
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                {roleVariable.map((roleItem) => (
-                  <DropdownMenuItem key={roleItem.value} onClick={() => setRole(roleItem.value)}>{roleItem.label}</DropdownMenuItem>
-                ))}
+                {role == "admin" ? (
+                  <DropdownMenuItem className="cursor-pointer" onSelect={() => setRole("admin")}>Admin</DropdownMenuItem>
+                ) : (
+                  roleVariable.map((roleItem) => (
+                    roleItem.value != "admin" && (
+                      <DropdownMenuItem key={roleItem.value} onClick={() => setRole(roleItem.value)}>{roleItem.label}</DropdownMenuItem>
+                    )
+                  ))
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
