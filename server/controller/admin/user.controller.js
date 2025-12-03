@@ -105,3 +105,54 @@ export const createUserPost = async (req, res) => {
         message: "Tạo người dùng thành công!"
     })
 }
+
+export const deleteUser = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const user = await userService.findUserById(id);
+        if (!user) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy người dùng!"
+            });
+        }
+        await userService.deleteUserById(id);
+
+        return res.status(200).json({
+            code: "success",
+            message: "Xóa người dùng thành công!"
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            code: "error",
+            message: "Xóa người dùng thất bại!",
+            error: error.message
+        });
+    }
+}
+
+export const deleteUserList = async (req, res) => {
+    const ids = req.body.ids; 
+
+    try {
+        for (const id of ids) {
+            const user = await userService.findUserById(id);
+            if (user) {
+                await userService.deleteUserById(id);
+            }
+        }
+        return res.status(200).json({   
+            code: "success",
+            message: "Xóa danh sách người dùng thành công!"
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            code: "error",
+            message: "Xóa danh sách người dùng thất bại!",
+            error: error.message
+        });
+    }
+}

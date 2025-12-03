@@ -39,7 +39,7 @@ export default function UserContent() {
       <div className="text-[24px] font-semibold text-[var(--main-color)] mt-6">Danh sách người dùng</div>
       <div className="mt-3">
         <div className="mt-[15px] flex items-center gap-5">
-          <DashboardMultipleApply />
+          <DashboardMultipleApply selectedItem={selectedItem} api={`${process.env.NEXT_PUBLIC_API_URL}/admin/user/delete-list`} />
           <DashboardSearch onFilterChange={handleFilterChange} />
           <Button onClick={() => router.push("/admin/user/create")} variant="outline" className="aspect-square max-sm:p-0 bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white">
             <PlusIcon className="opacity-60 sm:-ms-1" size={16} aria-hidden="true" />
@@ -47,7 +47,7 @@ export default function UserContent() {
           </Button>
         </div>
 
-        <UserTable filter={filter} />
+        <UserTable filter={filter} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       </div>
       <div className="mt-5">
         <DashboardPagination

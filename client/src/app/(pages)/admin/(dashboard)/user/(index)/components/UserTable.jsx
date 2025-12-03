@@ -9,7 +9,7 @@ import { roleVariable } from "@/config/variable";
 import { dateFormat } from "@/utils/date";
 import { buildParams } from "@/helper/params";
 
-export default function UserTable({ filter }) {
+export default function UserTable({ filter, selectedItem, setSelectedItem }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -30,7 +30,17 @@ export default function UserTable({ filter }) {
           <thead className="bg-gray-50 text-gray-600 font-medium border-b">
             <tr>
               <th className="p-3 w-10">
-                <Checkbox className="data-[state=checked]:bg-[var(--main-color)]" />
+                <Checkbox
+                  className="data-[state=checked]:bg-[var(--main-color)]"
+                  checked={data.length > 0 && selectedItem.length === data.length}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSelectedItem(data.map((item) => item.id_user));
+                    } else {
+                      setSelectedItem([]);
+                    }
+                  }}
+                />
               </th>
               <th className="p-3 text-left">Họ tên</th>
               <th className="p-3 text-left">Email</th>
@@ -46,7 +56,17 @@ export default function UserTable({ filter }) {
                 className="border-b hover:bg-gray-50 transition-colors"
               >
                 <td className="p-3 text-center">
-                  <Checkbox className="data-[state=checked]:bg-[var(--main-color)]" />
+                  <Checkbox
+                    className="data-[state=checked]:bg-[var(--main-color)]"
+                    checked={selectedItem.includes(item.id_user)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedItem([...selectedItem, item.id_user]);
+                      } else {
+                        setSelectedItem(selectedItem.filter((id) => id !== item.id_user));
+                      }
+                    }}
+                  />
                 </td>
                 <td className="p-3">{item.fullname}</td>
                 <td className="p-3 text-left">{item.email}</td>
@@ -54,7 +74,7 @@ export default function UserTable({ filter }) {
                 <td className="p-3 text-center">{roleVariable.find(role => role.value === item.role)?.label || "-"}</td>
                 <td className="p-3 flex items-center justify-center gap-2">
                   <AdminEditButton />
-                  <AdminDeleteButton />
+                  <AdminDeleteButton api={`${process.env.NEXT_PUBLIC_API_URL}/admin/user/delete/${item.id_user}`} />
                 </td>
               </tr>
             ))}

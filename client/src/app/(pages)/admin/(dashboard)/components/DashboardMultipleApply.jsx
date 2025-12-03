@@ -16,7 +16,7 @@ export const DashboardMultipleApply = ({ selectedItem, api }) => {
   const [status, setStatus] = useState("");
 
   const handleDelete = () => {
-    if (selectedItem.length <= 0)
+    if (selectedItem.length <= 0 || status != "delete")
     {
       toast.error("Vui lòng chọn mục để xóa!");
       return;

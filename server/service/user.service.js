@@ -204,3 +204,7 @@ export const deleteExpiredForgotPasswordTokens = async () => {
     .where("expire_at", "<", db.raw("NOW()"))
     .del();
 }
+
+export const deleteUserById = async (id) => {
+  return db('user').where({ id_user: id }).del();
+}

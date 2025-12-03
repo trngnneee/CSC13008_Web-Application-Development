@@ -13,6 +13,10 @@ router.get("/:id", userController.getUserDetail);
 
 router.post("/create", userController.createUserPost);
 
+router.delete("/delete/:id", userController.deleteUser);
+
+router.delete("/delete-list", userController.deleteUserList);
+
 router.use(
   "/upgrade-requests",
   upgradeRequestRoutes
