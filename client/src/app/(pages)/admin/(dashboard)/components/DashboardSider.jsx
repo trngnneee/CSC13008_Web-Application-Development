@@ -1,12 +1,17 @@
 "use client"
 
 import { AdminDashboardVariable } from "@/config/variable";
+import { adminLogout } from "@/lib/adminAPI/account";
+import { toastHandler } from "@/lib/toastHandler";
 import { cn } from "@/lib/utils";
-import { CircleGauge, Grid2X2, ShoppingBag, User } from "lucide-react";
+import { Grid2X2, Power, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export const DashboardSider = () => {
+  const router = useRouter();
+  const pathName = usePathname();
+  
   const navList = [
     {
       Icon: Grid2X2,
@@ -22,7 +27,10 @@ export const DashboardSider = () => {
     },
   ]
 
-  const pathName = usePathname();
+  const handleLogout = () => {
+    const promise = adminLogout();
+    toastHandler(promise, router, "/admin/account/login");
+  }
 
   return (
     <>
@@ -48,6 +56,18 @@ export const DashboardSider = () => {
               </Link>
             )
           })}
+          <button onClick={handleLogout} className="relative">
+            <div className={cn(
+              "bg-white w-[5px] absolute left-0 top-0 bottom-0 rounded-r"
+            )}></div>
+            <div className={cn(
+              "flex items-center bg-red-500 hover:bg-red-600 py-4 pl-3 rounded-[6px] gap-4 ml-5 mr-3",
+              true ? "bg-red-500" : "bg-white text-gray-400 hover:bg-[#F5F6FA]"
+            )}>
+              <Power/>
+              <div className="text-sm font-medium -translate-y-0.5">Đăng xuất</div>
+            </div>
+          </button>
         </div>
       </div>
     </>

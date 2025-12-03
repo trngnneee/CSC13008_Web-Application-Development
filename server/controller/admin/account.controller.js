@@ -191,3 +191,11 @@ export const getAllUsersGet = async (req, res) => {
     data: users
   });
 };
+
+export const logoutGet = async (req, res) => {
+  res.clearCookie("adminToken");
+  res.json({
+    code: "success",
+    message: "Đăng xuất thành công"
+  });
+}

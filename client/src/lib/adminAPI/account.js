@@ -90,3 +90,18 @@ export const adminResetPassword = async (finalData) => {
 
   return data;
 }
+
+export const adminLogout = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/account/logout`, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Đăng xuất thất bại");
+  }
+
+  return data;
+}
