@@ -14,7 +14,7 @@ import {
   changeUserRole 
 } from "./user.service.js";
 import { OTPGenerate } from "../helper/otp.helper.js";
-import { sendVarifyMail } from "../helper/mail.helper.js";
+import { sendVarifyMail, sendOTPMail } from "../helper/mail.helper.js";
 
 export const handleRegister = async (userData, role) => {
   const { fullname, email, password } = userData;
@@ -167,6 +167,9 @@ export const handleForgotPassword = async (email) => {
     const record = await saveOTP({ email, otp });
 
     if (record) {
+      // Gửi OTP qua email
+      await sendOTPMail(email, otp);
+      
       return {
         success: true,
         message: "Đã gửi OTP về email!"
@@ -207,7 +210,8 @@ export const handleOtpPassword = async (email, otp) => {
     const token = jwt.sign(
       {
         id_user: existUser.id_user,
-        email: existUser.email
+        email: existUser.email,
+        role: existUser.role
       },
       process.env.JWT_SECRET,
       {

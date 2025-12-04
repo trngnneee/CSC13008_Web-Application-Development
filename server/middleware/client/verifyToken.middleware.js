@@ -28,7 +28,7 @@ export const verifyToken = async (req, res, next) => {
         message: "Xác thực token thất bại!"
       })
     }
-    const { id_user, email } = decoded;
+    const { id_user, email, role: tokenRole } = decoded;
     const existUser = await findUserToEmail(email);
 
     if (!existUser) {
@@ -36,6 +36,15 @@ export const verifyToken = async (req, res, next) => {
       return res.json({
         code: "error",
         message: "Tài khoản không tồn tại trong hệ thống!"
+      });
+    }
+
+    // Check role khớp với token
+    if (tokenRole && existUser.role !== tokenRole) {
+      res.clearCookie("clientToken");
+      return res.json({
+        code: "error",
+        message: "Token không hợp lệ (role không khớp)!"
       });
     }
 

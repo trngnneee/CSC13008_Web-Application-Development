@@ -7,6 +7,7 @@ import {
   handleResetPassword, 
   handleVerifyEmail 
 } from "../../service/auth.service.js";
+import { findUserToEmail } from "../../service/user.service.js";
 import path from "path";
 
 export const registerPost = async (req, res) => {
@@ -29,6 +30,15 @@ export const registerPost = async (req, res) => {
 
 export const loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
+
+  // Check if email belongs to bidder role
+  const user = await findUserToEmail(email, "bidder");
+  if (!user) {
+    return res.json({
+      code: "error",
+      message: "Email này không tồn tại hoặc không phải tài khoản khách hàng!"
+    });
+  }
 
   const result = await handleLogin({ email, password, rememberPassword });
   
@@ -83,6 +93,14 @@ export const verifyTokenGet = async (req, res) => {
 export const forgotPasswordPost = async (req, res) => {
   const { email } = req.body;
 
+  const user = await findUserToEmail(email, "bidder");
+  if (!user) {
+    return res.json({
+      code: "error",
+      message: "Email này không tồn tại hoặc không phải tài khoản khách hàng!"
+    });
+  }
+
   const result = await handleForgotPassword(email);
   
   if (result.success) {
@@ -126,8 +144,23 @@ export const otpPasswordPost = async (req, res) => {
 
 export const resetPasswordPost = async (req, res) => {
   const { password } = req.body;
+  const email = req.account?.email;
 
-  const result = await handleResetPassword(req.account.email, password);
+  if (!email) {
+    return res.json({
+      code: "error",
+      message: "Email không hợp lệ!"
+    });
+  }
+
+  if (!password) {
+    return res.json({
+      code: "error",
+      message: "Mật khẩu không được để trống!"
+    });
+  }
+
+  const result = await handleResetPassword(email, password);
   
   if (result.success) {
     return res.json({

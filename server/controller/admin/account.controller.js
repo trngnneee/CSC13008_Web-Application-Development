@@ -8,6 +8,7 @@ import {
   handleVerifyEmail, 
   handleChangeRole 
 } from "../../service/auth.service.js";
+import { findUserToEmail } from "../../service/user.service.js";
 import path from "path";
 
 export const registerPost = async (req, res) => {
@@ -30,6 +31,15 @@ export const registerPost = async (req, res) => {
 
 export const loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
+
+  // Check if email belongs to admin role
+  const user = await findUserToEmail(email, "admin");
+  if (!user) {
+    return res.json({
+      code: "error",
+      message: "Email này không tồn tại hoặc không phải tài khoản admin!"
+    });
+  }
 
   const result = await handleLogin({ email, password, rememberPassword });
   
@@ -83,6 +93,15 @@ export const verifyTokenGet = async (req, res) => {
 
 export const forgotPasswordPost = async (req, res) => {
   const { email } = req.body;
+
+  // Check if email belongs to admin role
+  const user = await findUserToEmail(email, "admin");
+  if (!user) {
+    return res.json({
+      code: "error",
+      message: "Email này không tồn tại hoặc không phải tài khoản admin!"
+    });
+  }
 
   const result = await handleForgotPassword(email);
   
