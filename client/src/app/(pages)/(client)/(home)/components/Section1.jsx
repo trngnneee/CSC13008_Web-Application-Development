@@ -1,11 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { useRouter } from "next/navigation";
 
 export const Section1 = () => {
   const router = useRouter();
-  
+  const { isLogin } = useClientAuthContext();
+
   return (
     <div className="relative w-full h-[calc(100vh-90px)] flex justify-center items-center bg-[#f8f8f8]">
       <img
@@ -29,12 +31,14 @@ export const Section1 = () => {
 
         <div className="flex flex-col justify-center text-black w-[500px]">
           <div className="text-lg font-medium leading-relaxed">
-            Ưu đãi 10% cho người dùng đăng ký sớm! <br/>
+            Ưu đãi 10% cho người dùng đăng ký sớm! <br />
             Đừng bỏ lỡ cơ hội trải nghiệm sản phẩm chất lượng với giá ưu đãi đặc biệt này.
           </div>
-          <Button onClick={() => router.push("/account/register")} className="mt-6 w-[150px] h-[50px] hover:scale-[1.05] transition-all duration-300 bg-[var(--main-client-color)] text-white hover:bg-[var(--main-client-hover)] text-[16px]">
-            Đăng ký 
-          </Button>
+          {!isLogin && (
+            <Button onClick={() => router.push("/account/register")} className="mt-6 w-[150px] h-[50px] hover:scale-[1.05] transition-all duration-300 bg-[var(--main-client-color)] text-white hover:bg-[var(--main-client-hover)] text-[16px]">
+              Đăng ký
+            </Button>
+          )}
         </div>
       </div>
     </div>

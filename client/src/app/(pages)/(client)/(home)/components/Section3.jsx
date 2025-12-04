@@ -39,20 +39,20 @@ export const Section3 = () => {
 
   const [products, setProducts] = useState([])
 
-  useEffect(() => {
-    const socket = getSocket();
+  // useEffect(() => {
+  //   const socket = getSocket();
 
-    socket.emit("product:get", {});
+  //   socket.emit("product:get", {});
 
-    socket.on("product:list", (data) => {
-      console.log("Received product list:", data);
-      setProducts(data);
-    });
+  //   socket.on("product:list", (data) => {
+  //     console.log("Received product list:", data);
+  //     setProducts(data);
+  //   });
 
-    return () => {
-      socket.off("product:list");
-    };
-  }, [])
+  //   return () => {
+  //     socket.off("product:list");
+  //   };
+  // }, [])
 
   return (
     <>

@@ -1,6 +1,11 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
 
 export const ProductItem = ({ item }) => {
+  const { isLogin } = useClientAuthContext();
+  
   return (
     <>
       <div className="p-5 bg-white shadow-2xl rounded-[10px] hover:scale-[1.02] transition-all duration-300 cursor-pointer">
@@ -19,7 +24,11 @@ export const ProductItem = ({ item }) => {
           <div className="w-4 h-4 rounded-full bg-amber-400"></div>
           <div>Kết thúc tại: <span className="font-bold">{item.end}</span></div>
         </div>
-        <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] mt-[30px]">Đấu giá</Button>
+        {isLogin ? (
+          <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] mt-[30px]">Đấu giá</Button>
+        ) : (
+          <div className="mt-[30px] text-sm bg-[var(--main-client-color)] text-white px-2 py-1 rounded-[8px] text-center">Vui lòng đăng nhập để đấu giá</div>
+        )}
       </div>
     </>
   )

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export function middleware(req) {
   const { pathname } = req.nextUrl;
 
-  // --- ADMIN MIDDLEWARE ---
+  // --- ADMIN ---
   if (pathname.startsWith("/admin")) {
     const token = req.cookies.get("adminToken")?.value;
 
@@ -15,18 +15,20 @@ export function middleware(req) {
       "/admin/account/initial",
     ];
 
-    if (token && publicPaths.some(path => pathname.startsWith(path))) {
+    const isPublic = publicPaths.some(path => pathname.startsWith(path));
+
+    if (token && isPublic) {
       return NextResponse.redirect(new URL("/admin/category", req.url));
     }
 
-    if (!token && !publicPaths.some(path => pathname.startsWith(path))) {
+    if (!token && !isPublic) {
       return NextResponse.redirect(new URL("/admin/account/login", req.url));
     }
 
     return NextResponse.next();
   }
 
-  // --- CLIENT MIDDLEWARE ---
+  // --- CLIENT ---
   if (pathname.startsWith("/account")) {
     const token = req.cookies.get("clientToken")?.value;
 
@@ -38,11 +40,13 @@ export function middleware(req) {
       "/account/initial",
     ];
 
-    if (token && publicPaths.some(path => pathname.startsWith(path))) {
+    const isPublic = publicPaths.some(path => pathname.startsWith(path));
+
+    if (token && isPublic) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
-    if (!token && !publicPaths.some(path => pathname.startsWith(path))) {
+    if (!token && !isPublic) {
       return NextResponse.redirect(new URL("/account/login", req.url));
     }
 
@@ -53,5 +57,8 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/account/:path*",
+  ],
 };
