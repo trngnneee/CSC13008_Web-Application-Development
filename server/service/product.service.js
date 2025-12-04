@@ -41,7 +41,7 @@ export async function insertListProducts(records, chunkSize = 500) {
         for (let j = 0; j < chunk.length; j++) {
           try {
             await trx.transaction(async (subTrx) => {
-              await subTrx("product").insert(chunk[j]); 
+              await subTrx("product").insert(chunk[j]);
               inserted += 1;
             });
           } catch (e1) {
@@ -70,22 +70,22 @@ export async function insertListProducts(records, chunkSize = 500) {
 }
 
 export const deleteProductID = async (id) => {
-    const product = await db("product")
-        .where("id_product", id)
-        .first();
+  const product = await db("product")
+    .where("id_product", id)
+    .first();
 
-    if (!product) return null;
+  if (!product) return null;
 
-    await db("product")
-        .where("id_product", id)
-        .del();
+  await db("product")
+    .where("id_product", id)
+    .del();
 
-    return product; 
+  return product;
 }
 
 export const deleteProductList = async (ids, trx = null) => {
-    const kx = trx ? trx : db;
-    return kx("product").whereIn("id_product", ids).del();
+  const kx = trx ? trx : db;
+  return kx("product").whereIn("id_product", ids).del();
 }
 
 export const deleteProductByCategoryName = async (categoryName, trx = null) => {
@@ -113,25 +113,27 @@ export const insertProduct = async (productData) => {
 };
 
 export const getAllProducts = async (filter = {}) => {
-    const query = db("product").select("*");
-    if (filter.keyword) {
-        const regex = new RegExp(filter.keyword, "i");
-        query.whereRaw("slug ~* ?", [regex.source]);
-    }
-    if (filter.page && filter.limit) {
-        const offset = (filter.page - 1) * filter.limit;
-        query.offset(offset).limit(filter.limit);
-    }
-    if (filter.limitItem) {
-        query.limit(filter.limitItem);
-    }
-    return query;
+  const query = db("product").select("*");
+  if (filter.keyword) {
+    query.whereRaw(
+      "fts @@ to_tsquery('english', remove_accents(?) || ':*')",
+      [filter.keyword]
+    );
+  }
+  if (filter.page && filter.limit) {
+    const offset = (filter.page - 1) * filter.limit;
+    query.offset(offset).limit(filter.limit);
+  }
+  if (filter.limitItem) {
+    query.limit(filter.limitItem);
+  }
+  return query;
 }
 
 export const getProduct = async (id) => {
-    return db("product")
-        .where("id_product", id)
-        .first();
+  return db("product")
+    .where("id_product", id)
+    .first();
 }
 
 export const updateProduct = async (id, productData) => {
@@ -139,7 +141,7 @@ export const updateProduct = async (id, productData) => {
   if (!product) return null;
 
   const updateData = {};
-  
+
   if (productData.name !== undefined) updateData.name = productData.name;
   if (productData.id_category !== undefined) updateData.id_category = productData.id_category;
   if (productData.avatar !== undefined) updateData.avatar = productData.avatar;

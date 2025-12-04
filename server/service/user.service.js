@@ -33,7 +33,6 @@ export const findUserById = async (id) => {
 };
 
 export const addUser = async ({ fullname, email, password, date_of_birth = null, role, status }) => {
-  console.log({ fullname, email, password, date_of_birth, role, status });
   if (!fullname || !email || !password || !role || !status) {
     throw new Error('Thiếu thông tin bắt buộc: fullname, email, password, role, status');
   }
