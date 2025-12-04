@@ -1,8 +1,13 @@
+"use client"
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Heart } from "lucide-react";
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
 
 export const ProdcutInformation = () => {
+  const { isLogin } = useClientAuthContext();
+
   return (
     <>
       <div className="relative">
@@ -38,6 +43,14 @@ export const ProdcutInformation = () => {
             </div>
           </div>
           <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">16.4.2023 08:05:33 GMT+8</span></div>
+          {isLogin && (
+            <div className="mt-[30px] flex justify-center">
+              <Button className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>
+                <Heart />
+                <span>Thêm vào yêu thích</span>
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="mt-[30px]">

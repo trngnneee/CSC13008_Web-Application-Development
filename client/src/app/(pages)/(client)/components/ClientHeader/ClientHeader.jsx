@@ -30,7 +30,7 @@ export const ClientHeader = () => {
               Đăng nhập
             </Button>
           ) : (
-            <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] rounded-full w-10 h-10 p-0 flex items-center justify-center">
+            <Button onClick={() => router.push("/me/profile")} className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] rounded-full w-10 h-10 p-0 flex items-center justify-center">
               <User />
             </Button>
           )}

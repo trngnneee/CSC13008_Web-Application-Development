@@ -50,7 +50,7 @@ export const AdminDeleteButton = ({ api }) => {
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Xác nhận</AlertDialogAction>
+            <AlertDialogAction className={"bg-[var(--main-color)] hover:bg-[var(--main-hover)]"} onClick={handleDelete}>Xác nhận</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

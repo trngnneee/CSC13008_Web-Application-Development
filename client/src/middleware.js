@@ -38,6 +38,10 @@ export function middleware(req) {
       "/account/forgot-password",
       "/account/otp-password",
       "/account/initial",
+      "/",
+      "/product/*",
+      "/category/*",
+      "/search",
     ];
 
     const isPublic = publicPaths.some(path => pathname.startsWith(path));
