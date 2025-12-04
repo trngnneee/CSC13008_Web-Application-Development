@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Gavel, Heart, Star, User } from "lucide-react"
+import { Gavel, Heart, Package, Star, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -27,6 +27,11 @@ export const Sider = () => {
       title: "Danh sách đấu giá của tôi",
       href: "/me/auction",
       icon: Gavel
+    },
+    {
+      title: "Danh sách sản phẩm của tôi",
+      href: "/me/product",
+      icon: Package
     },
   ]
   

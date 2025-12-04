@@ -1,7 +1,6 @@
 "use client"
 
 import { Label } from "@/components/ui/label";
-import { DashboardTitle } from "../../components/DashboardTitle";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -11,25 +10,94 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ImageUploader } from "../../components/ImageUploader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import TextEditor from "../../components/TinyMCE";
+import { HeaderTitle } from "../../components/HeaderTitle";
+import TextEditor from "@/app/(pages)/admin/(dashboard)/components/TinyMCE";
+import { ImageUploader } from "@/app/(pages)/admin/(dashboard)/components/ImageUploader";
+import { Checkbox } from "@/components/ui/checkbox";
+import JustValidate from "just-validate";
+import { toast } from "sonner";
 
-export default function AdminProductCreate() {
+export default function SellerProductCreatePage() {
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Danh mục 1");
   const [imageList, setImageList] = useState([]);
-  const [price, setPrice] = useState(0);
   const [instantPrice, setInstantPrice] = useState(0);
   const [startingPrice, setStartingPrice] = useState(0);
   const [priceStep, setPriceStep] = useState(0);
   const [desc, setDesc] = useState("");
+  const [autoRenew, setAutoRenew] = useState(false);
+  const [submit, setSubmit] = useState(false);
+
+  useEffect(() => {
+    const validation = new JustValidate("#productCreateForm");
+
+    validation
+      .addField("#name", [
+        {
+          rule: "required",
+          errorMessage: "Vui lòng nhập tên sản phẩm!",
+        },
+        {
+          rule: "minLength",
+          value: 2,
+          errorMessage: "Tên sản phẩm phải có ít nhất 2 ký tự!",
+        },
+      ])
+      .addField("#startingPrice", [
+        {
+          rule: "required",
+          errorMessage: "Vui lòng nhập giá khởi điểm!",
+        },
+        {
+          rule: "number",
+          errorMessage: "Giá khởi điểm phải là số!",
+        },
+      ])
+      .addField("#instantPrice", [
+        {
+          rule: "required",
+          errorMessage: "Vui lòng nhập giá mua ngay!",
+        },
+        {
+          rule: "number",
+          errorMessage: "Giá mua ngay phải là số!",
+        },
+      ])
+      .addField("#priceStep", [
+        {
+          rule: "required",
+          errorMessage: "Vui lòng nhập bước giá!",
+        },
+        {
+          rule: "number",
+          errorMessage: "Bước giá phải là số!",
+        },
+      ])
+      .onSuccess(() => {
+        setSubmit(true);
+      });
+  }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (submit)
+    {
+      if (imageList.length < 3)
+      {
+        toast.error("Vui lòng tải lên ít nhất 3 hình ảnh sản phẩm!");
+        setSubmit(false);
+        return;
+      }
+      console.log({ name, category, imageList, instantPrice, startingPrice, priceStep, desc, autoRenew  });
+    }
+  }
 
   return (
     <>
-      <DashboardTitle title="Tạo sản phẩm" />
-      <form action="/form" className="bg-white w-full p-12.5 rounded-[14px] mt-[30px] border border-[#B9B9B9]">
+      <HeaderTitle title="Tạo sản phẩm mới" />
+      <form id="productCreateForm" className="bg-white w-full p-12.5 rounded-[14px] mt-[30px] border border-[#B9B9B9]" onSubmit={handleSubmit}>
         <div className="flex gap-[30px]">
           <div className="w-full flex flex-col gap-3">
             <Label
@@ -60,12 +128,11 @@ export default function AdminProductCreate() {
                   type="button"
                   className="w-full flex items-center justify-between rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <span>{category || "Chọn danh mục"}</span>
+                  <span>{category}</span>
                   <ChevronDown className="w-4 h-4 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setCategory("")}>Chọn danh mục</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCategory("Danh mục 1")}>Danh mục 1</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCategory("Danh mục 2")}>Danh mục 2</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCategory("Danh mục 3")}>Danh mục 3</DropdownMenuItem>
@@ -83,28 +150,12 @@ export default function AdminProductCreate() {
           <ImageUploader
             value={imageList}
             onChange={setImageList}
-            maxFiles={1}
+            maxFiles={5}
             id="image"
             name="image"
           />
         </div>
         <div className="flex gap-5 mt-[30px]">
-          <div className="w-full flex flex-col gap-3">
-            <Label
-              htmlFor="price"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Giá sản phẩm
-            </Label>
-            <Input
-              id="price"
-              name="price"
-              placeholder="100000"
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </div>
           <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="startingPrice"
@@ -153,6 +204,15 @@ export default function AdminProductCreate() {
               onChange={(e) => setPriceStep(e.target.value)}
             />
           </div>
+          <div className="w-full flex flex-col gap-3">
+            <Label
+              htmlFor="autoRenew"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Tự động gia hạn
+            </Label>
+            <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-client-color)]" />
+          </div>
         </div>
 
         <div className="mt-[30px] flex flex-col gap-3">
@@ -169,8 +229,8 @@ export default function AdminProductCreate() {
         </div>
 
         <div className="flex flex-col items-center mt-[30px]">
-          <Button className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] w-1/4 font-bold text-lg">Tạo sản phẩm</Button>
-          <Link href="/admin/product" className="text-[var(--main-color)] hover:text-[var(--main-hover)] hover:underline mt-5">Quay trở lại danh sách</Link>
+          <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] w-full font-bold text-lg">Tạo sản phẩm</Button>
+          <Link href="/me/product" className="text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] hover:underline mt-5">Quay trở lại danh sách</Link>
         </div>
       </form>
     </>
