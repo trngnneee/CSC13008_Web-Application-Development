@@ -122,6 +122,9 @@ export const getAllProducts = async (filter = {}) => {
         const offset = (filter.page - 1) * filter.limit;
         query.offset(offset).limit(filter.limit);
     }
+    if (filter.limitItem) {
+        query.limit(filter.limitItem);
+    }
     return query;
 }
 

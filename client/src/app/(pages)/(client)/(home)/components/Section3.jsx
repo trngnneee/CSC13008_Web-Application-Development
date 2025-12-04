@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { ProductItem } from "../../components/ProductItem"
 import { SectionHeader } from "./SectionHeader"
-import { getSocket } from "@/lib/socket/socket"
+import { clientProductList } from "@/lib/clientAPI/product"
 
 export const Section3 = () => {
   const data = [
@@ -39,20 +39,16 @@ export const Section3 = () => {
 
   const [products, setProducts] = useState([])
 
-  // useEffect(() => {
-  //   const socket = getSocket();
-
-  //   socket.emit("product:get", {});
-
-  //   socket.on("product:list", (data) => {
-  //     console.log("Received product list:", data);
-  //     setProducts(data);
-  //   });
-
-  //   return () => {
-  //     socket.off("product:list");
-  //   };
-  // }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientProductList(4);
+      if (promise.code == "success")
+      {
+        setProducts(promise.data);
+      }
+    }
+    fetchData();
+  }, [])
 
   return (
     <>
@@ -63,7 +59,7 @@ export const Section3 = () => {
           link="#"
         />
         <div className="grid grid-cols-4 gap-[30px] mt-[50px]">
-          {data.map((item, index) => (
+          {products.length > 0 && products.map((item, index) => (
             <ProductItem
               key={index}
               item={item}

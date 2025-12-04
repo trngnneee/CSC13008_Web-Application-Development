@@ -142,6 +142,10 @@ export const getProductList = async (req, res) => {
             filter.limit = 5;
         }
 
+        if (req.query.limit) {
+            filter.limitItem = parseInt(req.query.limit);
+        }
+
         const products = await productService.getAllProducts(filter);
         res.json({
             code: "success",
