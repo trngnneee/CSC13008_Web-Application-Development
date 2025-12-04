@@ -37,7 +37,6 @@ export function mapCsvRecordToDbProduct(r) {
     pricing_step: r.pricing_step ?? null,
     starting_price: r.starting_price ?? null,
     url_img: normalizeUrlImg(r.url_img),
-    slug: slugify(r.name ?? "", { lower: true, strict: true, locale: 'vi' }) || null,
   };
 }
 

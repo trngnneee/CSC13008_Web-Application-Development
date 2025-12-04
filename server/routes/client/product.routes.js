@@ -11,4 +11,5 @@ router.get("/list-category/:id_category", productController.getProductListByCate
 
 router.get("/total-page-category/:id_category", productController.getTotalPageByCategory);
 
+// router.post("/create", productController.insertProduct);
 export default router;

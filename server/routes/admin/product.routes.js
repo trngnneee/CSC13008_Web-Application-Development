@@ -6,7 +6,7 @@ import { verifyProductExists } from "../../middleware/admin/verifyProduct.middle
 
 const router = express.Router();
 
-const upload = multer({
+const uploadCSV = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 20 * 1024 * 1024 }, // 20MB,
     fileFilter: (req, file, cb) => {
@@ -15,19 +15,33 @@ const upload = multer({
     },
 });
 
-router.post("/upload-csv", upload.single("file"), productController.uploadCSVProduct);
+// Image upload configuration
+const uploadImages = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB per image
+    fileFilter: (req, file, cb) => {
+        const allowedMimes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        const ok = allowedMimes.includes(file.mimetype);
+        return ok ? cb(null, true) : cb(new Error("Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF, WebP)!"));
+    },
+});
+
+router.post("/upload-csv", uploadCSV.single("file"), productController.uploadCSVProduct);
+
+router.post("/create", uploadImages.fields([
+    { name: "images", maxCount: 10 },
+    { name: "avatar", maxCount: 1 }
+]), productController.insertProduct);
 
 router.get("/total-page", productController.getTotalPage);
 
 router.get("/list", productController.getProductList);
 
-// router.post("/create", productController.insertProduct);
-
 router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
 
 router.get("/:id", productController.getProductDetail);
 
-router.put("/:id", productController.updateProduct);
+// router.put("/:id", uploadImages.array("images", 10), productController.updateProduct);
 
 router.delete("/delete/:id", productController.deleteProductByID);
 

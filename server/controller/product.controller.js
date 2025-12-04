@@ -1,5 +1,7 @@
 import { parseProductsCsv } from "../helper/parse.helper.js";
 import * as productService from "../service/product.service.js";
+import { getCategoryID } from "../service/category.service.js";
+import { uploadImagesToSupabase, uploadImageToSupabase, deleteImageFromSupabase } from "../helper/supabase.helper.js";
 
 export async function uploadCSVProduct(req, res, next) {
     try {
@@ -41,22 +43,53 @@ export const deleteProductByID = async (req, res) => {
         });
     }
 }
+
 export const insertProduct = async (req, res) => {
-    const productData = req.body;
-    try {
-        await productService.insertProduct(productData);
-        res.json({
-            code: "success",
-            message: "Thêm sản phẩm thành công",
-        })
-    } catch (e) {
-        res.status(500).json({
-            code: "error",
-            message: "Lỗi khi thêm sản phẩm.",
-            data: e?.message || e,
-        });
+  const productData = req.body;
+  
+  const catID = await getCategoryID(productData.name_category);
+  if (!catID) {
+    return res.json({
+        code: "error",
+        message: "Danh mục không tồn tại."
+    })
+  }
+  productData.id_category = catID;
+
+  try {
+    const files = req.files || {};
+
+    //avatar
+    if (files?.avatar?.[0]) {
+      const avatarFile = files.avatar[0];
+      const avatarUrl = await uploadImageToSupabase(
+        avatarFile.buffer,
+        avatarFile.originalname
+      );
+      productData.avatar = avatarUrl;
     }
-}
+
+    // images
+    if (files?.images && files.images.length > 0) {
+      const imageUrls = await uploadImagesToSupabase(files.images);
+      productData.url_img = imageUrls; // _text trong DB
+    }
+
+    await productService.insertProduct(productData);
+
+    res.json({
+      code: "success",
+      message: "Thêm sản phẩm thành công",
+    });
+  } catch (e) {
+    res.status(500).json({
+      code: "error",
+      message: "Lỗi khi thêm sản phẩm.",
+      data: e?.message || e,
+    });
+  }
+};
+
 
 export const getTotalPage = async (req, res) => {
     try {
@@ -106,6 +139,20 @@ export const updateProduct = async (req, res) => {
     const productData = req.body;
 
     try {
+        // Handle image files if provided
+        if (req.files && req.files.length > 0) {
+            try {
+                const imageUrls = await uploadImagesToSupabase(req.files);
+                productData.url_img = imageUrls;
+            } catch (uploadError) {
+                return res.status(400).json({
+                    code: "error",
+                    message: "Lỗi khi upload ảnh lên Supabase.",
+                    data: uploadError?.message || uploadError,
+                });
+            }
+        }
+
         const updatedProduct = await productService.updateProduct(id, productData);
 
         if (!updatedProduct) {

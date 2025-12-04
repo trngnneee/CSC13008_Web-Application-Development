@@ -176,3 +176,12 @@ export const isCatHasProducts = async (id) => {
 
   return !!product;
 }
+
+export const getCategoryID = async (name) => {
+  const category = await db("category")
+    .select("id_category")
+    .where("name_category", name)
+    .first();
+
+  return category ? category.id_category : null;
+}
