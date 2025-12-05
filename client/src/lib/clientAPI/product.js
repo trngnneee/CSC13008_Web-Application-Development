@@ -11,3 +11,17 @@ export const clientProductList = async (limit = 0) => {
 
   return data;
 }
+
+export const clientProductDetail = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/detail/${id}`, {
+    method: "GET"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy chi tiết sản phẩm thất bại");
+  }
+
+  return data;
+}
