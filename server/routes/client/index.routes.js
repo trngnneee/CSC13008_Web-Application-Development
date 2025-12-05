@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 })
 
 router.use(
-  "/users", 
+  "/user", 
   userRoute
 );
 

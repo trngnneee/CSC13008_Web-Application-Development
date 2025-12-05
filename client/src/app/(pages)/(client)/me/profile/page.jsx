@@ -19,10 +19,16 @@ import Link from "next/link";
 import JustValidate from "just-validate";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { CircleAlertIcon } from "lucide-react";
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
+import { clientUpgrade } from "@/lib/clientAPI/user";
+import { toastHandler } from "@/lib/toastHandler";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
+  const { userInfo } = useClientAuthContext();
   const [date, setDate] = useState(new Date());
   const [submit, setSubmit] = useState(false);
+  const router = useRouter();
 
   const handleCalendarChange = (_value, _e) => {
     const _event = {
@@ -61,6 +67,11 @@ export default function ProfilePage() {
       const date_of_birth = date;
       console.log({ fullname, email, date_of_birth });
     }
+  }
+
+  const handleUpgrade = () => {
+    const promise = clientUpgrade();
+    toastHandler(promise, router, "/me/profile");
   }
 
   return (
@@ -157,33 +168,35 @@ export default function ProfilePage() {
           <div className="w-full">
           </div>
         </div>
-        <div className="mt-5">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>Gửi yêu cầu trở thành người bán</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-                <div
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border"
-                  aria-hidden="true"
-                >
-                  <CircleAlertIcon className="opacity-80" size={16} />
+        {userInfo?.role == "bidder" && (
+          <div className="mt-5">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>Gửi yêu cầu trở thành người bán</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                  <div
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                    aria-hidden="true"
+                  >
+                    <CircleAlertIcon className="opacity-80" size={16} />
+                  </div>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Bạn có chắc chắn muốn gửi yêu cầu trở thành người bán không?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Yêu cầu của bạn sẽ được chúng tôi xem xét và phản hồi trong thời gian sớm nhất.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
                 </div>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Bạn có chắc chắn muốn gửi yêu cầu trở thành người bán không?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Yêu cầu của bạn sẽ được chúng tôi xem xét và phản hồi trong thời gian sớm nhất.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-              </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>Xác nhận</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleUpgrade} className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>Xác nhận</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
         <Button disabled={submit} className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] w-full mt-5"}>Lưu</Button>
         <Link href="/me/reset-password" className="block mt-3 text-center text-[var(--main-client-color)] hover:underline">Đổi mật khẩu</Link>
       </form>
