@@ -32,16 +32,7 @@ export const registerPost = async (req, res) => {
 export const loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
 
-  // Check if email belongs to admin role
-  const user = await findUserToEmail(email, "admin");
-  if (!user) {
-    return res.json({
-      code: "error",
-      message: "Email này không tồn tại hoặc không phải tài khoản admin!"
-    });
-  }
-
-  const result = await handleLogin({ email, password, rememberPassword });
+  const result = await handleLogin({ email, password, rememberPassword }, "admin");
   
   if (!result.success) {
     return res.json({
@@ -94,16 +85,7 @@ export const verifyTokenGet = async (req, res) => {
 export const forgotPasswordPost = async (req, res) => {
   const { email } = req.body;
 
-  // Check if email belongs to admin role
-  const user = await findUserToEmail(email, "admin");
-  if (!user) {
-    return res.json({
-      code: "error",
-      message: "Email này không tồn tại hoặc không phải tài khoản admin!"
-    });
-  }
-
-  const result = await handleForgotPassword(email);
+  const result = await handleForgotPassword(email, "admin");
   
   if (result.success) {
     return res.json({
@@ -121,7 +103,7 @@ export const forgotPasswordPost = async (req, res) => {
 export const otpPasswordPost = async (req, res) => {
   const { email, otp } = req.body;
 
-  const result = await handleOtpPassword(email, otp);
+  const result = await handleOtpPassword(email, otp, "admin");
   
   if (!result.success) {
     return res.json({
@@ -147,7 +129,7 @@ export const otpPasswordPost = async (req, res) => {
 export const resetPasswordPost = async (req, res) => {
   const { password } = req.body;
 
-  const result = await handleResetPassword(req.account.email, password);
+  const result = await handleResetPassword(req.account.id_user, password);
   
   if (result.success) {
     return res.json({

@@ -154,6 +154,7 @@ export const updateProduct = async (id, productData) => {
   if (productData.pricing_step !== undefined) updateData.pricing_step = productData.pricing_step;
   if (productData.starting_price !== undefined) updateData.starting_price = productData.starting_price;
   if (productData.url_img !== undefined) updateData.url_img = productData.url_img;
+  if (productData.update_by !== undefined) updateData.update_by = productData.update_by;
 
   if (Object.keys(updateData).length === 0) {
     return product;

@@ -19,14 +19,15 @@ import { sendVarifyMail, sendOTPMail } from "../helper/mail.helper.js";
 export const handleRegister = async (userData, role) => {
   const { fullname, email, password } = userData;
 
+  // Kiểm tra email đã tồn tại với role này chưa
   const existUser = await findUserToEmail(email, role);
 
-  if (existUser && existUser.role === "seller") {
+  if (existUser) {
     return {
       success: false,
-      message: "Email này đã được đăng ký với vai trò người bán."
+      message: `Email này đã được đăng ký với vai trò ${role}.`
     };
-  }
+  }   
 
   const salt = bcrypt.genSaltSync(10);
   const hashPassword = bcrypt.hashSync(password, salt);
@@ -55,10 +56,10 @@ export const handleRegister = async (userData, role) => {
   };
 };
 
-export const handleLogin = async (credentials) => {
+export const handleLogin = async (credentials, role) => {
   const { email, password, rememberPassword } = credentials;
 
-  const existUser = await findUserToEmail(email);
+  const existUser = await findUserToEmail(email, role);
   
   if (!existUser) {
     return {
@@ -92,7 +93,8 @@ export const handleLogin = async (credentials) => {
   const token = jwt.sign(
     {
       id_user: existUser.id_user,
-      email: existUser.email
+      email: existUser.email,
+      role: existUser.role
     },
     process.env.JWT_SECRET,
     {
@@ -135,7 +137,7 @@ export const handleVerifyToken = async (token) => {
     }
 
     const { id_user, email } = decoded;
-    const existUser = await findUserToEmail(email);
+    const existUser = await findUserById(id_user);
 
     if (!existUser) {
       return {
@@ -162,8 +164,17 @@ export const handleVerifyToken = async (token) => {
   }
 };
 
-export const handleForgotPassword = async (email) => {
+export const handleForgotPassword = async (email, role) => {
   try {
+    // Kiểm tra user tồn tại với role đúng
+    const existUser = await findUserToEmail(email, role);
+    if (!existUser) {
+      return {
+        success: false,
+        message: "Email không tồn tại trong hệ thống!"
+      };
+    }
+
     const otp = OTPGenerate(6);
     const record = await saveOTP({ email, otp });
 
@@ -189,7 +200,7 @@ export const handleForgotPassword = async (email) => {
   }
 };
 
-export const handleOtpPassword = async (email, otp) => {
+export const handleOtpPassword = async (email, otp, role) => {
   try {
     const record = await verifyOTP({ email, otp });
 
@@ -200,7 +211,7 @@ export const handleOtpPassword = async (email, otp) => {
       };
     }
 
-    const existUser = await findUserToEmail(email);
+    const existUser = await findUserToEmail(email, role);
     if (!existUser) {
       return {
         success: false,
@@ -234,12 +245,12 @@ export const handleOtpPassword = async (email, otp) => {
   }
 };
 
-export const handleResetPassword = async (email, password) => {
+export const handleResetPassword = async (id_user, password) => {
   try {
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(password, salt);
 
-    const record = await resetPassword(email, hashPassword);
+    const record = await resetPassword(id_user, hashPassword);
     if (record) {
       return {
         success: true,

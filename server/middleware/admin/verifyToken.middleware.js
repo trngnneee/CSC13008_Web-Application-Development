@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { findUserToEmail } from "../../service/user.service.js"
+import { findUserToEmail, findUserById } from "../../service/user.service.js"
 
 export const verifyToken = async (req, res, next) => {
   try {
@@ -29,7 +29,7 @@ export const verifyToken = async (req, res, next) => {
       })
     }
     const { id_user, email, role: tokenRole } = decoded;
-    const existUser = await findUserToEmail(email);
+    const existUser = await findUserById(id_user);
 
     if (!existUser) {
       res.clearCookie("adminToken");
@@ -44,6 +44,15 @@ export const verifyToken = async (req, res, next) => {
       return res.json({
         code: "error",
         message: "Token không hợp lệ (role không khớp)!"
+      });
+    }
+
+    // Kiểm tra role phải là "admin"
+    if (existUser.role !== "admin") {
+      res.clearCookie("adminToken");
+      return res.json({
+        code: "error",
+        message: "Bạn không có quyền truy cập tài nguyên admin!"
       });
     }
 

@@ -22,10 +22,10 @@ export const findUserToEmail = async (email, role) => {
   return query.first();
 };
 
-export const findUserToEmailAndRole = (email, role) => {
-  const existUser = db('user').select('*').where({ email, role }).first();
-  return existUser;
-}
+// export const findUserToEmailAndRole = (email, role) => {
+//   const existUser = db('user').select('*').where({ email, role }).first();
+//   return existUser;
+// }
 
 export const findUserById = async (id) => {
   const user = await db('user').select('*').where({ id_user: id }).first();
@@ -96,13 +96,13 @@ export const verifyOTP = async ({ email, otp }) => {
   }
 };
 
-export const resetPassword = async (email, password) => {
-  if (!email || !password) {
-    throw new Error("Thiếu thông tin bắt buộc: email, password");
+export const resetPassword = async (id_user, password) => {
+  if (!id_user || !password) {
+    throw new Error("Thiếu thông tin bắt buộc: id_user, password");
   }
 
   const [updatedUser] = await db("user")
-    .where({ email })
+    .where({ id_user })
     .update({ password })
     .returning(["id_user", "email", "fullname"]);
 

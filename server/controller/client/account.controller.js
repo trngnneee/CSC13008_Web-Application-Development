@@ -31,16 +31,7 @@ export const registerPost = async (req, res) => {
 export const loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
 
-  // Check if email belongs to bidder role
-  const user = await findUserToEmail(email, "bidder");
-  if (!user) {
-    return res.json({
-      code: "error",
-      message: "Email này không tồn tại hoặc không phải tài khoản khách hàng!"
-    });
-  }
-
-  const result = await handleLogin({ email, password, rememberPassword });
+  const result = await handleLogin({ email, password, rememberPassword }, "bidder");
   
   if (!result.success) {
     return res.json({
@@ -93,15 +84,7 @@ export const verifyTokenGet = async (req, res) => {
 export const forgotPasswordPost = async (req, res) => {
   const { email } = req.body;
 
-  const user = await findUserToEmail(email, "bidder");
-  if (!user) {
-    return res.json({
-      code: "error",
-      message: "Email này không tồn tại hoặc không phải tài khoản khách hàng!"
-    });
-  }
-
-  const result = await handleForgotPassword(email);
+  const result = await handleForgotPassword(email, "bidder");
   
   if (result.success) {
     return res.json({
@@ -119,7 +102,7 @@ export const forgotPasswordPost = async (req, res) => {
 export const otpPasswordPost = async (req, res) => {
   const { email, otp } = req.body;
 
-  const result = await handleOtpPassword(email, otp);
+  const result = await handleOtpPassword(email, otp, "bidder");
   
   if (!result.success) {
     return res.json({
@@ -144,12 +127,12 @@ export const otpPasswordPost = async (req, res) => {
 
 export const resetPasswordPost = async (req, res) => {
   const { password } = req.body;
-  const email = req.account?.email;
+  const id_user = req.account?.id_user;
 
-  if (!email) {
+  if (!id_user) {
     return res.json({
       code: "error",
-      message: "Email không hợp lệ!"
+      message: "Thông tin tài khoản không hợp lệ!"
     });
   }
 
@@ -160,7 +143,7 @@ export const resetPasswordPost = async (req, res) => {
     });
   }
 
-  const result = await handleResetPassword(email, password);
+  const result = await handleResetPassword(id_user, password);
   
   if (result.success) {
     return res.json({

@@ -41,9 +41,11 @@ router.delete("/delete-list", verifyProductExists, productController.deleteAllPr
 
 router.get("/:id", productController.getProductDetail);
 
-// router.put("/:id", uploadImages.array("images", 10), productController.updateProduct);
+router.patch("/update/:id", uploadImages.fields([
+    { name: "images", maxCount: 10 },
+    { name: "avatar", maxCount: 1 }
+]), productController.updateProduct);
 
-router.delete("/delete/:id", productController.deleteProductByID);
-
+// router.delete("/delete/:id", productController.deleteProductByID);
 
 export default router;

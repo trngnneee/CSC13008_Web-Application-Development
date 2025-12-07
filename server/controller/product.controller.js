@@ -90,7 +90,6 @@ export const insertProduct = async (req, res) => {
   }
 };
 
-
 export const getTotalPage = async (req, res) => {
     try {
         const products = await productService.getAllProducts();
@@ -137,12 +136,33 @@ export const getProductDetail = async (req, res) => {
 export const updateProduct = async (req, res) => {
     const id = req.params.id;
     const productData = req.body;
+    productData.update_by = req.account?.id_user;
 
     try {
-        // Handle image files if provided
-        if (req.files && req.files.length > 0) {
+        const files = req.files || {};
+
+        // Handle avatar if provided
+        if (files?.avatar?.[0]) {
             try {
-                const imageUrls = await uploadImagesToSupabase(req.files);
+                const avatarFile = files.avatar[0];
+                const avatarUrl = await uploadImageToSupabase(
+                    avatarFile.buffer,
+                    avatarFile.originalname
+                );
+                productData.avatar = avatarUrl;
+            } catch (uploadError) {
+                return res.status(400).json({
+                    code: "error",
+                    message: "Lỗi khi upload avatar lên Supabase.",
+                    data: uploadError?.message || uploadError,
+                });
+            }
+        }
+
+        // Handle images if provided
+        if (files?.images && files.images.length > 0) {
+            try {
+                const imageUrls = await uploadImagesToSupabase(files.images);
                 productData.url_img = imageUrls;
             } catch (uploadError) {
                 return res.status(400).json({
