@@ -27,7 +27,7 @@ export const uploadImageToSupabase = async (file, fileName) => {
   try {
     console.log('Starting upload for:', fileName);
     
-    // Nếu fileName đã có timestamp, dùng luôn, không thêm nữa
+    // If fileName already has timestamp, use it directly
     const uniqueFileName = fileName.includes('-') ? fileName : `${Date.now()}-${fileName}`;
     const bucketName = 'product-imgs';
 
@@ -42,9 +42,6 @@ export const uploadImageToSupabase = async (file, fileName) => {
       console.error('Supabase upload error:', error);
       throw new Error(`Upload failed: ${error.message}`);
     }
-
-    console.log('Upload success, getting public URL...');
-
     // Lấy public URL
     const { data: { publicUrl } } = supabase.storage
       .from(bucketName)
@@ -65,7 +62,7 @@ export const uploadImageToSupabase = async (file, fileName) => {
 export const uploadImagesToSupabase = async (files) => {
   try {
     const uploadPromises = files.map((file) => {
-      // Tạo fileName với timestamp để unique
+      // Create fileName with timestamp for uniqueness
       const timestamp = Date.now();
       const randomStr = Math.random().toString(36).substr(2, 9);
       const fileName = file.originalname || file.name || `image-${timestamp}-${randomStr}.jpg`;
@@ -86,9 +83,10 @@ export const uploadImagesToSupabase = async (files) => {
  */
 export const deleteImageFromSupabase = async (publicUrl) => {
   try {
-    // Extract filename từ URL
-    const fileName = publicUrl.split('/').pop();
     const bucketName = 'product-imgs';
+    // Extract filename from URL
+    const fileName = publicUrl.split(`/object/public/${bucketName}/`)[1];
+    console.log('Deleting image:', fileName);
 
     const { error } = await supabase.storage
       .from(bucketName)

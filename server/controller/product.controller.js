@@ -30,11 +30,45 @@ export async function uploadCSVProduct(req, res, next) {
 export const deleteProductByID = async (req, res) => {
     const id = req.params.id;
     try {
+        // Get product info before deleting
+        const product = await productService.getProduct(id);
+        
+        if (!product) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy sản phẩm."
+            });
+        }
+
+        // Delete avatar if exists
+        if (product.avatar) {
+            try {
+                await deleteImageFromSupabase(product.avatar);
+            } catch (err) {
+                console.error("Lỗi khi xóa avatar:", err);
+                // Continue deleting even if avatar deletion fails
+            }
+        }
+
+        // Delete other images if exist
+        if (product.url_img && Array.isArray(product.url_img)) {
+            for (const imageUrl of product.url_img) {
+                try {
+                    await deleteImageFromSupabase(imageUrl);
+                } catch (err) {
+                    console.error("Lỗi khi xóa ảnh:", err);
+                    // Continue deleting other images
+                }
+            }
+        }
+
+        // Delete product from database
         await productService.deleteProductID(id);
+        
         res.json({
             code: "success",
             message: "Xóa sản phẩm thành công",
-        })
+        });
     } catch (e) {
         res.status(500).json({
             code: "error",
@@ -56,6 +90,11 @@ export const insertProduct = async (req, res) => {
   }
   productData.id_category = catID;
 
+  // Add updated_by from logged in user (if exists)
+  if (req.account?.id_user) {
+    productData.updated_by = req.account.id_user;
+  }
+
   try {
     const files = req.files || {};
 
@@ -69,7 +108,7 @@ export const insertProduct = async (req, res) => {
       productData.avatar = avatarUrl;
     }
 
-    // images
+    // Product images
     if (files?.images && files.images.length > 0) {
       const imageUrls = await uploadImagesToSupabase(files.images);
       productData.url_img = imageUrls; // _text trong DB
@@ -136,14 +175,29 @@ export const getProductDetail = async (req, res) => {
 export const updateProduct = async (req, res) => {
     const id = req.params.id;
     const productData = req.body;
-    productData.update_by = req.account?.id_user;
+    
+    if (req.account?.id_user) {
+        productData.updated_by = req.account.id_user;
+    }
 
     try {
+        const oldProduct = await productService.getProduct(id);
+        
+        if (!oldProduct) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy sản phẩm."
+            });
+        }
+
         const files = req.files || {};
 
-        // Handle avatar if provided
         if (files?.avatar?.[0]) {
             try {
+                if (oldProduct.avatar) {
+                    await deleteImageFromSupabase(oldProduct.avatar);
+                }
+                
                 const avatarFile = files.avatar[0];
                 const avatarUrl = await uploadImageToSupabase(
                     avatarFile.buffer,
@@ -162,6 +216,17 @@ export const updateProduct = async (req, res) => {
         // Handle images if provided
         if (files?.images && files.images.length > 0) {
             try {
+                // Delete old images if exist
+                if (oldProduct.url_img && Array.isArray(oldProduct.url_img)) {
+                    for (const imageUrl of oldProduct.url_img) {
+                        try {
+                            await deleteImageFromSupabase(imageUrl);
+                        } catch (err) {
+                            console.error("Lỗi khi xóa ảnh:", err);
+                        }
+                    }
+                }
+                
                 const imageUrls = await uploadImagesToSupabase(files.images);
                 productData.url_img = imageUrls;
             } catch (uploadError) {

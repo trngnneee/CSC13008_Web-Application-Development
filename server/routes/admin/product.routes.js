@@ -3,6 +3,7 @@ import multer from "multer";
 
 import * as productController from "../../controller/product.controller.js";
 import { verifyProductExists } from "../../middleware/admin/verifyProduct.middleware.js";
+import { verifyToken } from "../../middleware/admin/verifyToken.middleware.js";
 
 const router = express.Router();
 
@@ -28,7 +29,8 @@ const uploadImages = multer({
 
 router.post("/upload-csv", uploadCSV.single("file"), productController.uploadCSVProduct);
 
-router.post("/create", uploadImages.fields([
+//Insert 1 product
+router.post("/create", verifyToken, uploadImages.fields([
     { name: "images", maxCount: 10 },
     { name: "avatar", maxCount: 1 }
 ]), productController.insertProduct);
@@ -41,11 +43,13 @@ router.delete("/delete-list", verifyProductExists, productController.deleteAllPr
 
 router.get("/:id", productController.getProductDetail);
 
-router.patch("/update/:id", uploadImages.fields([
+//Update 1 product
+router.patch("/update/:id", verifyToken, uploadImages.fields([
     { name: "images", maxCount: 10 },
     { name: "avatar", maxCount: 1 }
 ]), productController.updateProduct);
 
-// router.delete("/delete/:id", productController.deleteProductByID);
+//Delete 1 product
+router.delete("/delete/:id", verifyToken, productController.deleteProductByID);
 
 export default router;

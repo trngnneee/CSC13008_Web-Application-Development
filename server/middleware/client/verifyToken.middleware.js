@@ -39,7 +39,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Check role khớp với token
+    // Check if role matches token
     if (tokenRole && existUser.role !== tokenRole) {
       res.clearCookie("clientToken");
       return res.json({
@@ -48,7 +48,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Kiểm tra role phải là "bidder"
+    // Check if role is "bidder" or "seller"
     if (existUser.role !== "bidder" && existUser.role !== "seller") {
       res.clearCookie("clientToken");
       return res.json({

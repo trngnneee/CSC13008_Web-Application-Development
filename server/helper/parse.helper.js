@@ -87,11 +87,11 @@ const convertField = async (field, raw) => {
   switch (field) {
     case "id_category": {
       if (!v) return null;
-      // Nếu là UUID (36 ký tự), return trực tiếp
+      // If it's UUID (36 characters), return directly
       if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)) {
         return v;
       }
-      // Nếu là tên category, tìm hoặc tạo mới và return id
+      // If it's category name, find or create and return id
       let catId = await CategoryService.isInCategory(v);
       if (!catId) {
         await CategoryService.insertCategory(v, null);
@@ -127,20 +127,20 @@ export async function parseProductsCsv(buffer) {
     return { records: [], unknownColumns: [], missingColumns: PRODUCT_FIELDS };
   }
 
-  // map header CSV -> field chuẩn
+  // Map CSV header -> standard field
   const csvHeaders = Object.keys(rows[0]).map((h) => h.trim());
   const headerMap = {};
   for (const h of csvHeaders) {
     const norm = normalize(h);
     const match = PRODUCT_FIELDS.find((f) => normalize(f) === norm) ?? null;
-    headerMap[h] = match; // null = cột thừa
+    headerMap[h] = match; // null = extra column
   }
 
   const unknownColumns = csvHeaders.filter((h) => headerMap[h] === null);
   const present = new Set(Object.values(headerMap).filter(Boolean));
   const missingColumns = PRODUCT_FIELDS.filter((f) => !present.has(f));
 
-  // records đầy đủ field; thiếu -> null (convertField là async)
+  // Records with full fields; missing -> null (convertField is async)
   const records = await Promise.all(
     rows.map(async (row) => {
       const obj = {};

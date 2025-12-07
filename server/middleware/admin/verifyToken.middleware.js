@@ -47,7 +47,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Kiểm tra role phải là "admin"
+    // Check if role is "admin"
     if (existUser.role !== "admin") {
       res.clearCookie("adminToken");
       return res.json({

@@ -70,17 +70,9 @@ export async function insertListProducts(records, chunkSize = 500) {
 }
 
 export const deleteProductID = async (id) => {
-  const product = await db("product")
-    .where("id_product", id)
-    .first();
-
-  if (!product) return null;
-
-  await db("product")
+  return db("product")
     .where("id_product", id)
     .del();
-
-  return product;
 }
 
 export const deleteProductList = async (ids, trx = null) => {
@@ -154,7 +146,7 @@ export const updateProduct = async (id, productData) => {
   if (productData.pricing_step !== undefined) updateData.pricing_step = productData.pricing_step;
   if (productData.starting_price !== undefined) updateData.starting_price = productData.starting_price;
   if (productData.url_img !== undefined) updateData.url_img = productData.url_img;
-  if (productData.update_by !== undefined) updateData.update_by = productData.update_by;
+  if (productData.updated_by !== undefined) updateData.updated_by = productData.updated_by;
 
   if (Object.keys(updateData).length === 0) {
     return product;

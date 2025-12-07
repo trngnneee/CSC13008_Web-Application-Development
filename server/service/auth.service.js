@@ -19,7 +19,7 @@ import { sendVarifyMail, sendOTPMail } from "../helper/mail.helper.js";
 export const handleRegister = async (userData, role) => {
   const { fullname, email, password } = userData;
 
-  // Kiểm tra email đã tồn tại với role này chưa
+  // Check if email already exists with this role
   const existUser = await findUserToEmail(email, role);
 
   if (existUser) {
@@ -166,7 +166,7 @@ export const handleVerifyToken = async (token) => {
 
 export const handleForgotPassword = async (email, role) => {
   try {
-    // Kiểm tra user tồn tại với role đúng
+    // Check if user exists with correct role
     const existUser = await findUserToEmail(email, role);
     if (!existUser) {
       return {
@@ -179,7 +179,7 @@ export const handleForgotPassword = async (email, role) => {
     const record = await saveOTP({ email, otp });
 
     if (record) {
-      // Gửi OTP qua email
+      // Send OTP via email
       await sendOTPMail(email, otp);
       
       return {
@@ -288,7 +288,7 @@ export const handleVerifyEmail = async (token) => {
       };
     }
 
-    // Decode token để lấy role từ token
+    // Decode token to get role from token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const tokenRole = decoded.role || "bidder";
 
@@ -300,7 +300,7 @@ export const handleVerifyEmail = async (token) => {
       };
     }
 
-    // Check user role khớp với token role
+    // Check user role matches token role
     if (existUser.role !== tokenRole) {
       return {
         success: false,
