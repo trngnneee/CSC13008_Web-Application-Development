@@ -18,10 +18,10 @@ router.post("/reset-password", adminMiddleware.verifyToken, adminController.rese
 
 router.get("/verify-email", adminController.verifyEmailGet);
 
-router.patch("/change-role/:id_user", adminController.changeRolePatch);
+router.patch("/change-role/:id_user", adminMiddleware.verifyToken, adminController.changeRolePatch);
 
-router.get("/get-all-users", adminController.getAllUsersGet);
+router.get("/get-all-users", adminMiddleware.verifyToken, adminController.getAllUsersGet);
 
-router.get("/logout", adminController.logoutGet);
+router.get("/logout", adminMiddleware.verifyToken, adminController.logoutGet);
 
 export default router;
