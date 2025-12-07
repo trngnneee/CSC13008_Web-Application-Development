@@ -128,6 +128,12 @@ export const getProduct = async (id) => {
     .first();
 }
 
+export const getProductsByIds = async (ids) => {
+  return db("product")
+    .whereIn("id_product", ids)
+    .select("*");
+}
+
 export const updateProduct = async (id, productData) => {
   const product = await db("product").where("id_product", id).first();
   if (!product) return null;

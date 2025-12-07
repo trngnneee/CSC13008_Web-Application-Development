@@ -304,7 +304,41 @@ export const deleteAllProducts = async (req, res) => {
     }
 
    try {
+        const products = await productService.getProductsByIds(ids);
+        
+        if (!products || products.length === 0) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy sản phẩm nào.",
+            });
+        }
+
+        // Delete all images from Supabase
+        for (const product of products) {
+            // Delete avatar if exists
+            if (product.avatar) {
+                try {
+                    await deleteImageFromSupabase(product.avatar);
+                } catch (err) {
+                    console.error("Lỗi khi xóa avatar:", err);
+                }
+            }
+
+            // Delete other images if exist
+            if (product.url_img && Array.isArray(product.url_img)) {
+                for (const imageUrl of product.url_img) {
+                    try {
+                        await deleteImageFromSupabase(imageUrl);
+                    } catch (err) {
+                        console.error("Lỗi khi xóa ảnh:", err);
+                    }
+                }
+            }
+        }
+
+        // Delete products from database
         await productService.deleteProductList(ids);
+        
         res.json({
             code: "success",
             message: "Xóa danh sách sản phẩm thành công",
@@ -313,6 +347,7 @@ export const deleteAllProducts = async (req, res) => {
         res.status(500).json({
             code: "error",
             message: "Lỗi khi xóa danh sách sản phẩm.",
+            data: e?.message || e,
         });
    }
 }

@@ -39,7 +39,7 @@ router.get("/total-page", productController.getTotalPage);
 
 router.get("/list", productController.getProductList);
 
-router.delete("/delete-list", verifyProductExists, productController.deleteAllProducts);
+router.delete("/delete-list", verifyToken, productController.deleteAllProducts);
 
 router.get("/:id", productController.getProductDetail);
 
@@ -50,6 +50,6 @@ router.patch("/update/:id", verifyToken, uploadImages.fields([
 ]), productController.updateProduct);
 
 //Delete 1 product
-router.delete("/delete/:id", verifyToken, productController.deleteProductByID);
+router.delete("/delete/:id", productController.deleteProductByID);
 
 export default router;
