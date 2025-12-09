@@ -1,5 +1,10 @@
 import express from "express";
 import * as productController from "../../controller/product.controller.js"; 
+import * as clientMiddleware from "../../middleware/client/verifyToken.middleware.js";
+import multer from "multer";
+import { storage } from "../../helper/cloudinary.js";
+
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -13,5 +18,6 @@ router.get("/total-page-category/:id_category", productController.getTotalPageBy
 
 router.delete("/delete/:id", productController.deleteProductByID);
 
-// router.post("/create", productController.insertProduct);
+router.post("/create", clientMiddleware.verifyToken, upload.array("files", 10), productController.insertProduct);
+
 export default router;

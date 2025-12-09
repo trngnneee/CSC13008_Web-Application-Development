@@ -1,7 +1,7 @@
 import { parseProductsCsv } from "../helper/parse.helper.js";
 import * as productService from "../service/product.service.js";
-import { getCategoryID } from "../service/category.service.js";
 import { uploadImagesToSupabase, uploadImageToSupabase, deleteImageFromSupabase } from "../helper/supabase.helper.js";
+import db from "../config/database.config.js";
 
 export async function uploadCSVProduct(req, res, next) {
     try {
@@ -79,54 +79,34 @@ export const deleteProductByID = async (req, res) => {
 }
 
 export const insertProduct = async (req, res) => {
-  const productData = req.body;
-  
-  const catID = await getCategoryID(productData.name_category);
-  if (!catID) {
-    return res.json({
-        code: "error",
-        message: "Danh mục không tồn tại."
-    })
-  }
-  productData.id_category = catID;
-
-  // Add updated_by from logged in user (if exists)
-  if (req.account?.id_user) {
-    productData.updated_by = req.account.id_user;
-  }
-
-  try {
+    const productData = req.body;
     const files = req.files || {};
 
-    //avatar
-    if (files?.avatar?.[0]) {
-      const avatarFile = files.avatar[0];
-      const avatarUrl = await uploadImageToSupabase(
-        avatarFile.buffer,
-        avatarFile.originalname
-      );
-      productData.avatar = avatarUrl;
-    }
+    productData.created_by = req.account?.id_user || null;
+    productData.updated_by = req.account?.id_user || null;
+    if (files && files.length > 0) {
+        productData.url_img = files.map((file) => file.path);
+    }   
 
-    // Product images
-    if (files?.images && files.images.length > 0) {
-      const imageUrls = await uploadImagesToSupabase(files.images);
-      productData.url_img = imageUrls; // _text trong DB
-    }
-
-    await productService.insertProduct(productData);
+    await db('product').insert({
+        id_category: productData.id_category,
+        avatar: files && files.length > 0 ? files[0].path : null,
+        name: productData.name,
+        price: productData.price,
+        immediate_purchase_price: productData.immediate_purchase_price,
+        posted_date_time: new Date(),
+        description: productData.description,
+        pricing_step: productData.pricing_step,
+        starting_price: productData.starting_price,
+        url_img: productData.url_img,
+        updated_by: productData.updated_by,
+        created_by: productData.created_by,
+    })
 
     res.json({
-      code: "success",
-      message: "Thêm sản phẩm thành công",
-    });
-  } catch (e) {
-    res.status(500).json({
-      code: "error",
-      message: "Lỗi khi thêm sản phẩm.",
-      data: e?.message || e,
-    });
-  }
+        code: "success",
+        message: "Thêm sản phẩm thành công",
+    })
 };
 
 export const getTotalPage = async (req, res) => {

@@ -25,3 +25,19 @@ export const clientProductDetail = async (id) => {
 
   return data;
 }
+
+export const clientProductCreate = async (formData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/create`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Tạo sản phẩm thất bại");
+  }
+
+  return data;
+}

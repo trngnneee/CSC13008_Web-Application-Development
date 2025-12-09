@@ -25,7 +25,7 @@ export const ImageUploader = ({
       getInputProps,
     },
   ] = useFileUpload({
-    accept: "image/svg+xml,image/png,image/jpeg,image/jpg,image/gif",
+    accept: "image/svg+xml,image/png,image/jpeg,image/jpg,image/gif,image/webp",
     maxSize,
     multiple: true,
     maxFiles,

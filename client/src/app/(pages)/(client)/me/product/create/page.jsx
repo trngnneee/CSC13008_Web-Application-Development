@@ -18,17 +18,37 @@ import { ImageUploader } from "@/app/(pages)/admin/(dashboard)/components/ImageU
 import { Checkbox } from "@/components/ui/checkbox";
 import JustValidate from "just-validate";
 import { toast } from "sonner";
+import { clientCategoryList } from "@/lib/clientAPI/category";
+import { buildCategoryTree, renderCategoryTree } from "@/helper/category";
+import { clientProductCreate } from "@/lib/clientAPI/product";
+import { toastHandler } from "@/lib/toastHandler";
+import { useRouter } from "next/navigation";
 
 export default function SellerProductCreatePage() {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("Danh mục 1");
   const [imageList, setImageList] = useState([]);
+  const [price, setPrice] = useState(0);
   const [instantPrice, setInstantPrice] = useState(0);
   const [startingPrice, setStartingPrice] = useState(0);
   const [priceStep, setPriceStep] = useState(0);
   const [desc, setDesc] = useState("");
-  const [autoRenew, setAutoRenew] = useState(false);
+  // const [autoRenew, setAutoRenew] = useState(false);
   const [submit, setSubmit] = useState(false);
+  const router = useRouter();
+
+  const [categoryList, setCategoryList] = useState([]);
+  const [categoryTree, setCategoryTree] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientCategoryList();
+      if (promise.code == "success") {
+        setCategoryList(promise.data);
+        setCategoryTree(buildCategoryTree(promise.data));
+      }
+    }
+    fetchData();
+  }, [])
 
   useEffect(() => {
     const validation = new JustValidate("#productCreateForm");
@@ -82,15 +102,27 @@ export default function SellerProductCreatePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (submit)
-    {
-      if (imageList.length < 3)
-      {
+    if (submit) {
+      if (imageList.length < 3) {
         toast.error("Vui lòng tải lên ít nhất 3 hình ảnh sản phẩm!");
         setSubmit(false);
         return;
       }
-      console.log({ name, category, imageList, instantPrice, startingPrice, priceStep, desc, autoRenew  });
+      const formData = new FormData();
+      formData.append("id_category", category);
+      imageList.forEach(file => {
+        formData.append("files", file);
+      });
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("immediate_purchase_price", instantPrice);
+      formData.append("description", desc);
+      formData.append("pricing_step", priceStep);
+      formData.append("starting_price", startingPrice);
+      formData.append("auto_renew", e.target.autoRenew.checked);
+
+      const promise = clientProductCreate(formData);
+      toastHandler(promise, router, "/me/product");
     }
   }
 
@@ -133,9 +165,7 @@ export default function SellerProductCreatePage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setCategory("Danh mục 1")}>Danh mục 1</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setCategory("Danh mục 2")}>Danh mục 2</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setCategory("Danh mục 3")}>Danh mục 3</DropdownMenuItem>
+                {categoryList.length > 0 && renderCategoryTree(categoryTree, 0, setCategory)}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -156,6 +186,22 @@ export default function SellerProductCreatePage() {
           />
         </div>
         <div className="flex gap-5 mt-[30px]">
+          <div className="w-full flex flex-col gap-3">
+            <Label
+              htmlFor="price"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Giá
+            </Label>
+            <Input
+              id="price"
+              name="price"
+              placeholder="100000"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </div>
           <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="startingPrice"
@@ -204,17 +250,16 @@ export default function SellerProductCreatePage() {
               onChange={(e) => setPriceStep(e.target.value)}
             />
           </div>
-          <div className="w-full flex flex-col gap-3">
-            <Label
-              htmlFor="autoRenew"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Tự động gia hạn
-            </Label>
-            <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-client-color)]" />
-          </div>
         </div>
-
+        <div className="w-full flex items-center gap-3 mt-5">
+          <Label
+            htmlFor="autoRenew"
+            className="text-sm font-semibold text-[#606060]"
+          >
+            Tự động gia hạn
+          </Label>
+          <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-client-color)]" />
+        </div>
         <div className="mt-[30px] flex flex-col gap-3">
           <Label
             htmlFor="desc"
