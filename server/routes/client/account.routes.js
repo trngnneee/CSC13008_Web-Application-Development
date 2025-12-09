@@ -18,4 +18,6 @@ router.post("/reset-password", clientMiddleware.verifyToken, clientController.re
 
 router.get("/verify-email", clientController.verifyEmailGet);
 
+router.get("/logout", clientController.logoutGet);
+
 export default router;

@@ -172,3 +172,11 @@ export const verifyEmailGet = async (req, res) => {
   const filePath = path.join(process.cwd(), "public", "change-direct-client.html");
   return res.sendFile(filePath);
 };
+
+export const logoutGet = async (req, res) => {
+  res.clearCookie("clientToken");
+  res.json({
+    code: "success",
+    message: "Đăng xuất thành công!"
+  });
+}

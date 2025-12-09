@@ -1,12 +1,14 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { useClientAuthContext } from "@/provider/clientAuthProvider"
 import { Gavel, Heart, Package, Star, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 export const Sider = () => {
   const pathName = usePathname();
+  const { userInfo } = useClientAuthContext();
   const siderData = [
     {
       title: "Thông tin cá nhân",
@@ -23,16 +25,16 @@ export const Sider = () => {
       href: "/me/wishlist",
       icon: Heart
     },
-    {
+    ...(userInfo?.role == "bidder" ? [{
       title: "Danh sách đấu giá của tôi",
       href: "/me/auction",
       icon: Gavel
-    },
-    {
+    }] : []),
+    ...(userInfo?.role == "seller" ? [{
       title: "Danh sách sản phẩm của tôi",
       href: "/me/product",
       icon: Package
-    },
+    }] : [])
   ]
   
   return (

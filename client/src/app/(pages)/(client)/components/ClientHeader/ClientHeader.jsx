@@ -5,11 +5,30 @@ import { NavBar } from "./components/NavBar";
 import { SearchBar } from "./components/SearchBar";
 import { useRouter } from "next/navigation";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { User } from "lucide-react";
+import { Power, User } from "lucide-react";
+import { clientLogout } from "@/lib/clientAPI/account";
+import { toast } from "sonner";
 
 export const ClientHeader = () => {
   const router = useRouter();
   const { isLogin } = useClientAuthContext();
+
+  const handleLogout = () => {
+    const promise = clientLogout();
+    toast.promise(promise, {
+      loading: "Đang đăng xuất...",
+      success: (data) => {
+        if (data.code == "success")
+        {
+          setTimeout(() => {
+            window.location.href = "/account/login"
+          }, 1000);
+          return data.message;
+        }
+      },
+      error: "Đăng xuất thất bại!"
+    });
+  }
 
   return (
     <>
@@ -30,9 +49,14 @@ export const ClientHeader = () => {
               Đăng nhập
             </Button>
           ) : (
-            <Button onClick={() => router.push("/me/profile")} className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] rounded-full w-10 h-10 p-0 flex items-center justify-center">
-              <User />
-            </Button>
+            <>
+              <Button onClick={() => router.push("/me/profile")} className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] rounded-full w-10 h-10 p-0 flex items-center justify-center">
+                <User />
+              </Button>
+              <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 rounded-full w-10 h-10 p-0 flex items-center justify-center">
+                <Power />
+              </Button>
+            </>
           )}
         </div>
       </div>
