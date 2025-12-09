@@ -41,3 +41,17 @@ export const clientProductCreate = async (formData) => {
 
   return data;
 }
+
+export const clientProductListBySeller = async (id, params = "") => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/list/seller/${id}${params}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách sản phẩm của người bán thất bại");
+  }
+
+  return data;
+}

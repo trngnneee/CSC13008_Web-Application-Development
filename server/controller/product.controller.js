@@ -32,7 +32,7 @@ export const deleteProductByID = async (req, res) => {
     try {
         // Get product info before deleting
         const product = await productService.getProduct(id);
-        
+
         if (!product) {
             return res.status(404).json({
                 code: "error",
@@ -64,7 +64,7 @@ export const deleteProductByID = async (req, res) => {
 
         // Delete product from database
         await productService.deleteProductID(id);
-        
+
         res.json({
             code: "success",
             message: "Xóa sản phẩm thành công",
@@ -86,7 +86,7 @@ export const insertProduct = async (req, res) => {
     productData.updated_by = req.account?.id_user || null;
     if (files && files.length > 0) {
         productData.url_img = files.map((file) => file.path);
-    }   
+    }
 
     await db('product').insert({
         id_category: productData.id_category,
@@ -130,7 +130,7 @@ export const getProductDetail = async (req, res) => {
     const id = req.params.id;
     try {
         const product = await productService.getProduct(id);
-        
+
         if (!product) {
             return res.status(404).json({
                 code: "error",
@@ -155,14 +155,14 @@ export const getProductDetail = async (req, res) => {
 export const updateProduct = async (req, res) => {
     const id = req.params.id;
     const productData = req.body;
-    
+
     if (req.account?.id_user) {
         productData.updated_by = req.account.id_user;
     }
 
     try {
         const oldProduct = await productService.getProduct(id);
-        
+
         if (!oldProduct) {
             return res.status(404).json({
                 code: "error",
@@ -177,7 +177,7 @@ export const updateProduct = async (req, res) => {
                 if (oldProduct.avatar) {
                     await deleteImageFromSupabase(oldProduct.avatar);
                 }
-                
+
                 const avatarFile = files.avatar[0];
                 const avatarUrl = await uploadImageToSupabase(
                     avatarFile.buffer,
@@ -206,7 +206,7 @@ export const updateProduct = async (req, res) => {
                         }
                     }
                 }
-                
+
                 const imageUrls = await uploadImagesToSupabase(files.images);
                 productData.url_img = imageUrls;
             } catch (uploadError) {
@@ -273,6 +273,33 @@ export const getProductList = async (req, res) => {
     }
 }
 
+export const getProductListBySeller = async (req, res) => {
+    const { sellerID } = req.params;
+
+    const query = db("product")
+        .where("created_by", sellerID)
+        .select("product.*", 'category.name_category')
+        .join("category", "product.id_category", "category.id_category");
+
+    const pageSize = 5;
+    const countResult = await db('product').where("created_by", sellerID).count('* as count').first();
+    const totalPages = Math.ceil(Number(countResult.count) / pageSize);
+    if (req.query.page) {
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * pageSize;
+        query.limit(pageSize).offset(offset);
+    }
+
+    const productList = await query;
+
+    res.json({
+        code: "success",
+        message: "Lấy danh sách sản phẩm của người bán thành công",
+        productList: productList,
+        totalPages: totalPages,
+    })
+}
+
 export const deleteAllProducts = async (req, res) => {
     const { ids } = req.body;
 
@@ -283,9 +310,9 @@ export const deleteAllProducts = async (req, res) => {
         });
     }
 
-   try {
+    try {
         const products = await productService.getProductsByIds(ids);
-        
+
         if (!products || products.length === 0) {
             return res.status(404).json({
                 code: "error",
@@ -318,18 +345,18 @@ export const deleteAllProducts = async (req, res) => {
 
         // Delete products from database
         await productService.deleteProductList(ids);
-        
+
         res.json({
             code: "success",
             message: "Xóa danh sách sản phẩm thành công",
         });
-   } catch (e) {
+    } catch (e) {
         res.status(500).json({
             code: "error",
             message: "Lỗi khi xóa danh sách sản phẩm.",
             data: e?.message || e,
         });
-   }
+    }
 }
 
 export const getProductListByCategory = async (req, res) => {
@@ -348,7 +375,7 @@ export const getProductListByCategory = async (req, res) => {
         }
 
         const products = await productService.getProductsByCategory(id_category, filter);
-        
+
         res.json({
             code: "success",
             message: "Lấy danh sách sản phẩm theo danh mục thành công",

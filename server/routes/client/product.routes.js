@@ -12,6 +12,8 @@ router.get("/total-page", productController.getTotalPage);
 
 router.get("/list", productController.getProductList);
 
+router.get("/list/seller/:sellerID", productController.getProductListBySeller);
+
 router.get("/list-category/:id_category", productController.getProductListByCategory);
 
 router.get("/total-page-category/:id_category", productController.getTotalPageByCategory);
