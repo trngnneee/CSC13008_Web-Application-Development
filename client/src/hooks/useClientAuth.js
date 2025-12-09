@@ -6,17 +6,26 @@ export const useClientAuth = () => {
   const pathName = usePathname();
   const [isLogin, setIsLogin] = useState(false);
   const [userInfo, setUserInfo] = useState();
-  const publicPath = [
+  const exactPublic = [
     "/",
     "/account/login",
     "/account/register",
     "/account/forgot-password",
     "/account/otp-password",
     "/account/initial",
-    "/category/*",
-    "/product/*",
     "/search"
   ];
+
+  const wildcardPublic = [
+    "/category/",
+    "/product/"
+  ];
+
+  const isPublicPath = (path) => {
+    if (exactPublic.includes(path)) return true;
+    if (wildcardPublic.some(p => path.startsWith(p))) return true;
+    return false;
+  };
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/verifyToken`, {
@@ -25,7 +34,7 @@ export const useClientAuth = () => {
       .then(res => res.json())
       .then(data => {
         if (data.code == "error") {
-          if (!publicPath.some(path => pathName.startsWith(path))) {
+          if (!isPublicPath(pathName)) {
             setIsLogin(false);
             router.push("/account/login");
           }

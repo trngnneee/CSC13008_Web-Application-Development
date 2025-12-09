@@ -8,7 +8,6 @@ import {
   handleVerifyEmail, 
   handleChangeRole 
 } from "../../service/auth.service.js";
-import { findUserToEmail } from "../../service/user.service.js";
 import path from "path";
 
 export const registerPost = async (req, res) => {

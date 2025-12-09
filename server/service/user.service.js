@@ -12,13 +12,14 @@ db.raw("select now()")
   }));
 
 export const findUserToEmail = async (email, role) => {
-  let query = db('user').select('*').where({ email });
-  
-  // Chỉ filter role nếu role được pass vào
-  if (role) {
-    query = query.where({ role });
+  const query = db("user").where("email", email);
+
+  if (Array.isArray(role)) {
+    query.whereIn("role", role);
+  } else if (role) {
+    query.where("role", role);
   }
-  
+
   return query.first();
 };
 
@@ -115,14 +116,13 @@ export const resetPassword = async (id_user, password) => {
 
 export const getAllUsers = async (filter = {}) => {
   const users = db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
-  if (filter.page && filter.limit)
-  {
+  if (filter.page && filter.limit) {
     const offset = (filter.page - 1) * filter.limit;
     users.offset(offset).limit(filter.limit);
   }
   if (filter.keyword) {
     const regex = new RegExp(filter.keyword, "i");
-        users.whereRaw("slug ~* ?", [regex.source]);
+    users.whereRaw("slug ~* ?", [regex.source]);
   }
   return users;
 }
@@ -132,7 +132,7 @@ export const createVerifyEmail = async (id_user, role = "bidder") => {
     throw new Error("Thiếu thông tin bắt buộc: id_user");
   }
 
-   const token = jwt.sign(
+  const token = jwt.sign(
     {
       id_user: id_user,
       role: role
@@ -142,7 +142,7 @@ export const createVerifyEmail = async (id_user, role = "bidder") => {
       expiresIn: '1d'
     }
   );
-  
+
   const [record] = await db("verify_email")
     .insert({
       id_user,

@@ -36,9 +36,11 @@ export const getAllUpgradeRequests = async (filter = {}) => {
       "upgrade_request.reviewed_by",
       "user.fullname",
       "user.email",
-      "user.role"
+      "user.role",
+      "admin.fullname as admin_name"
     )
-    .leftJoin("user", "upgrade_request.id_user", "user.id_user");
+    .leftJoin("user", "upgrade_request.id_user", "user.id_user")
+    .leftJoin("user as admin", "upgrade_request.reviewed_by", "admin.id_user")
 
   if (filter.status) {
     query.where("upgrade_request.status", filter.status);

@@ -7,7 +7,6 @@ import {
   handleResetPassword, 
   handleVerifyEmail 
 } from "../../service/auth.service.js";
-import { findUserToEmail } from "../../service/user.service.js";
 import path from "path";
 
 export const registerPost = async (req, res) => {
@@ -31,7 +30,7 @@ export const registerPost = async (req, res) => {
 export const loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
 
-  const result = await handleLogin({ email, password, rememberPassword }, "bidder");
+  const result = await handleLogin({ email, password, rememberPassword }, ["bidder", "seller"]);
   
   if (!result.success) {
     return res.json({

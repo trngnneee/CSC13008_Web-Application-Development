@@ -75,3 +75,17 @@ export const adminUserUpdate = async (id, finalData) => {
 
   return data;
 }
+
+export const adminUserRequest = async (status) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/user/upgrade-requests/list` + (status ? `?status=${status}` : ""), {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách yêu cầu thất bại");
+  }
+
+  return data;
+}
