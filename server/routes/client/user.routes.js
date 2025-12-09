@@ -11,4 +11,8 @@ router.post("/request-upgrade", clientMiddleware.verifyToken, clientUserControll
 
 router.get("/my-upgrade-request", clientMiddleware.verifyToken, clientUserController.getMyUpgradeRequest);
 
+router.post("/profile/update", clientMiddleware.verifyToken, clientUserController.updateClientProfile);
+
+router.post("/profile/reset-password", clientMiddleware.verifyToken, clientUserController.resetClientPassword);
+
 export default router;

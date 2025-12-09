@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { findUserToEmail, findUserById } from "../../service/user.service.js"
+import { findUserById } from "../../service/user.service.js"
 
 export const verifyToken = async (req, res, next) => {
   try {

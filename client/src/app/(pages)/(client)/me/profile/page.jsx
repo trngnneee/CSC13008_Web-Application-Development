@@ -20,9 +20,10 @@ import JustValidate from "just-validate";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { CircleAlertIcon } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { clientUpgrade } from "@/lib/clientAPI/user";
+import { clientProfileUpdate, clientUpgrade, getClientProfile } from "@/lib/clientAPI/user";
 import { toastHandler } from "@/lib/toastHandler";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
   const { userInfo } = useClientAuthContext();
@@ -38,6 +39,10 @@ export default function ProfilePage() {
     }
     _e(_event);
   };
+
+  useEffect(() => {
+    setDate(userInfo?.date_of_birth ? new Date(userInfo.date_of_birth) : new Date());
+  }, [userInfo])
 
   useEffect(() => {
     const validation = new JustValidate('#profile-form');
@@ -63,9 +68,22 @@ export default function ProfilePage() {
     e.preventDefault();
     if (submit) {
       const fullname = e.target.fullname.value;
-      const email = e.target.email.value;
       const date_of_birth = date;
-      console.log({ fullname, email, date_of_birth });
+      const finalData = {
+        fullname,
+        date_of_birth,
+      };
+
+      const promise = clientProfileUpdate(finalData);
+      toast.promise(promise, {
+        loading: "Đang cập nhật thông tin cá nhân...",
+        success: (data) => {
+          window.location.reload();
+          setSubmit(false);
+          return data.message || "Cập nhật thông tin cá nhân thành công!";
+        },
+        error: (err) => err.message || "Cập nhật thông tin cá nhân thất bại!"
+      })
     }
   }
 
@@ -86,6 +104,7 @@ export default function ProfilePage() {
               name="fullname"
               type="text"
               placeholder="Nhập họ và tên"
+              defaultValue={userInfo?.fullname}
             />
           </div>
           <div className="*:not-first:mt-2 w-full">
@@ -95,6 +114,8 @@ export default function ProfilePage() {
               name="email"
               type="text"
               placeholder="Nhập email"
+              defaultValue={userInfo?.email}
+              readOnly
             />
           </div>
         </div>

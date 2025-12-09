@@ -153,7 +153,8 @@ export const handleVerifyToken = async (token) => {
         id_user: existUser.id_user,
         fullname: existUser.fullname,
         email: existUser.email,
-        role: existUser.role
+        role: existUser.role,
+        date_of_birth: existUser.date_of_birth
       }
     };
   } catch (error) {

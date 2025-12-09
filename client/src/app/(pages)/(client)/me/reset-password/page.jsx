@@ -7,10 +7,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import JustValidate from "just-validate";
+import { clientProfileResetPassword } from "@/lib/clientAPI/user";
+import { toastHandler } from "@/lib/toastHandler";
+import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
   const [submit, setSubmit] = useState(false);
-  
+  const router = useRouter();
+
   useEffect(() => {
     const validation = new JustValidate('#reset-password-form');
     validation
@@ -106,12 +110,17 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (submit)
-    {
+    if (submit) {
       const oldPassword = e.target['old-password'].value;
       const password = e.target.password.value;
 
-      console.log({ oldPassword, password });
+      const finalData = {
+        old_password: oldPassword,
+        password: password,
+      };
+      const promise = clientProfileResetPassword(finalData);
+      toastHandler(promise, router, "/me/profile");
+      setSubmit(false);
     }
   }
 
@@ -129,6 +138,10 @@ export default function ResetPasswordPage() {
               placeholder="Nhập mật khẩu cũ"
             />
           </div>
+          <div className="w-full">
+          </div>
+        </div>
+        <div className="flex gap-5 items-center mt-5">
           <div className="*:not-first:mt-2 w-full">
             <Label htmlFor="password" className={"text-[var(--main-client-color)]"}>Mật khẩu mới</Label>
             <Input
@@ -138,8 +151,6 @@ export default function ResetPasswordPage() {
               placeholder="Nhập mật khẩu mới"
             />
           </div>
-        </div>
-        <div className="flex gap-5 items-center mt-5">
           <div className="*:not-first:mt-2 w-full">
             <Label htmlFor="confirm-password" className={"text-[var(--main-client-color)]"}>Xác nhận mật khẩu</Label>
             <Input
@@ -148,8 +159,6 @@ export default function ResetPasswordPage() {
               type="password"
               placeholder="Nhập mật khẩu mới"
             />
-          </div>
-          <div className="w-full">
           </div>
         </div>
         <Button disabled={submit} className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] w-full mt-5"}>Lưu</Button>
