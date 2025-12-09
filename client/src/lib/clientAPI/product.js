@@ -69,3 +69,16 @@ export const clientProductListBySeller = async (id, params = "") => {
 
   return data;
 }
+
+export const clientProductSearch = async (keyword) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search?keyword=${encodeURIComponent(keyword)}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Tìm kiếm sản phẩm thất bại");
+  }
+  return data;;
+}

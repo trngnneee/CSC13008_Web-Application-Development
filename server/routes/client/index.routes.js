@@ -3,6 +3,7 @@ import userRoute from "./user.routes.js";
 import accountRoutes from "./account.routes.js";
 import productRoutes from "./product.routes.js";
 import categoryRoutes from "./category.routes.js";
+import searchRoutes from "./search.routes.js";
 
 const router = express.Router();
 
@@ -29,5 +30,10 @@ router.use(
   "/category",
   categoryRoutes
 );
+
+router.use(
+  "/search",
+  searchRoutes
+)
 
 export default router;

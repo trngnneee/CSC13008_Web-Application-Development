@@ -1,4 +1,9 @@
+"use client"
+
+import { useSearchParams } from "next/navigation"
 import { ProductItem } from "../components/ProductItem"
+import { useEffect, useState } from "react";
+import { clientProductSearch } from "@/lib/clientAPI/product";
 
 export default function SearchPage() {
   const data = [
@@ -60,6 +65,21 @@ export default function SearchPage() {
     }
   ]
 
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get("keyword");
+
+  const [productList, setProductList] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientProductSearch(keyword);
+      if (promise.code == "success")
+      {
+        setProductList(promise.productList);
+      }
+    };
+    fetchData();
+  }, [keyword]);
+
   return (
     <>
       <div className="w-full overflow-hidden relative h-[100px]">
@@ -70,9 +90,9 @@ export default function SearchPage() {
         <div className="text-white text-[80px] font-extrabold absolute bottom-1/2 translate-y-1/2 left-0 translate-x-1/5">Kết quả tìm kiếm</div>
       </div>
       <div className="container mx-auto my-[50px]">
-        <div className="text-[35px] font-extrabold mb-[30px]">Kết quả tìm kiếm cho: <span>"Đồ điện tử"</span></div>
+        <div className="text-[35px] font-extrabold mb-[30px]">Kết quả tìm kiếm cho: <span>"{keyword}"</span></div>
         <div className="grid grid-cols-4 gap-[30px] mb-[30px]">
-          {data.map((item, index) => (
+          {productList.length > 0 &&productList.map((item, index) => (
             <ProductItem
               key={index}
               item={item}
