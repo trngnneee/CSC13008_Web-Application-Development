@@ -12,6 +12,20 @@ export const clientProductList = async (limit = 0) => {
   return data;
 }
 
+export const clientProductListTopPrice = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/list/top-price`, {
+    method: "GET"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách sản phẩm thất bại");
+  }
+
+  return data;
+}
+
 export const clientProductDetail = async (id) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/detail/${id}`, {
     method: "GET"

@@ -273,6 +273,37 @@ export const getProductList = async (req, res) => {
     }
 }
 
+export const getTopPriceProductList = async (req, res) => {
+    const productList = await db("product")
+        .select("product.*", 'user.fullname as seller')
+        .join("user", "product.created_by", "user.id_user")
+        .orderBy("price", "desc")
+        .limit(4);
+
+    res.json({
+        code: "success",
+        message: "Lấy danh sách sản phẩm có giá cao nhất thành công",
+        productList: productList,
+    })
+}
+
+export const getProductDetailByID = async (req, res) => {
+    const id = req.params.id;
+
+    const productDetail = await db("product")
+        .select("product.*", 'category.name_category', 'user.fullname as seller', 'user.id_user as seller_id', 'user.email as seller_email')
+        .where("product.id_product", id)
+        .join("category", "product.id_category", "category.id_category")
+        .join("user", "product.created_by", "user.id_user")
+        .first();
+
+    res.json({
+        code: "success",
+        message: "Lấy chi tiết sản phẩm thành công",
+        productDetail: productDetail,
+    })
+}
+
 export const getProductListBySeller = async (req, res) => {
     const { sellerID } = req.params;
 

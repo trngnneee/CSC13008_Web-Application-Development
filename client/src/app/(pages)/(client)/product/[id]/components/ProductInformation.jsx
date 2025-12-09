@@ -4,25 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Heart } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { clientProductDetail } from "@/lib/clientAPI/product";
 import { dateTimeFormat } from "@/utils/date";
 
-export const ProdcutInformation = () => {
+export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin } = useClientAuthContext();
-  const { id } = useParams();
-  const [productDetail, setProductDetail] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const promise = await clientProductDetail(id);
-      if (promise.code == "success") {
-        setProductDetail(promise.data);
-      }
-    }
-    fetchData();
-  }, [])
 
   return (
     <>
@@ -36,7 +21,8 @@ export const ProdcutInformation = () => {
           </div>
           <div className="z-10 border-b-2 border-black pb-[30px]">
             <div className="text-[65px] font-extrabold -mb-5">{productDetail.name}</div>
-            <div className="text-[20px]">By <span className="font-extrabold">Leonardo da Vinci</span></div>
+            <div className="text-[20px]">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
+            <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
             <div className="flex items-center gap-5 mt-5">
               <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.starting_price).toLocaleString("vi-VN")}</span></div>
               <div className="text-[15px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.price).toLocaleString("vi-VN")}</span></div>
@@ -45,7 +31,7 @@ export const ProdcutInformation = () => {
             </div>
             <div className="mt-[30px]">
               <div className="text-[15px] font-bold mb-2.5">Thời gian còn lại:</div>
-              <div className="grid grid-cols-4 gap-7">
+              {/* <div className="grid grid-cols-4 gap-7">
                 <div className="flex flex-col">
                   <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">07</div>
                   <div className="text-center text-[18px] text-[var(--main-client-color)]">Ngày</div>
@@ -62,12 +48,13 @@ export const ProdcutInformation = () => {
                   <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">47</div>
                   <div className="text-center text-[18px] text-[var(--main-client-color)]">Giây</div>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <div className="font-light">{dateTimeFormat(productDetail.end_date_time)}</div></div>
+            <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
+            <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
             <div className="mt-5">
-              <div className="text-[15px] font-bold">Mô tả sản phẩm</div>
-              <div>{productDetail.description}</div>
+              <div className="text-[15px] font-bold">Mô tả sản phẩm:</div>
+              <div className="bg-gray-100 p-5 rounded-xl mt-3" dangerouslySetInnerHTML={{__html: productDetail.description}}></div>
             </div>
             {isLogin && (
               <div className="mt-[30px] flex justify-center">

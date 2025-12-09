@@ -15,18 +15,23 @@ export const ProductItem = ({ item }) => {
         <div className="p-5 bg-white shadow-2xl rounded-[10px] hover:scale-[1.02] transition-all duration-300 cursor-pointer">
           <div className="w-full h-[200px] overflow-hidden">
             <img
-              src={item.image}
+              src={item.avatar}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="mt-[23px]">
-            <div className="text-[30px] font-bold line-clamp-1">{item.name}</div>
+            <div className="text-[20px] font-bold line-clamp-1">{item.name}</div>
             <div className="text-[15px]">by: <span className="font-bold">{item.seller}</span></div>
           </div>
-          <div className="text-[16px] mt-[30px] border-b border-b-[black] pb-[10px] mb-[10px]">Giá hiện tại: $<span className="font-bold">{parseInt(item.price).toLocaleString("vi-VN")}</span></div>
+          <div className="text-[14px] mt-[20px]">Giá hiện tại: <span className="font-bold">{parseInt(item.price).toLocaleString("vi-VN")} VND</span></div>
+          <div className="text-[14px] border-b border-b-[black] pb-2.5 mb-2.5">Giá mua ngay: <span className="font-bold">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")} VND</span></div>
+          <div className="text-[10px] flex items-center gap-[5px] mb-2">
+            <div className="w-4 h-4 rounded-full bg-amber-400"></div>
+            <div>Thời gian đăng: <span className="font-bold">{dateTimeFormat(item.posted_date_time)}</span></div>
+          </div>
           <div className="text-[10px] flex items-center gap-[5px]">
             <div className="w-4 h-4 rounded-full bg-amber-400"></div>
-            <div>Kết thúc tại: <span className="font-bold">{dateTimeFormat(item.end_date_time)}</span></div>
+            <div>Kết thúc tại: <span className="font-bold">{item.end_date_time ? dateTimeFormat(item.end_date_time) : "-"}</span></div>
           </div>
           {isLogin ? (
             <div className="flex items-center mt-[30px] gap-2.5">
