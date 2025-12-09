@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ProductItem } from "../../components/ProductItem"
+import { ProductItem } from "../../components/ProductItem/ProductItem"
 import { SectionHeader } from "./SectionHeader"
 import { clientProductListTopPrice } from "@/lib/clientAPI/product"
+import { ProductItemSkeleton } from "../../components/ProductItem/ProductItemSkeleton"
 
 export const Section3 = () => {
   const [productList, setProductList] = useState([])
@@ -28,12 +29,18 @@ export const Section3 = () => {
           link="#"
         />
         <div className="grid grid-cols-4 gap-[30px] mt-[50px]">
-          {productList.length > 0 && productList.map((item, index) => (
+          {productList.length > 0 ? productList.map((item, index) => (
             <ProductItem
               key={index}
               item={item}
             />
-          ))}
+          )) : (
+            [...Array(4)].map((_, index) => (
+              <ProductItemSkeleton 
+                key={index}
+              />
+            ))
+          )}
         </div>
       </div>
     </>

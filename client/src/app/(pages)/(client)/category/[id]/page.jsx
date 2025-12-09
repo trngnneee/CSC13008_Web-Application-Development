@@ -1,4 +1,4 @@
-import { ProductItem } from "../../components/ProductItem";
+import { ProductItem } from "../../components/ProductItem/ProductItem";
 import { CategoryFilter } from "./components/CategoryFilter";
 import CategoryPagination from "./components/CategoryPagination";
 

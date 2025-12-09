@@ -70,8 +70,8 @@ export const clientProductListBySeller = async (id, params = "") => {
   return data;
 }
 
-export const clientProductSearch = async (keyword) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search?keyword=${encodeURIComponent(keyword)}`, {
+export const clientProductSearch = async (keyword, status = "") => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search?keyword=${encodeURIComponent(keyword)}` + (status != "normal" ? `&status=${encodeURIComponent(status)}` : ""), {
     method: "GET",
   });
 

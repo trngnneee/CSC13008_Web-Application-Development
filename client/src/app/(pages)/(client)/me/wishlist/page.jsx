@@ -1,5 +1,5 @@
 import CategoryPagination from "../../category/[id]/components/CategoryPagination";
-import { ProductItem } from "../../components/ProductItem";
+import { ProductItem } from "../../components/ProductItem/ProductItem";
 import { HeaderTitle } from "../components/HeaderTitle";
 
 export default function WishlistPage() {

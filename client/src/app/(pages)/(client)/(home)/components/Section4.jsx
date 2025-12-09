@@ -1,4 +1,4 @@
-import { ProductItem } from "../../components/ProductItem"
+import { ProductItem } from "../../components/ProductItem/ProductItem"
 import { SectionHeader } from "./SectionHeader"
 
 export const Section4 = () => {
