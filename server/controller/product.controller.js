@@ -2,6 +2,7 @@ import { parseProductsCsv } from "../helper/parse.helper.js";
 import * as productService from "../service/product.service.js";
 import { uploadImagesToSupabase, uploadImageToSupabase, deleteImageFromSupabase } from "../helper/supabase.helper.js";
 import db from "../config/database.config.js";
+import { getAllChildCategoryIDs } from "../helper/category.helper.js";
 
 export async function uploadCSVProduct(req, res, next) {
     try {
@@ -394,23 +395,50 @@ export const getProductListByCategory = async (req, res) => {
     const { id_category } = req.params;
 
     try {
-        let filter = {};
+        const categoryDetail = await db("category").where("id_category", id_category).first();
 
-        if (req.query.keyword) {
-            filter.keyword = req.query.keyword;
+        if (!categoryDetail) {
+            return res.json({
+                code: "error",
+                message: "Không tìm thấy danh mục."
+            });
         }
 
+        const categoryIDs = await getAllChildCategoryIDs(categoryDetail.id_category);
+
+        const query = db("product").whereIn("id_category", categoryIDs);
+
+        const pageSize = 4 * 3;
+        const countResult = await db('product').whereIn("id_category", categoryIDs).count('* as count').first();
+        const totalPages = Math.ceil(Number(countResult.count) / pageSize);
         if (req.query.page) {
-            filter.page = parseInt(req.query.page);
-            filter.limit = 5;
+            const page = parseInt(req.query.page) || 1;
+            const offset = (page - 1) * pageSize;
+            query.limit(pageSize).offset(offset);
         }
 
-        const products = await productService.getProductsByCategory(id_category, filter);
+        if (req.query.status)
+        {
+            const status = req.query.status;
+            if (status === "price-asc") {
+                query.orderBy("price", "asc");
+            } else if (status === "price-desc") {
+                query.orderBy("price", "desc");
+            } else if (status === "end-asc") {
+                query.orderBy("posted_date_time", "asc");
+            } else if (status === "end-desc") {
+                query.orderBy("posted_date_time", "desc");
+            }
+        }
+
+        const productList = await query;
 
         res.json({
             code: "success",
             message: "Lấy danh sách sản phẩm theo danh mục thành công",
-            data: products
+            productList: productList,
+            categoryName: categoryDetail.name_category,
+            totalPages: totalPages,
         });
     } catch (error) {
         res.status(500).json({
