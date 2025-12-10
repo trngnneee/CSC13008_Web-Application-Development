@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
@@ -23,6 +22,8 @@ import { buildCategoryTree, renderCategoryTree } from "@/helper/category";
 import { clientProductCreate } from "@/lib/clientAPI/product";
 import { toastHandler } from "@/lib/toastHandler";
 import { useRouter } from "next/navigation";
+import { Calendar } from "@/components/ui/calendar";
+import { formatDate } from "date-fns";
 
 export default function SellerProductCreatePage() {
   const [name, setName] = useState("");
@@ -33,6 +34,7 @@ export default function SellerProductCreatePage() {
   const [startingPrice, setStartingPrice] = useState(0);
   const [priceStep, setPriceStep] = useState(0);
   const [desc, setDesc] = useState("");
+  const [date, setDate] = useState(new Date());
   // const [autoRenew, setAutoRenew] = useState(false);
   const [submit, setSubmit] = useState(false);
   const router = useRouter();
@@ -126,6 +128,7 @@ export default function SellerProductCreatePage() {
       formData.append("pricing_step", priceStep);
       formData.append("starting_price", startingPrice);
       formData.append("auto_renew", e.target.autoRenew.checked);
+      formData.append("end_date_time", date ? date.toISOString() : "");
 
       const promise = clientProductCreate(formData);
       toastHandler(promise, router, "/me/product");
@@ -174,7 +177,7 @@ export default function SellerProductCreatePage() {
                 {categoryList.length > 0 && renderCategoryTree(categoryTree, 0, setCategory)}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Input id="category" type={"hidden"} value={category} onChange={() => {}} />
+            <Input id="category" type={"hidden"} value={category} onChange={() => { }} />
           </div>
         </div>
         <div className="flex flex-col gap-2 mt-[30px]">
@@ -258,14 +261,43 @@ export default function SellerProductCreatePage() {
             />
           </div>
         </div>
-        <div className="w-full flex items-center gap-3 mt-5">
-          <Label
-            htmlFor="autoRenew"
-            className="text-sm font-semibold text-[#606060]"
-          >
-            Tự động gia hạn
-          </Label>
-          <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-client-color)]" />
+        <div className="mt-5">
+          <div className="w-full flex flex-col gap-3">
+            <Label
+              htmlFor="endDate"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Ngày kết thúc đấu giá
+            </Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Input
+                  type="text"
+                  id="endDate"
+                  name="endDate"
+                  value={formatDate(date, "dd/MM/yyyy")}
+                  readOnly
+                  className="cursor-pointer"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="w-full flex items-center gap-3 mt-5">
+            <Label
+              htmlFor="autoRenew"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Tự động gia hạn
+            </Label>
+            <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-client-color)]" />
+          </div>
         </div>
         <div className="mt-[30px] flex flex-col gap-3">
           <Label
@@ -281,7 +313,7 @@ export default function SellerProductCreatePage() {
         </div>
 
         <div className="flex flex-col items-center mt-[30px]">
-          <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] w-full font-bold text-lg">Tạo sản phẩm</Button>
+          <Button disabled={submit} className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] w-full font-bold text-lg">Tạo sản phẩm</Button>
           <Link href="/me/product" className="text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] hover:underline mt-5">Quay trở lại danh sách</Link>
         </div>
       </form>

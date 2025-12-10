@@ -174,6 +174,7 @@ export const insertProduct = async (req, res) => {
         url_img: productData.url_img,
         updated_by: productData.updated_by,
         created_by: productData.created_by,
+        end_date_time: productData.end_date_time,
     })
         .returning('id_product');
 
