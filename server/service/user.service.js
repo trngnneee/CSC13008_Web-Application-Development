@@ -33,6 +33,14 @@ export const findUserById = async (id) => {
   return user;
 };
 
+export const getUserWatchList = async (id_user) => {
+  const watchList = await db('watch_list')
+    .select('id_product')
+    .where({ id_user });
+
+  return watchList.map(item => item.id_product);
+}
+
 export const addUser = async ({ fullname, email, password, date_of_birth = null, role, status }) => {
   if (!fullname || !email || !password || !role || !status) {
     throw new Error('Thiếu thông tin bắt buộc: fullname, email, password, role, status');

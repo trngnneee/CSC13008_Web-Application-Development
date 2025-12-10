@@ -15,4 +15,10 @@ router.post("/profile/update", clientMiddleware.verifyToken, clientUserControlle
 
 router.post("/profile/reset-password", clientMiddleware.verifyToken, clientUserController.resetClientPassword);
 
+router.post("/wishlist/add", clientMiddleware.verifyToken, clientUserController.addToWishlist);
+
+router.post("/wishlist/remove", clientMiddleware.verifyToken, clientUserController.removeFromWishlist);
+
+router.get("/wishlist", clientMiddleware.verifyToken, clientUserController.getWishlist);
+
 export default router;
