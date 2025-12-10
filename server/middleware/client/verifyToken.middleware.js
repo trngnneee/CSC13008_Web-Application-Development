@@ -72,7 +72,7 @@ export const verifyToken = async (req, res, next) => {
 
 export const authorizeRole = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!allowedRoles.includes(req.role)) {
+    if (!allowedRoles.includes(req.account.role)) {
       return res.status(403).json({
         code: "error",
         message: "Bạn không có quyền truy cập tài nguyên này!"

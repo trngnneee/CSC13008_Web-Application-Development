@@ -161,7 +161,7 @@ export const insertProduct = async (req, res) => {
         productData.url_img = files.map((file) => file.path);
     }
 
-    await db('product').insert({
+    const [product] = await db('product').insert({
         id_category: productData.id_category,
         avatar: files && files.length > 0 ? files[0].path : null,
         name: productData.name,
@@ -174,10 +174,11 @@ export const insertProduct = async (req, res) => {
         url_img: productData.url_img,
         updated_by: productData.updated_by,
         created_by: productData.created_by,
-    });
+    })
+        .returning('id_product');
 
     await db('description_history').insert({
-        id_product: productData.id_product,
+        id_product: product.id_product,
         time: new Date(),
         description: productData.description,
     });
