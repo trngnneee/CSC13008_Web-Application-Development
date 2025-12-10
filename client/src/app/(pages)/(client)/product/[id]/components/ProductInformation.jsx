@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Heart } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { dateTimeFormat } from "@/utils/date";
+import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin } = useClientAuthContext();
@@ -51,7 +51,7 @@ export const ProdcutInformation = ({ productDetail }) => {
               </div> */}
             </div>
             <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
-            <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
+            <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? getRelativeEndTime(productDetail.end_date_time) : "-"}</span></div>
             <div className="mt-5">
               <div className="text-[15px] font-bold">Mô tả sản phẩm:</div>
               <div className="bg-gray-100 p-5 rounded-xl mt-3" dangerouslySetInnerHTML={{__html: productDetail.description}}></div>

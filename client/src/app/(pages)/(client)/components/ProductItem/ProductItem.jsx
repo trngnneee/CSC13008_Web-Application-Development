@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { dateTimeFormat } from "@/utils/date";
+import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 import { Heart } from "lucide-react";
 import Link from "next/link";
 
@@ -31,7 +31,7 @@ export const ProductItem = ({ item }) => {
           </div>
           <div className="text-[10px] flex items-center gap-[5px]">
             <div className="w-4 h-4 rounded-full bg-amber-400"></div>
-            <div>Kết thúc tại: <span className="font-bold">{item.end_date_time ? dateTimeFormat(item.end_date_time) : "-"}</span></div>
+            <div>Kết thúc: <span className="font-bold">{item.end_date_time ? getRelativeEndTime(item.end_date_time) : "-"}</span></div>
           </div>
           {isLogin ? (
             <div className="flex items-center mt-[30px] gap-2.5">

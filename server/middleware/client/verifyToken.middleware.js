@@ -20,7 +20,7 @@ export const verifyToken = async (req, res, next) => {
       })
     }
 
-    const decoded = jwt.decode(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (decoded == null) {
       res.clearCookie("clientToken");
       return res.json({
@@ -39,23 +39,23 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Check if role matches token
-    if (tokenRole && existUser.role !== tokenRole) {
-      res.clearCookie("clientToken");
-      return res.json({
-        code: "error",
-        message: "Token không hợp lệ (role không khớp)!"
-      });
-    }
+    // // Check if role matches token
+    // if (tokenRole && existUser.role !== tokenRole) {
+    //   res.clearCookie("clientToken");
+    //   return res.json({
+    //     code: "error",
+    //     message: "Token không hợp lệ (role không khớp)!"
+    //   });
+    // }
 
-    // Check if role is "bidder" or "seller"
-    if (existUser.role !== "bidder" && existUser.role !== "seller") {
-      res.clearCookie("clientToken");
-      return res.json({
-        code: "error",
-        message: "Bạn không có quyền truy cập tài nguyên client!"
-      });
-    }
+    // // Check if role is "bidder" or "seller"
+    // if (existUser.role !== "bidder" && existUser.role !== "seller") {
+    //   res.clearCookie("clientToken");
+    //   return res.json({
+    //     code: "error",
+    //     message: "Bạn không có quyền truy cập tài nguyên client!"
+    //   });
+    // }
 
     req.account = existUser
   }
@@ -69,3 +69,15 @@ export const verifyToken = async (req, res, next) => {
 
   next();
 }
+
+export const authorizeRole = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.role)) {
+      return res.status(403).json({
+        code: "error",
+        message: "Bạn không có quyền truy cập tài nguyên này!"
+      });
+    }
+    next();
+  };
+};

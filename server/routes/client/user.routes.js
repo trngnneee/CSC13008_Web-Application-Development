@@ -5,14 +5,12 @@ import * as clientMiddleware from "../../middleware/client/verifyToken.middlewar
 
 const router = express.Router();
 
-// router.get("/get-all-users", adminUserController.getUserList);
+router.post("/request-upgrade", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.requestUpgradeToSeller);
 
-router.post("/request-upgrade", clientMiddleware.verifyToken, clientUserController.requestUpgradeToSeller);
+router.get("/my-upgrade-request", clientMiddleware.verifyToken,  clientMiddleware.authorizeRole("bidder"), clientUserController.getMyUpgradeRequest);
 
-router.get("/my-upgrade-request", clientMiddleware.verifyToken, clientUserController.getMyUpgradeRequest);
+router.post("/profile/update", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientUserController.updateClientProfile);
 
-router.post("/profile/update", clientMiddleware.verifyToken, clientUserController.updateClientProfile);
-
-router.post("/profile/reset-password", clientMiddleware.verifyToken, clientUserController.resetClientPassword);
+router.post("/profile/reset-password", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientUserController.resetClientPassword);
 
 export default router;

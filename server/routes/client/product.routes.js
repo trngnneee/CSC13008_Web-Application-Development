@@ -22,8 +22,8 @@ router.get("/list-category/:id_category", productController.getProductListByCate
 
 router.get("/total-page-category/:id_category", productController.getTotalPageByCategory);
 
-router.delete("/delete/:id", productController.deleteProductByID);
+router.delete("/delete/:id", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("seller"), productController.deleteProductByID);
 
-router.post("/create", clientMiddleware.verifyToken, upload.array("files", 10), productController.insertProduct);
+router.post("/create", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("seller"), upload.array("files", 10), productController.insertProduct);
 
 export default router;
