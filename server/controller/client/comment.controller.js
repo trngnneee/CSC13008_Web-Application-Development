@@ -1,4 +1,5 @@
 import db from "../../config/database.config.js"
+import { sendNewCommentNotificationMail } from "../../helper/mail.helper.js";
 
 export const commentRootCreatePost = async (req, res) => {
   const result = await db('comments').insert({
@@ -10,6 +11,15 @@ export const commentRootCreatePost = async (req, res) => {
     id_parent_comment: null,
     reply_to_user: null
   }).returning('*');
+
+  if (req.account.role != "seller") {
+    const data = await db('product')
+      .join('user', 'product.created_by', 'user.id_user')
+      .select('user.email', 'product.name')
+      .where('product.id_product', req.body.id_product)
+      .first();
+    sendNewCommentNotificationMail(data.email, data.name, req.account.fullname, req.body.content, `${process.env.CLIENT_URL}/product/${req.body.id_product}`);
+  }
 
   res.json({
     code: "success",
