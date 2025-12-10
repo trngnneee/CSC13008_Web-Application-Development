@@ -1,6 +1,7 @@
 import express from "express";
 import * as productController from "../../controller/product.controller.js"; 
 import * as clientMiddleware from "../../middleware/client/verifyToken.middleware.js";
+import bidRoutes from "./bid.routes.js";
 import multer from "multer";
 import { storage } from "../../helper/cloudinary.js";
 
@@ -31,5 +32,7 @@ router.post("/create", clientMiddleware.verifyToken, clientMiddleware.authorizeR
 router.post("/update/:id", clientMiddleware.verifyToken, productController.updateProductDescription);
 
 router.get("/description-history/:id", productController.getProductDescriptionHistory);
+
+router.use("/bid", bidRoutes);
 
 export default router;

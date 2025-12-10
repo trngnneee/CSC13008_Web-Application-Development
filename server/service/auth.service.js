@@ -22,7 +22,6 @@ export const handleRegister = async (userData, role) => {
 
   // Check if email already exists with this role
   const existUser = await findUserToEmail(email, role);
-
   if (existUser) {
     return {
       success: false,
@@ -72,7 +71,7 @@ export const handleLogin = async (credentials, role) => {
   if (!bcrypt.compareSync(password, existUser.password)) {
     return {
       success: false,
-      message: "Mật khẩu không chính xác!"
+      message: "Mật khẩu không chính xác!",
     };
   }
 

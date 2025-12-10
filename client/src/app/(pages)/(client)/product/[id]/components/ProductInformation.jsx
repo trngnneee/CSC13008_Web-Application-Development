@@ -1,14 +1,42 @@
 "use client"
 
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Heart } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 import { WishListButton } from "../../../components/WishlistButton";
+import { placeBid } from "@/lib/clientAPI/bid";
+import { toastHandler } from "@/lib/toastHandler";
 
 export const ProdcutInformation = ({ productDetail }) => {
-  const { isLogin } = useClientAuthContext();
+  const { isLogin, userInfo } = useClientAuthContext();
+  const [bidPrice, setBidPrice] = useState("");
+  const [bidLoading, setBidLoading] = useState(false);
+
+  const handlePlaceBid = async () => {
+    if (!bidPrice || Number(bidPrice) <= 0) {
+      toastHandler("Vui lòng nhập số tiền đấu giá hợp lệ", "error");
+      return;
+    }
+
+    if (!userInfo || !userInfo.id_user) {
+      toastHandler("Vui lòng đăng nhập để đấu giá", "error");
+      return;
+    }
+
+    setBidLoading(true);
+    try {
+      const result = await placeBid(productDetail.id_product, Number(bidPrice), userInfo.id_user);
+      toastHandler("Đấu giá thành công", "success");
+      setBidPrice("");
+    } catch (error) {
+      toastHandler(error.message, "error");
+    } finally {
+      setBidLoading(false);
+    }
+  };
 
   return (
     <>
@@ -52,8 +80,18 @@ export const ProdcutInformation = ({ productDetail }) => {
               <div><DollarSign /></div>
               <Input
                 type="number"
+                placeholder="Nhập số tiền đấu giá"
+                value={bidPrice}
+                onChange={(e) => setBidPrice(e.target.value)}
+                disabled={!isLogin || bidLoading}
               />
-              <Button>Gửi</Button>
+              <Button 
+                onClick={handlePlaceBid}
+                disabled={!isLogin || bidLoading}
+                className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90 text-white"
+              >
+                {bidLoading ? "Đang gửi..." : "Gửi"}
+              </Button>
             </div>
           </div>
         </div>
