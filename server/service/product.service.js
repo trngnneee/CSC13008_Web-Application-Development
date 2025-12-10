@@ -180,3 +180,31 @@ export const getProductsByCategory = async (id_category, filter = {}) => {
 
   return query;
 }
+
+export const addTimeToAllProducts = async (extend_threshold_minutes, extend_duration_minutes) => {
+  const threshold = Number(extend_threshold_minutes);
+  const duration = Number(extend_duration_minutes);
+
+  // Check if auction_settings exists
+  const existing = await db("auction_settings").first();
+
+  if (existing) {
+    // Update existing row
+    const [row] = await db("auction_settings")
+      .update({
+        extend_threshold_minutes: threshold,
+        extend_duration_minutes: duration,
+      })
+      .returning("*");
+    return row;
+  } else {
+    // Insert new row
+    const [row] = await db("auction_settings")
+      .insert({
+        extend_threshold_minutes: threshold,
+        extend_duration_minutes: duration,
+      })
+      .returning("*");
+    return row;
+  }
+}

@@ -13,10 +13,11 @@ router.post("/profile/update", clientMiddleware.verifyToken, clientMiddleware.au
 
 router.post("/profile/reset-password", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientUserController.resetClientPassword);
 
-router.post("/wishlist/add", clientMiddleware.verifyToken, clientUserController.addToWishlist);
+//wishlist routes
+router.post("/wishlist/add", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.addToWishlist);
 
-router.post("/wishlist/remove", clientMiddleware.verifyToken, clientUserController.removeFromWishlist);
+router.post("/wishlist/remove", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.removeFromWishlist);
 
-router.get("/wishlist", clientMiddleware.verifyToken, clientUserController.getWishlist);
+router.get("/wishlist", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.getWishlist);
 
 export default router;

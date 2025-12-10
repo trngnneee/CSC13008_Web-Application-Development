@@ -42,6 +42,7 @@ router.post("/upload-csv", uploadCSVWithImages.fields([
     { name: "images", maxCount: 1 }
 ]), productController.uploadCSVProduct);
 
+
 //Insert 1 product
 router.post("/create", verifyToken, uploadImages.fields([
     { name: "images", maxCount: 10 },
@@ -53,6 +54,8 @@ router.get("/total-page", productController.getTotalPage);
 router.get("/list", productController.getProductList);
 
 router.delete("/delete-list", verifyToken, productController.deleteAllProducts);
+
+router.post("/add-time", verifyToken, productController.addTimeToAllProducts);
 
 router.get("/:id", productController.getProductDetail);
 

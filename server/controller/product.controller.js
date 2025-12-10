@@ -573,3 +573,23 @@ export const getTotalPageByCategory = async (req, res) => {
         });
     }
 }
+
+export const addTimeToAllProducts = async (req, res) => {
+    const {extend_threshold_minutes, extend_duration_minutes} = req.body
+
+    try {
+        await productService.addTimeToAllProducts(extend_threshold_minutes, extend_duration_minutes);
+
+        res.json({
+            code: "success",
+            message: "Thêm thời gian cho tất cả sản phẩm thành công."
+        });
+
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi thêm thời gian cho tất cả sản phẩm.",
+            data: e?.message || e,
+        });
+    }
+}

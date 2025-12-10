@@ -11,6 +11,7 @@ import clientRoutes from './routes/client/index.routes.js';
 import adminRoutes from './routes/admin/index.routes.js';
 
 import * as socketService from './service/socket.service.js'
+import './service/cron.service.js'; 
 
 const app = express();
 const port = 10000;

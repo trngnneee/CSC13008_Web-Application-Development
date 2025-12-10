@@ -26,7 +26,7 @@ router.delete("/delete/:id", clientMiddleware.verifyToken, clientMiddleware.auth
 
 router.post("/create", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("seller"), upload.array("files", 10), productController.insertProduct);
 
-router.post("/update/:id", clientMiddleware.verifyToken, productController.updateProductDescription);
+router.post("/update/:id", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("seller"), productController.updateProductDescription);
 
 router.get("/description-history/:id", productController.getProductDescriptionHistory);
 

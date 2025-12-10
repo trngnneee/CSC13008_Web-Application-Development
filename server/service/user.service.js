@@ -200,6 +200,29 @@ export const changeUserRole = async (id_user, role) => {
   return updatedUser;
 }
 
+export const downgradeExpiredSellers = async () => {
+  // Find all sellers whose expiration date has passed
+  const expiredSellers = await db("user")
+    .where("role", "seller")
+    .where("Expires_at", "<", db.raw("NOW()"))
+    .select("id_user");
+
+  // Downgrade them back to bidder
+  if (expiredSellers.length > 0) {
+    const count = await db("user")
+      .where("role", "seller")
+      .where("Expires_at", "<", db.raw("NOW()"))
+      .update({ 
+        role: "bidder",
+        Expires_at: null
+      });
+
+    return count;
+  }
+
+  return 0;
+};
+
 export const deleteExpiredVerifyTokens = async () => {
   return db("verify_email")
     .where("expire_at", "<", db.raw("NOW()"))

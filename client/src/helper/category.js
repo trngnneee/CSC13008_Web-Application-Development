@@ -4,7 +4,7 @@ export const renderCategoryTree = (categories, level = 0, onClickSuccess) => {
   let result = [];
   categories.forEach((category, index) => { 
     result.push(
-      <DropdownMenuItem key={`${category.id}-${index}`} value={category.id} onClick={() => onClickSuccess(category.id)}>
+      <DropdownMenuItem key={`${category.id}-${index}`} onClick={() => onClickSuccess(category.id, category.name)}>
         {'--'.repeat(level) + ' ' + category.name}
       </DropdownMenuItem>
     );
