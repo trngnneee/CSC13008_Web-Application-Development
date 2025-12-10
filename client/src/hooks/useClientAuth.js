@@ -13,7 +13,8 @@ export const useClientAuth = () => {
     "/account/forgot-password",
     "/account/otp-password",
     "/account/initial",
-    "/search"
+    "/search",
+    "/category"
   ];
 
   const wildcardPublic = [

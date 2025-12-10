@@ -15,9 +15,12 @@ import { CircleAlertIcon } from "lucide-react"
 import { clientAddToWishlist, clientRemoveFromWishlist } from "@/lib/clientAPI/user";
 import { toast } from "sonner";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-export const WishListButton = ({ onClickSuccess, id }) => {
+export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
   const { userInfo } = useClientAuthContext();
+  const [userInfoState, setUserInfoState] = useState(userInfo);
 
   const handleAddToWishlist = () => {
     const promise = clientAddToWishlist({ id_product: id });
@@ -25,9 +28,10 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       loading: "Đang thêm vào danh sách yêu thích...",
       success: (data) => {
         if (data.code == "success") {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          setUserInfoState(prevState => ({
+            ...prevState,
+            watchList: [...prevState.watchList, id]
+          }));
           return data.message;
         }
         else return Promise.reject(data.message);
@@ -42,9 +46,10 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       loading: "Đang xóa khỏi danh sách yêu thích...",
       success: (data) => {
         if (data.code == "success") {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          setUserInfoState(prevState => ({
+            ...prevState,
+            watchList: prevState.watchList.filter(item => item !== id)
+          }));
           return data.message;
         }
         else return Promise.reject(data.message);
@@ -53,17 +58,23 @@ export const WishListButton = ({ onClickSuccess, id }) => {
     })
   }
 
+  useEffect(() => {
+  }, [userInfoState])
+
   return (
-    userInfo && userInfo.watchList.length > 0 && userInfo.watchList.includes(id) ? (
+    userInfoState && userInfoState.watchList.length > 0 && userInfoState.watchList.includes(id) ? (
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] w-10 h-10 flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Heart fill="var(--main-client-color)" />
+            <span className={cn(
+              showTitle ? "block" : "hidden"
+            )}>Xóa khỏi danh sách yêu thích</span>
           </Button>
         </AlertDialogTrigger>
 
@@ -105,12 +116,15 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] w-10 h-10 flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Heart />
+            <span className={cn(
+              showTitle ? "block" : "hidden"
+            )}>Thêm vào danh sách yêu thích</span>
           </Button>
         </AlertDialogTrigger>
 

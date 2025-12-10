@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 
 export default function SellerProductCreatePage() {
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("Danh mục 1");
+  const [category, setCategory] = useState("");
   const [imageList, setImageList] = useState([]);
   const [price, setPrice] = useState(0);
   const [instantPrice, setInstantPrice] = useState(0);
@@ -63,6 +63,12 @@ export default function SellerProductCreatePage() {
           rule: "minLength",
           value: 2,
           errorMessage: "Tên sản phẩm phải có ít nhất 2 ký tự!",
+        },
+      ])
+      .addField("#category", [
+        {
+          rule: "required",
+          errorMessage: "Vui lòng chọn danh mục sản phẩm!",
         },
       ])
       .addField("#startingPrice", [
@@ -155,12 +161,12 @@ export default function SellerProductCreatePage() {
               Danh mục
             </Label>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild id="category">
+              <DropdownMenuTrigger asChild>
                 <Button
                   type="button"
                   className="w-full flex items-center justify-between rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <span>{category}</span>
+                  <span>{categoryList.find((item) => item.id === category)?.name || "Chọn danh mục"}</span>
                   <ChevronDown className="w-4 h-4 opacity-70" />
                 </Button>
               </DropdownMenuTrigger>
@@ -168,6 +174,7 @@ export default function SellerProductCreatePage() {
                 {categoryList.length > 0 && renderCategoryTree(categoryTree, 0, setCategory)}
               </DropdownMenuContent>
             </DropdownMenu>
+            <Input id="category" type={"hidden"} value={category} onChange={() => {}} />
           </div>
         </div>
         <div className="flex flex-col gap-2 mt-[30px]">

@@ -161,7 +161,7 @@ export const insertProduct = async (req, res) => {
         productData.url_img = files.map((file) => file.path);
     }
 
-    await db('product').insert({
+    const [product] = await db('product').insert({
         id_category: productData.id_category,
         avatar: files && files.length > 0 ? files[0].path : null,
         name: productData.name,
@@ -174,10 +174,11 @@ export const insertProduct = async (req, res) => {
         url_img: productData.url_img,
         updated_by: productData.updated_by,
         created_by: productData.created_by,
-    });
+    })
+        .returning('id_product');
 
     await db('description_history').insert({
-        id_product: productData.id_product,
+        id_product: product.id_product,
         time: new Date(),
         description: productData.description,
     });
@@ -404,6 +405,13 @@ export const getProductDetailByID = async (req, res) => {
         .join("user", "product.created_by", "user.id_user")
         .first();
 
+    const descriptionHistory = await db('description_history')
+        .select('*')
+        .where('id_product', id)
+        .orderBy('time', 'desc');
+
+    productDetail.descriptionHistory = descriptionHistory;
+
     res.json({
         code: "success",
         message: "Lấy chi tiết sản phẩm thành công",
@@ -512,7 +520,7 @@ export const getProductListByCategory = async (req, res) => {
 
         const categoryIDs = await getAllChildCategoryIDs(categoryDetail.id_category);
 
-        const query = db("product").whereIn("id_category", categoryIDs);
+        const query = db("product").whereIn("id_category", categoryIDs).join('user', 'product.created_by', 'user.id_user').select('product.*', 'user.fullname as seller');
 
         const pageSize = 4 * 3;
         const countResult = await db('product').whereIn("id_category", categoryIDs).count('* as count').first();

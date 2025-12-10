@@ -46,6 +46,7 @@ export function middleware(req) {
       "/account/forgot-password",
       "/account/otp-password",
       "/account/initial",
+      "/category"
     ];
 
     const wildcardPublic = [
