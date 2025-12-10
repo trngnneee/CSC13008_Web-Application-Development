@@ -1,53 +1,46 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { ProductItem } from "../../components/ProductItem/ProductItem"
 import { SectionHeader } from "./SectionHeader"
+import { clientProductListEndingSoon } from "@/lib/clientAPI/product"
+import { ProductItemSkeleton } from "../../components/ProductItem/ProductItemSkeleton"
 
 export const Section4 = () => {
-  const data = [
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product2.png",
-      name: "Plant and Pots",
-      seller: "Jose Guillermo",
-      currentBid: "1200",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-  ]
+  const [productList, setProductList] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientProductListEndingSoon();
+      if (promise.code == "success")
+      {
+        setProductList(promise.productList);
+      }
+    }
+    fetchData();
+  }, [])
 
   return (
     <>
-      <div className="container mx-auto mt-[75px] mb-[120px]">
-        <SectionHeader 
-          title="Sản phẩm mới nhất"
+      <div className="container mx-auto mt-[75px] border-b border-b-black pb-[120px] mb-[120px]">
+        <SectionHeader
+          title="Sản phẩm sắp kết thúc"
           subtitle="Xem tất cả"
           link="#"
         />
         <div className="grid grid-cols-4 gap-[30px] mt-[50px]">
-          {data.map((item, index) => (
+          {productList.length > 0 ? productList.map((item, index) => (
             <ProductItem
               key={index}
               item={item}
             />
-          ))}
+          )) : (
+            [...Array(4)].map((_, index) => (
+              <ProductItemSkeleton 
+                key={index}
+              />
+            ))
+          )}
         </div>
       </div>
     </>

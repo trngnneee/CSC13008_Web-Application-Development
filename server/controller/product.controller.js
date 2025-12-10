@@ -395,6 +395,20 @@ export const getTopPriceProductList = async (req, res) => {
     })
 }
 
+export const getEndingSoonProductList = async (req, res) => {
+    const productList = await db("product")
+        .select("product.*", 'user.fullname as seller')
+        .join("user", "product.created_by", "user.id_user")
+        .orderBy("end_date_time", "asc")
+        .limit(4);
+    
+    res.json({
+        code: "success",
+        message: "Lấy danh sách sản phẩm sắp kết thúc thành công",
+        productList: productList,
+    })
+}
+
 export const getProductDetailByID = async (req, res) => {
     const id = req.params.id;
 
