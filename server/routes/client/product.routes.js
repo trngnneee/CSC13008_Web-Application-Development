@@ -26,4 +26,8 @@ router.delete("/delete/:id", productController.deleteProductByID);
 
 router.post("/create", clientMiddleware.verifyToken, upload.array("files", 10), productController.insertProduct);
 
+router.post("/update/:id", clientMiddleware.verifyToken, productController.updateProductDescription);
+
+router.get("/description-history/:id", productController.getProductDescriptionHistory);
+
 export default router;
