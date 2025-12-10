@@ -1,46 +1,35 @@
-import { ProductItem } from "../../../components/ProductItem/ProductItem"
+"use client"
 
-export const OtherProduct = () => {
-  const data = [
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product2.png",
-      name: "Plant and Pots",
-      seller: "Jose Guillermo",
-      currentBid: "1200",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-    {
-      image: "/product.png",
-      name: "Mona Lisa",
-      seller: "Leonardo Da Vinci",
-      currentBid: "700",
-      end: "14.9.2022 10:00:00 GMT+8"
-    },
-  ]
-  
+import { useEffect, useState } from "react"
+import { ProductItem } from "../../../components/ProductItem/ProductItem"
+import { clientProductListByCategory } from "@/lib/clientAPI/product"
+import { ProductItemSkeleton } from "../../../components/ProductItem/ProductItemSkeleton"
+
+export const OtherProduct = ({ categoryID }) => {
+  const [productList, setProductList] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      const promise = await clientProductListByCategory(categoryID, "", "normal", 4);
+      if (promise.code == "success") {
+        setProductList(promise.productList);
+      }
+    }
+    fetchData();
+  }, [])
+
   return (
     <>
       <div className="grid grid-cols-4 gap-[30px] mt-2.5">
-        {data.map((item, index) => (
+        {productList.length > 0 ? productList.slice(0, 4).map((item, index) => (
           <ProductItem
             key={index}
             item={item}
           />
-        ))}
+        )) : (
+          [...Array(4)].map((_, index) => (
+            <ProductItemSkeleton key={index} />
+          ))
+        )}
       </div>
     </>
   )

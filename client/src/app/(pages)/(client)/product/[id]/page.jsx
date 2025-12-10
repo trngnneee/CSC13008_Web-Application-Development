@@ -30,13 +30,13 @@ export default function ProductPage() {
   return (
     <>
       <div className="container mx-auto py-[50px]">
-        <div className="flex gap-[100px] mb-20">
+        <div className="flex gap-[100px] mb-[30px]">
           <ImageSlider imageList={productDetail && productDetail.url_img} />
           <ProdcutInformation productDetail={productDetail} />
         </div>
         {productDetail && (
           <div className="mt-5 relative">
-            <div className="text-[15px] font-bold">Mô tả sản phẩm:</div>
+            <div className="text-[30px] font-extrabold mb-2.5">Mô tả sản phẩm:</div>
             <div className={cn(
               "bg-white shadow-xl border border-gray-100 p-10 rounded-xl my-5 max-h-[500px] overflow-hidden",
               showAllDesc ? "max-h-full" : ""
@@ -47,7 +47,7 @@ export default function ProductPage() {
                   index !== productDetail.descriptionHistory.length - 1 && "border-b border-gray-200 pb-3"
                 )}>
                   <div className="text-xs text-gray-400 mb-1">{dateTimeFormat(desc.time)}</div>
-                  <div dangerouslySetInnerHTML={{ __html: desc.description }}></div>
+                  <div dangerouslySetInnerHTML={{ __html: desc.description }} className="wrap-break-words whitespace-normal overflow-hidden"></div>
                 </div>
               ))}
             </div>
@@ -59,14 +59,16 @@ export default function ProductPage() {
             )}
           </div>
         )}
-        <div className="mb-20">
-          <div className="text-[30px] font-extrabold mb-2.5">Lịch sử đấu giá</div>
+        <div className="my-[50px]">
+          <div className="text-[30px] font-extrabold mb-2.5">Lịch sử đấu giá:</div>
           <BidHistory />
         </div>
-        <div>
-          <div className="text-[30px] font-extrabold">Các sản phẩm khác</div>
-          <OtherProduct />
-        </div>
+        {productDetail && (
+          <div>
+            <div className="text-[30px] font-extrabold">Các sản phẩm khác cùng danh mục</div>
+            <OtherProduct categoryID={productDetail.id_category} />
+          </div>
+        )}
       </div>
     </>
   )

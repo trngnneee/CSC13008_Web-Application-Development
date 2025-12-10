@@ -97,7 +97,7 @@ export const clientProductSearch = async (keyword, status = "") => {
   return data;
 }
 
-export const clientProductListByCategory = async (categoryID, params = "", status) => {
+export const clientProductListByCategory = async (categoryID, params = "", status = "normal",) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/list-category/${categoryID}${params}` + (status != "normal" ? `&status=${encodeURIComponent(status)}` : ""), {
     method: "GET",
   });
