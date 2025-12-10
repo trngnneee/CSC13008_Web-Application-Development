@@ -68,7 +68,9 @@ export const handleLogin = async (credentials, role) => {
     };
   }
 
-  if (!bcrypt.compareSync(password, existUser.password)) {
+  const compareResult = bcrypt.compareSync(password, existUser.password);
+  
+  if (!compareResult) {
     return {
       success: false,
       message: "Mật khẩu không chính xác!",

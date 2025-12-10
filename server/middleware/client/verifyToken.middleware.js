@@ -60,7 +60,6 @@ export const verifyToken = async (req, res, next) => {
     req.account = existUser
   }
   catch (error) {
-    console.log(error);
     res.json({
       code: "error",
       message: error

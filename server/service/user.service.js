@@ -122,6 +122,23 @@ export const resetPassword = async (id_user, password) => {
   return updatedUser;
 };
 
+export const resetPasswordByEmail = async (email, password) => {
+  if (!email || !password) {
+    throw new Error("Thiếu thông tin bắt buộc: email, password");
+  }
+
+  const [updatedUser] = await db("user")
+    .where({ email })
+    .update({ password })
+    .returning(["id_user", "email", "fullname"]);
+
+  if (!updatedUser) {
+    throw new Error("Không tìm thấy người dùng với email này");
+  }
+
+  return updatedUser;
+};
+
 export const getAllUsers = async (filter = {}) => {
   const users = db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
   if (filter.page && filter.limit) {

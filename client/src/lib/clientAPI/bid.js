@@ -1,6 +1,5 @@
 export const placeBid = async (id_product, bid_price, id_user) => {
   const token = localStorage.getItem("clientToken");
-  console.log("Date from placeBid:", { id_product, bid_price, id_user });
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid`, {
     method: "POST",
