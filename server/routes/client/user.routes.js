@@ -5,20 +5,19 @@ import * as clientMiddleware from "../../middleware/client/verifyToken.middlewar
 
 const router = express.Router();
 
-// router.get("/get-all-users", adminUserController.getUserList);
+router.post("/request-upgrade", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.requestUpgradeToSeller);
 
-router.post("/request-upgrade", clientMiddleware.verifyToken, clientUserController.requestUpgradeToSeller);
+router.get("/my-upgrade-request", clientMiddleware.verifyToken,  clientMiddleware.authorizeRole("bidder"), clientUserController.getMyUpgradeRequest);
 
-router.get("/my-upgrade-request", clientMiddleware.verifyToken, clientUserController.getMyUpgradeRequest);
+router.post("/profile/update", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientUserController.updateClientProfile);
 
-router.post("/profile/update", clientMiddleware.verifyToken, clientUserController.updateClientProfile);
+router.post("/profile/reset-password", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientUserController.resetClientPassword);
 
-router.post("/profile/reset-password", clientMiddleware.verifyToken, clientUserController.resetClientPassword);
+//wishlist routes
+router.post("/wishlist/add", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.addToWishlist);
 
-router.post("/wishlist/add", clientMiddleware.verifyToken, clientUserController.addToWishlist);
+router.post("/wishlist/remove", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.removeFromWishlist);
 
-router.post("/wishlist/remove", clientMiddleware.verifyToken, clientUserController.removeFromWishlist);
-
-router.get("/wishlist", clientMiddleware.verifyToken, clientUserController.getWishlist);
+router.get("/wishlist", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder"), clientUserController.getWishlist);
 
 export default router;

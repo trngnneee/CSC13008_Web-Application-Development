@@ -19,9 +19,24 @@ export const sendVarifyMail = async (toEmail, verifyToken, role = "bidder") => {
     const mailOptions = {
         from: process.env.EMAIL_NAME,
         to: toEmail,
-        subject: "Verify your email",
-        html: `<p>Please verify your email by clicking the link below:</p><a href="${verifyURL}">${verifyURL}</a>`
+        subject: "Verify Your Email",
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Email Verification</h2>
+                <p>Please verify your email by clicking the button below:</p>
+
+                <a href="${verifyURL}" 
+                style="display: inline-block; padding: 10px 16px; background: #4CAF50; 
+                        color: white; text-decoration: none; border-radius: 6px; margin: 10px 0;">
+                    Verify Email
+                </a>
+
+                <p>If the button doesn't work, copy and paste the link below into your browser:</p>
+                <p><a href="${verifyURL}">${verifyURL}</a></p>
+            </div>
+        `
     };
+
 
     await transporter.sendMail(mailOptions);
 }

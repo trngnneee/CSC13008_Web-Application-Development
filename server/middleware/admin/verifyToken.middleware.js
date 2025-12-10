@@ -6,6 +6,14 @@ export const verifyToken = async (req, res, next) => {
     // Try to get token from cookies first, then from Authorization header
     let token = req.cookies.adminToken;
 
+    // If no token in cookies, try Authorization header
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7); // Remove "Bearer " prefix
+      }
+    }
+
     if (!token) {
       return res.json({
         code: "error",

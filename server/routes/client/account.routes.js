@@ -14,7 +14,7 @@ router.post("/forgot-password", clientController.forgotPasswordPost);
 
 router.post("/otp-password", clientController.otpPasswordPost);
 
-router.post("/reset-password", clientMiddleware.verifyToken, clientController.resetPasswordPost);
+router.post("/reset-password", clientMiddleware.verifyToken, clientMiddleware.authorizeRole("bidder", "seller"), clientController.resetPasswordPost);
 
 router.get("/verify-email", clientController.verifyEmailGet);
 

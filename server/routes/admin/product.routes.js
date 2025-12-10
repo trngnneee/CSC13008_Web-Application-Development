@@ -16,6 +16,16 @@ const uploadCSV = multer({
     },
 });
 
+const uploadCSVWithImages = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB for CSV + ZIP
+    fileFilter: (req, file, cb) => {
+        const isCSV = ["text/csv", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"].includes(file.mimetype) || file.originalname.toLowerCase().endsWith(".csv");
+        const isZIP = file.mimetype === "application/zip" || file.mimetype === "application/x-zip-compressed" || file.originalname.toLowerCase().endsWith(".zip");
+        return (isCSV || isZIP) ? cb(null, true) : cb(new Error("Chỉ chấp nhận file CSV và ZIP!"));
+    },
+});
+
 // Image upload configuration
 const uploadImages = multer({
     storage: multer.memoryStorage(),
@@ -27,7 +37,11 @@ const uploadImages = multer({
     },
 });
 
-router.post("/upload-csv", uploadCSV.single("file"), productController.uploadCSVProduct);
+router.post("/upload-csv", uploadCSVWithImages.fields([
+    { name: "csv", maxCount: 1 },
+    { name: "images", maxCount: 1 }
+]), productController.uploadCSVProduct);
+
 
 //Insert 1 product
 router.post("/create", verifyToken, uploadImages.fields([
@@ -40,6 +54,8 @@ router.get("/total-page", productController.getTotalPage);
 router.get("/list", productController.getProductList);
 
 router.delete("/delete-list", verifyToken, productController.deleteAllProducts);
+
+router.post("/add-time", verifyToken, productController.addTimeToAllProducts);
 
 router.get("/:id", productController.getProductDetail);
 

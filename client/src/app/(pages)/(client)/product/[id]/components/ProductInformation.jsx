@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Heart } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
-import { dateTimeFormat } from "@/utils/date";
+import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin } = useClientAuthContext();
@@ -20,8 +20,8 @@ export const ProdcutInformation = ({ productDetail }) => {
             />
           </div>
           <div className="z-10 border-b-2 border-black pb-[30px]">
-            <div className="text-[30px] font-extrabold mb-5">{productDetail.name}</div>
-            <div className="text-[20px]">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
+            <div className="text-[40px] font-extrabold  mb-6">{productDetail.name}</div>
+            <div className="text-[20px] ">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
             <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
             <div className="flex items-center gap-5 mt-5">
               <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.starting_price).toLocaleString("vi-VN")}</span></div>
@@ -29,27 +29,7 @@ export const ProdcutInformation = ({ productDetail }) => {
               <div className="text-[15px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")}</span></div>
               <div className="text-[15px] font-bold"><span className="">Bước giá:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.pricing_step).toLocaleString("vi-VN")}</span></div>
             </div>
-            <div className="mt-[30px]">
-              <div className="text-[15px] font-bold mb-2.5">Thời gian còn lại:</div>
-              {/* <div className="grid grid-cols-4 gap-7">
-                <div className="flex flex-col">
-                  <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">07</div>
-                  <div className="text-center text-[18px] text-[var(--main-client-color)]">Ngày</div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">18</div>
-                  <div className="text-center text-[18px] text-[var(--main-client-color)]">Giờ</div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">35</div>
-                  <div className="text-center text-[18px] text-[var(--main-client-color)]">Phút</div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="bg-[var(--main-client-color)] px-6 py-1 text-white font-extrabold text-[30px] text-center">47</div>
-                  <div className="text-center text-[18px] text-[var(--main-client-color)]">Giây</div>
-                </div>
-              </div> */}
-            </div>
+    
             <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
             <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
             {isLogin && (

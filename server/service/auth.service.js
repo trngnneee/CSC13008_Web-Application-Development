@@ -69,14 +69,6 @@ export const handleLogin = async (credentials, role) => {
     };
   }
 
-  // Nếu user là seller, không được phép đăng nhập
-  // if (existUser.role === "seller") {
-  //   return {
-  //     success: false,
-  //     message: "Tài khoản này không được phép đăng nhập!"
-  //   };
-  // }
-
   if (!bcrypt.compareSync(password, existUser.password)) {
     return {
       success: false,

@@ -3,15 +3,86 @@ import * as productService from "../service/product.service.js";
 import { uploadImagesToSupabase, uploadImageToSupabase, deleteImageFromSupabase } from "../helper/supabase.helper.js";
 import db from "../config/database.config.js";
 import { getAllChildCategoryIDs } from "../helper/category.helper.js";
+import JSZip from "jszip";
 
 export async function uploadCSVProduct(req, res, next) {
     try {
-        const fileBuf = req.file?.buffer;
-        if (!fileBuf) {
-            return res.status(400).json({ message: "CSV file required" });
+        const files = req.files;
+        const csvFile = files?.csv?.[0];
+        const zipFile = files?.images?.[0];
+
+        if (!csvFile) {
+            return res.status(400).json({ 
+                code: "error",
+                message: "File CSV là bắt buộc" 
+            });
         }
 
-        const { records, unknownColumns, missingColumns } = await parseProductsCsv(fileBuf);
+        // Parse CSV
+        const { records, unknownColumns, missingColumns } = await parseProductsCsv(csvFile.buffer);
+
+        // Extract images from ZIP if provided
+        let imageMap = new Map(); // filename -> buffer
+        if (zipFile) {
+            try {
+                const zip = await JSZip.loadAsync(zipFile.buffer);
+                const imageFiles = Object.keys(zip.files).filter(filename => 
+                    !zip.files[filename].dir && 
+                    /\.(jpg|jpeg|png|gif|webp)$/i.test(filename)
+                );
+
+                for (const filename of imageFiles) {
+                    const fileData = await zip.files[filename].async("nodebuffer");
+                    // Get base filename without path
+                    const baseName = filename.split('/').pop();
+                    imageMap.set(baseName, fileData);
+                }
+            } catch (zipError) {
+                return res.status(400).json({
+                    code: "error",
+                    message: "Lỗi khi giải nén file ZIP",
+                    data: zipError.message
+                });
+            }
+        }
+
+        // Process records: upload images and update URLs
+        for (const record of records) {
+            // Handle avatar
+            if (record.avatar && imageMap.has(record.avatar)) {
+                try {
+                    const avatarUrl = await uploadImageToSupabase(
+                        imageMap.get(record.avatar),
+                        record.avatar
+                    );
+                    record.avatar = avatarUrl;
+                } catch (err) {
+                    console.error(`Error uploading avatar ${record.avatar}:`, err);
+                    record.avatar = null;
+                }
+            }
+
+            // Handle url_img array
+            if (record.url_img && Array.isArray(record.url_img)) {
+                const uploadedUrls = [];
+                for (const imgFilename of record.url_img) {
+                    if (imageMap.has(imgFilename)) {
+                        try {
+                            const imgUrl = await uploadImageToSupabase(
+                                imageMap.get(imgFilename),
+                                imgFilename
+                            );
+                            uploadedUrls.push(imgUrl);
+                        } catch (err) {
+                            console.error(`Error uploading image ${imgFilename}:`, err);
+                        }
+                    }
+                }
+                record.url_img = uploadedUrls.length > 0 ? uploadedUrls : null;
+            }
+        }
+
+        // Insert products
         const result = await productService.insertListProducts(records);
 
         res.json({
@@ -21,6 +92,7 @@ export async function uploadCSVProduct(req, res, next) {
                 ...result,
                 unknownColumns,
                 missingColumns,
+                imagesUploaded: imageMap.size
             }
         });
     } catch (e) {
@@ -497,6 +569,26 @@ export const getTotalPageByCategory = async (req, res) => {
         res.status(500).json({
             code: "error",
             message: "Lỗi khi lấy tổng số trang sản phẩm theo danh mục.",
+            data: e?.message || e,
+        });
+    }
+}
+
+export const addTimeToAllProducts = async (req, res) => {
+    const {extend_threshold_minutes, extend_duration_minutes} = req.body
+
+    try {
+        await productService.addTimeToAllProducts(extend_threshold_minutes, extend_duration_minutes);
+
+        res.json({
+            code: "success",
+            message: "Thêm thời gian cho tất cả sản phẩm thành công."
+        });
+
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi thêm thời gian cho tất cả sản phẩm.",
             data: e?.message || e,
         });
     }

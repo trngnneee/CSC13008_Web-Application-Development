@@ -36,3 +36,28 @@ export const productTotalPage = async () => {
 
   return data;
 }
+
+export const addTimeToAllProducts = async (extend_threshold_minutes, extend_duration_minutes) => {
+  const token = localStorage.getItem("adminToken");
+  
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/product/add-time`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include", 
+    body: JSON.stringify({
+      extend_threshold_minutes,
+      extend_duration_minutes,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Cập nhật thời gian gia hạn thất bại");
+  }
+
+  return data;
+}
