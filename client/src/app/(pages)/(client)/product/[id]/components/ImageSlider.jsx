@@ -25,10 +25,10 @@ export const ImageSlider = ({ imageList }) => {
     <>
       {imageList && (
         <div className="w-1/2">
-          <div className="overflow-hidden rounded-[10px]">
+          <div className="overflow-hidden rounded-[10px] h-[400px]">
             <img
               src={imageList[currentIndex]}
-              className="w-full h-[400px] object-cover"
+              className="w-full h-full object-contain"
             />
 
             <div className="text-muted-foreground py-2 text-center text-sm">

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, Heart } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
+import { WishListButton } from "../../../components/WishlistButton";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin } = useClientAuthContext();
@@ -34,10 +35,13 @@ export const ProdcutInformation = ({ productDetail }) => {
             <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
             {isLogin && (
               <div className="mt-[30px] flex justify-center">
-                <Button className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>
-                  <Heart />
-                  <span>Thêm vào yêu thích</span>
-                </Button>
+                <WishListButton
+                  onClickSuccess={(e) => {
+                    e.stopPropagation();
+                  }}
+                  id={productDetail.id_product}
+                  showTitle={true}
+                />
               </div>
             )}
           </div>

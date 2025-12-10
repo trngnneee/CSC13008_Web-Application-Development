@@ -16,8 +16,9 @@ import { clientAddToWishlist, clientRemoveFromWishlist } from "@/lib/clientAPI/u
 import { toast } from "sonner";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-export const WishListButton = ({ onClickSuccess, id }) => {
+export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
   const { userInfo } = useClientAuthContext();
   const [userInfoState, setUserInfoState] = useState(userInfo);
 
@@ -65,12 +66,15 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] w-10 h-10 flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Heart fill="var(--main-client-color)" />
+            <span className={cn(
+              showTitle ? "block" : "hidden"
+            )}>Xóa khỏi danh sách yêu thích</span>
           </Button>
         </AlertDialogTrigger>
 
@@ -112,12 +116,15 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] w-10 h-10 flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
             }}
           >
             <Heart />
+            <span className={cn(
+              showTitle ? "block" : "hidden"
+            )}>Thêm vào danh sách yêu thích</span>
           </Button>
         </AlertDialogTrigger>
 
