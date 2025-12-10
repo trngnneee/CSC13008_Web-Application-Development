@@ -10,10 +10,14 @@ import JustValidate from "just-validate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 export default function ClientLoginPage() {
   const router = useRouter();
   const [rememberLogin, setRememberLogin] = useState(false);
+  const [submit, setSubmit] = useState(false);
+  const [captcha, setCaptcha] = useState("");
 
   useEffect(() => {
     const validation = new JustValidate("#clientLoginForm");
@@ -54,25 +58,38 @@ export default function ClientLoginPage() {
           errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
         },
       ])
-      .onSuccess((event) => {
-        event.preventDefault();
-
-        const finalData = {
-          email: event.target.email.value,
-          password: event.target.password.value,
-          rememberPassword: rememberLogin
-        }
-
-        const promise = clientLogin(finalData);
-        toastHandler(promise, router, "/");
+      .onSuccess(() => {
+        setSubmit(true)
       })
   }, [])
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (captcha === "" || captcha === null) {
+      toast.error("Vui lòng xác nhận reCAPTCHA!");
+      setSubmit(false);
+      return;
+    }
+
+    if (submit) {
+      const finalData = {
+        email: event.target.email.value,
+        password: event.target.password.value,
+        rememberPassword: rememberLogin
+      }
+
+      const promise = clientLogin(finalData);
+      toastHandler(promise, router, "/");
+    }
+    setSubmit(false);
+  }
 
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-client-color)]">Đăng nhập</div>
       <div className="text-gray-400 mb-5">Nhập email và mật khẩu để đăng nhập</div>
-      <form id="clientLoginForm">
+      <form onSubmit={handleSubmit} id="clientLoginForm">
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="email" className="text-sm font-medium text-[var(--main-client-color)] ">Email*</Label>
           <Input
@@ -97,7 +114,14 @@ export default function ClientLoginPage() {
           </div>
           <Link href="/account/forgot-password" className="text-sm text-[var(--main-client-color)] font-medium hover:underline">Quên mật khẩu?</Link>
         </div>
-        <Button className="w-full bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">Đăng nhập</Button>
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+          onChange={(value) => {
+            setCaptcha(value);
+          }}
+          className="mb-5"
+        />
+        <Button disabled={submit} className="w-full bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">Đăng nhập</Button>
       </form>
       <div className="mt-[26px] text-[var(--main-color)] text-center">Chưa có tài khoản? <Link className="font-bold hover:underline" href="/account/register">Đăng ký</Link></div>
     </>

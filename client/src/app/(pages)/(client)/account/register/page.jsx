@@ -9,10 +9,14 @@ import { toastHandler } from "@/lib/toastHandler";
 import JustValidate from "just-validate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 export default function ClientRegisterPage() {
   const router = useRouter();
+  const [captcha, setCaptcha] = useState("");
+  const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
     const validation = new JustValidate("#clientRegisterForm");
@@ -77,25 +81,36 @@ export default function ClientRegisterPage() {
     ], {
       errorsContainer: '#agreeContainer'
     })
-      .onSuccess((event) => {
-        event.preventDefault();
-
-        const finalData = {
-          fullname: event.target.fullname.value,
-          email: event.target.email.value,
-          password: event.target.password.value,
-        };
-
-        const promise = clientRegister(finalData);
-        toastHandler(promise, router, '/account/initial');
+      .onSuccess(() => {
+        setSubmit(true);
       })
   }, [])
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (submit) {
+      if (!captcha) {
+        toast.error("Vui lòng xác nhận reCAPTCHA!");
+        setSubmit(false);
+        return;
+      }
+
+      const finalData = {
+        fullname: e.target.fullname.value,
+        email: e.target.email.value,
+        password: e.target.password.value,
+      };
+
+      const promise = clientRegister(finalData);
+      toastHandler(promise, router, '/account/initial');
+    }
+  }
 
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-client-color)]">Đăng ký</div>
       <div className="text-gray-400 mb-5">Nhập họ tên, email và mật khẩu để đăng ký</div>
-      <form id="clientRegisterForm">
+      <form id="clientRegisterForm" onSubmit={handleSubmit}>
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="fullname" className="text-sm font-medium text-[var(--main-client-color)] ">Họ tên*</Label>
           <Input
@@ -129,7 +144,14 @@ export default function ClientRegisterPage() {
           </Label>
         </div>
         <div id="agreeContainer" className="mb-[33px]"></div>
-        <Button className="w-full bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">Đăng ký</Button>
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+          onChange={(value) => {
+            setCaptcha(value);
+          }}
+          className="mb-5"
+        />
+        <Button disabled={submit} className="w-full bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">Đăng ký</Button>
       </form>
       <div className="mt-[26px] text-[var(--main-client-color)] text-center">Đã có tài khoản? <Link className="font-bold hover:underline" href="/account/login">Đăng nhập</Link></div>
     </>
