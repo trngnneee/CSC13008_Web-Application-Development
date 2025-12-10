@@ -1,70 +1,63 @@
 import jwt from "jsonwebtoken"
-import { findUserToEmail, findUserById } from "../../service/user.service.js"
+import { findUserById } from "../../service/user.service.js"
 
 export const verifyToken = async (req, res, next) => {
   try {
-    // Try to get token from cookies first, then from Authorization header
     let token = req.cookies.adminToken;
 
-    // If no token in cookies, try Authorization header
     if (!token) {
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith("Bearer ")) {
-        token = authHeader.substring(7); // Remove "Bearer " prefix
-      }
-    }
-
-    if (!token) {
-      return res.json({
+      return res.status(401).json({
         code: "error",
         message: "Token không tồn tại!"
-      })
+      });
     }
 
-    const decoded = jwt.decode(token, process.env.JWT_SECRET);
-    if (decoded == null) {
-      res.clearCookie("adminToken");
-      return res.json({
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({
         code: "error",
-        message: "Xác thực token thất bại!"
-      })
+        message: "Token không hợp lệ hoặc đã hết hạn!"
+      });
     }
-    const { id_user, email, role: tokenRole } = decoded;
+
+    const { id_user, role: tokenRole } = decoded;
+
     const existUser = await findUserById(id_user);
 
     if (!existUser) {
       res.clearCookie("adminToken");
-      return res.json({
+      return res.status(401).json({
         code: "error",
         message: "Tài khoản không tồn tại trong hệ thống!"
       });
     }
 
-    if (tokenRole && existUser.role !== tokenRole) {
+    if (existUser.role !== tokenRole) {
       res.clearCookie("adminToken");
-      return res.json({
+      return res.status(403).json({
         code: "error",
         message: "Token không hợp lệ (role không khớp)!"
       });
     }
 
-    // Check if role is "admin"
     if (existUser.role !== "admin") {
-      res.clearCookie("adminToken");
-      return res.json({
+      return res.status(403).json({
         code: "error",
         message: "Bạn không có quyền truy cập tài nguyên admin!"
       });
     }
 
-    req.account = existUser
-  }
-  catch (error) {
-    res.json({
-      code: "error",
-      message: error
-    })
-  }
+    req.account = existUser;
 
-  next();
-}
+    next(); // only call next if everything is OK
+
+  } catch (error) {
+    console.error("[verifyToken error]", error);
+    return res.status(500).json({
+      code: "error",
+      message: "Lỗi xác thực token!"
+    });
+  }
+};

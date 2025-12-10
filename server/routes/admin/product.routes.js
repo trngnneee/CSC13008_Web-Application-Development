@@ -56,6 +56,7 @@ router.get("/list", productController.getProductList);
 router.delete("/delete-list", verifyToken, productController.deleteAllProducts);
 
 router.post("/add-time", verifyToken, productController.addTimeToAllProducts);
+router.get("/auto-extend-settings", verifyToken, productController.getAutoExtendSettings);
 
 router.get("/:id", productController.getProductDetail);
 

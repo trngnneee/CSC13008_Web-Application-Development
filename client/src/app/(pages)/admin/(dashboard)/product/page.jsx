@@ -5,7 +5,7 @@ import { DashboardMultipleApply } from "../components/DashboardMultipleApply";
 import { DashboardSearch } from "../components/DashboardSearch";
 import ProductTable from "./components/ProductTable";
 import { Button } from "@/components/ui/button";
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { productTotalPage } from "@/lib/adminAPI/product";
 import DashboardPagination from "../components/DashboardPagination";
@@ -54,7 +54,7 @@ export default function AdminProduct() {
             <span>Import dữ liệu</span>
           </Button>
           <Button onClick={() => router.push("/admin/product/add-time")} variant="outline" className="aspect-auto bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white gap-2">
-            <Download className="w-4 h-4" />
+            <RotateCw className="w-4 h-4" />
             <span>Thời gian tự động gia hạn</span>
           </Button>
         </div>

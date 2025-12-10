@@ -208,3 +208,11 @@ export const addTimeToAllProducts = async (extend_threshold_minutes, extend_dura
     return row;
   }
 }
+
+export const getAutoExtendSettings = async () => {
+  const settings = await db("auction_settings").first();
+  return settings || {
+    extend_threshold_minutes: null,
+    extend_duration_minutes: null,
+  };
+}

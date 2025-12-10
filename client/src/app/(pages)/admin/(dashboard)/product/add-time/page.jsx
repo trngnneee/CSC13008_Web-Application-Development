@@ -1,21 +1,44 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addTimeToAllProducts } from "@/lib/adminAPI/product";
+import { addTimeToAllProducts, getAutoExtendSettings } from "@/lib/adminAPI/product";
 import { toastHandler } from "@/lib/toastHandler";
 import { ArrowLeft } from "lucide-react";
 
 export default function AddTimePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [formData, setFormData] = useState({
     extend_threshold_minutes: "",
     extend_duration_minutes: "",
   });
+
+  // Load settings khi page mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getAutoExtendSettings();
+        if (settings) {
+          setFormData({
+            extend_threshold_minutes: settings.extend_threshold_minutes || "",
+            extend_duration_minutes: settings.extend_duration_minutes || "",
+          });
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy cài đặt:", error);
+        // Không show error toast, để user nhập mới
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,26 +73,19 @@ export default function AddTimePage() {
     setLoading(true);
     try {
       const result = await addTimeToAllProducts(thresholdMinutes, durationMinutes);
+      setLoading(false);
       toastHandler("Cập nhật thời gian tự động gia hạn thành công", "success");
       setTimeout(() => {
         router.push("/admin/product");
       }, 1000);
     } catch (error) {
-      toastHandler(error.message, "error");
       setLoading(false);
+      toastHandler(error.message, "error");
     }
   };
 
   return (
-    <div className="mt-6">
-      <button
-        onClick={() => router.back()}
-        className="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Quay lại</span>
-      </button>
-
+    <div className="mt-6 flex justify-center">      
       <div className="bg-white rounded-lg shadow p-6 max-w-lg">
         <h1 className="text-2xl font-bold mb-6">Cài đặt thời gian tự động gia hạn</h1>
 
@@ -92,9 +108,6 @@ export default function AddTimePage() {
               onChange={handleInputChange}
               className="text-base"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Ví dụ: Nhập 60 có nghĩa sản phẩm còn dưới 60 phút thì sẽ tự động gia hạn
-            </p>
           </div>
 
           {/* Thời gian gia hạn thêm */}
@@ -115,15 +128,12 @@ export default function AddTimePage() {
               onChange={handleInputChange}
               className="text-base"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Ví dụ: Nhập 30 có nghĩa mỗi lượt đấu giá mới sẽ gia hạn thêm 30 phút
-            </p>
           </div>
 
           {/* Summary */}
           <div className="bg-blue-50 border border-blue-200 rounded p-4">
             <p className="text-sm text-blue-900">
-              <span className="font-semibold">Tóm tắt:</span> Khi có lượt đấu giá mới và sản phẩm còn dưới{" "}
+              Khi có lượt đấu giá mới và sản phẩm còn dưới{" "}
               <span className="font-semibold">{formData.extend_threshold_minutes || "X"} phút</span>, hệ thống sẽ tự động gia hạn thêm{" "}
               <span className="font-semibold">{formData.extend_duration_minutes || "Y"} phút</span>.
             </p>

@@ -582,7 +582,7 @@ export const addTimeToAllProducts = async (req, res) => {
 
         res.json({
             code: "success",
-            message: "Thêm thời gian cho tất cả sản phẩm thành công."
+            message: "Thêm thời gian thành công."
         });
 
     } catch (e) {
@@ -593,3 +593,49 @@ export const addTimeToAllProducts = async (req, res) => {
         });
     }
 }
+
+export const getAutoExtendSettings = async (req, res) => {
+    try {
+        const settings = await productService.getAutoExtendSettings();
+
+        res.json({
+            code: "success",
+            message: "Lấy cài đặt tự động gia hạn thành công.",
+            data: settings
+        });
+
+    } catch (e) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy cài đặt tự động gia hạn.",
+            data: e?.message || e,
+        });
+    }
+}
+
+export const getProductsForCron = async (req, res) => {
+    try {
+    const settings = await db("auction_settings")
+                    .first();
+
+    if (!settings) {
+      return res.json({
+        code: "success",
+        message: "Chưa có cấu hình, dùng giá trị mặc định.",
+        data: null,
+      });
+    }
+
+    return res.json({
+      code: "success",
+      message: "Lấy cấu hình tự động gia hạn thành công",
+      data: settings,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      code: "error",
+      message: "Lỗi khi lấy cấu hình tự động gia hạn.",
+      data: e?.message || e,
+    });
+  }
+};
