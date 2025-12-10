@@ -20,7 +20,7 @@ export const ProdcutInformation = ({ productDetail }) => {
             />
           </div>
           <div className="z-10 border-b-2 border-black pb-[30px]">
-            <div className="text-[65px] font-extrabold -mb-5">{productDetail.name}</div>
+            <div className="text-[30px] font-extrabold mb-5">{productDetail.name}</div>
             <div className="text-[20px]">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
             <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
             <div className="flex items-center gap-5 mt-5">
@@ -52,10 +52,6 @@ export const ProdcutInformation = ({ productDetail }) => {
             </div>
             <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
             <div className="text-[15px] mt-[30px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
-            <div className="mt-5">
-              <div className="text-[15px] font-bold">Mô tả sản phẩm:</div>
-              <div className="bg-gray-100 p-5 rounded-xl mt-3" dangerouslySetInnerHTML={{__html: productDetail.description}}></div>
-            </div>
             {isLogin && (
               <div className="mt-[30px] flex justify-center">
                 <Button className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}>

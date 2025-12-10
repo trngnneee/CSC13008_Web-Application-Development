@@ -440,7 +440,7 @@ export const getProductListByCategory = async (req, res) => {
 
         const categoryIDs = await getAllChildCategoryIDs(categoryDetail.id_category);
 
-        const query = db("product").whereIn("id_category", categoryIDs);
+        const query = db("product").whereIn("id_category", categoryIDs).join('user', 'product.created_by', 'user.id_user').select('product.*', 'user.fullname as seller');
 
         const pageSize = 4 * 3;
         const countResult = await db('product').whereIn("id_category", categoryIDs).count('* as count').first();

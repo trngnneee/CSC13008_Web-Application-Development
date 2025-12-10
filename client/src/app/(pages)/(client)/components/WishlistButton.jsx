@@ -15,9 +15,11 @@ import { CircleAlertIcon } from "lucide-react"
 import { clientAddToWishlist, clientRemoveFromWishlist } from "@/lib/clientAPI/user";
 import { toast } from "sonner";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
+import { useEffect, useState } from "react";
 
 export const WishListButton = ({ onClickSuccess, id }) => {
   const { userInfo } = useClientAuthContext();
+  const [userInfoState, setUserInfoState] = useState(userInfo);
 
   const handleAddToWishlist = () => {
     const promise = clientAddToWishlist({ id_product: id });
@@ -25,9 +27,10 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       loading: "Đang thêm vào danh sách yêu thích...",
       success: (data) => {
         if (data.code == "success") {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          setUserInfoState(prevState => ({
+            ...prevState,
+            watchList: [...prevState.watchList, id]
+          }));
           return data.message;
         }
         else return Promise.reject(data.message);
@@ -42,9 +45,10 @@ export const WishListButton = ({ onClickSuccess, id }) => {
       loading: "Đang xóa khỏi danh sách yêu thích...",
       success: (data) => {
         if (data.code == "success") {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          setUserInfoState(prevState => ({
+            ...prevState,
+            watchList: prevState.watchList.filter(item => item !== id)
+          }));
           return data.message;
         }
         else return Promise.reject(data.message);
@@ -53,8 +57,11 @@ export const WishListButton = ({ onClickSuccess, id }) => {
     })
   }
 
+  useEffect(() => {
+  }, [userInfoState])
+
   return (
-    userInfo && userInfo.watchList.length > 0 && userInfo.watchList.includes(id) ? (
+    userInfoState && userInfoState.watchList.length > 0 && userInfoState.watchList.includes(id) ? (
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
