@@ -2,6 +2,7 @@ import { formatDate } from "../../helper/date.helper.js";
 import * as upgradeRequestService from "../../service/upgrade_request.service.js";
 import * as userService from "../../service/user.service.js";
 import bcrypt from "bcryptjs";
+import db from "../../config/database.config.js";
 
 export const requestUpgradeToSeller = async (req, res) => {
   const id_user = req.account?.id_user; // From middleware
@@ -83,7 +84,7 @@ export const updateClientProfile = async (req, res) => {
   const { fullname, date_of_birth } = req.body;
 
   await userService.updateUserById(id_user, { fullname, date_of_birth: formatDate(date_of_birth) });
-  
+
   res.json({
     code: "success",
     message: "Cập nhật thông tin cá nhân thành công!",
@@ -117,5 +118,82 @@ export const resetClientPassword = async (req, res) => {
   res.json({
     code: "success",
     message: "Đổi mật khẩu thành công!",
+  })
+}
+
+export const addToWishlist = async (req, res) => {
+  const id_user = req.account?.id_user; // From middleware
+  const { id_product } = req.body;
+
+  const existingEntry = await db("watch_list")
+    .where({ id_user, id_product })
+    .first();
+
+  if (existingEntry) {
+    return res.json({
+      code: "error",
+      message: "Sản phẩm đã có trong danh sách yêu thích!",
+    });
+  }
+
+  await db("watch_list").insert({
+    id_user,
+    id_product,
+  });
+
+  res.json({
+    code: "success",
+    message: "Thêm vào danh sách yêu thích thành công!",
+  })
+}
+
+export const removeFromWishlist = async (req, res) => {
+  const id_user = req.account?.id_user; // From middleware
+  const { id_product } = req.body;
+
+  await db("watch_list")
+    .where({ id_user, id_product })
+    .del();
+
+  res.json({
+    code: "success",
+    message: "Xóa khỏi danh sách yêu thích thành công!",
+  })
+}
+
+export const getWishlist = async (req, res) => {
+  const id_user = req.account?.id_user; // From middleware
+
+  const wishlistIDs = await db("watch_list")
+    .where({ id_user })
+    .select("id_product");
+
+  let productList = [];
+  let query = null;
+  let ids = [];
+  if (wishlistIDs.length > 0) {
+    ids = wishlistIDs.map(entry => entry.id_product);
+    query = db("product")
+      .select("product.*", 'user.fullname as seller')
+      .join("user", "product.created_by", "user.id_user")
+      .whereIn("product.id_product", ids)
+  }
+
+  const pageSize = 4;
+  const countResult = await db('product').whereIn("product.id_product", ids).count('* as count').first();
+  const totalPages = Math.ceil(Number(countResult.count) / pageSize);
+  if (req.query.page) {
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * pageSize;
+    query.limit(pageSize).offset(offset);
+  }
+
+  productList = await query;
+
+  res.json({
+    code: "success",
+    message: "Lấy danh sách yêu thích thành công!",
+    productList: productList,
+    totalPages: totalPages,
   })
 }

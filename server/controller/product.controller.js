@@ -174,13 +174,47 @@ export const insertProduct = async (req, res) => {
         url_img: productData.url_img,
         updated_by: productData.updated_by,
         created_by: productData.created_by,
-    })
+    });
+
+    await db('description_history').insert({
+        id_product: productData.id_product,
+        time: new Date(),
+        description: productData.description,
+    });
 
     res.json({
         code: "success",
         message: "Thêm sản phẩm thành công",
     })
 };
+
+export const updateProductDescription = async (req, res) => {
+    const id = req.params.id;
+    const { description } = req.body;
+
+    await db('description_history').insert({
+        id_product: id,
+        time: new Date(),
+        description: description,
+    });
+    
+    res.json({
+        code: "success",
+        message: "Cập nhật mô tả sản phẩm thành công",
+    })
+};
+
+export const getProductDescriptionHistory = async (req, res) => {
+    const id = req.params.id;
+
+    const descriptionHistory = await db('description_history').select('*').where('id_product', id).orderBy('time', 'desc');
+
+    res.json({
+        code: "success",
+        message: "Lấy lịch sử mô tả sản phẩm thành công",
+        descriptionHistory: descriptionHistory
+    })
+}
 
 export const getTotalPage = async (req, res) => {
     try {

@@ -11,7 +11,8 @@ import {
   createVerifyEmail, 
   findVerifyEmailToken, 
   markVerifyTokenUsed, 
-  changeUserRole 
+  changeUserRole,
+  getUserWatchList
 } from "./user.service.js";
 import { OTPGenerate } from "../helper/otp.helper.js";
 import { sendVarifyMail, sendOTPMail } from "../helper/mail.helper.js";
@@ -137,6 +138,8 @@ export const handleVerifyToken = async (token) => {
         message: "Tài khoản không tồn tại trong hệ thống!"
       };
     }
+    
+    const watchList = await getUserWatchList(id_user);
 
     return {
       success: true,
@@ -146,7 +149,8 @@ export const handleVerifyToken = async (token) => {
         fullname: existUser.fullname,
         email: existUser.email,
         role: existUser.role,
-        date_of_birth: existUser.date_of_birth
+        date_of_birth: existUser.date_of_birth,
+        watchList: watchList || []
       }
     };
   } catch (error) {

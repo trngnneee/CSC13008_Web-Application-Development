@@ -95,3 +95,35 @@ export const clientProductListByCategory = async (categoryID, params = "", statu
   }
   return data;;
 }
+
+export const clientProductUpdateDescription = async (id, description) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/update/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ description }),
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Cập nhật mô tả sản phẩm thất bại");
+  }
+  return data;
+}
+
+export const clientProductGetDescription = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/description-history/${id}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy lịch sử mô tả sản phẩm thất bại");
+  }
+  return data;
+}

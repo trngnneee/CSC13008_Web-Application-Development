@@ -50,3 +50,56 @@ export const clientProfileResetPassword = async (finalData) => {
 
   return data;
 }
+
+export const clientAddToWishlist = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/wishlist/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(finalData),
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Thêm vào danh sách yêu thích thất bại");
+  }
+
+  return data;
+}
+
+export const clientRemoveFromWishlist = async (finalData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/wishlist/remove`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(finalData),
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Xóa khỏi danh sách yêu thích thất bại");
+  }
+
+  return data;
+}
+
+export const clientWishlistGet = async (params) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/wishlist${params}`, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách yêu thích thất bại");
+  }
+
+  return data;
+}
