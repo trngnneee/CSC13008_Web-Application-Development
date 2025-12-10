@@ -4,6 +4,7 @@ import accountRoutes from "./account.routes.js";
 import productRoutes from "./product.routes.js";
 import categoryRoutes from "./category.routes.js";
 import searchRoutes from "./search.routes.js";
+import commentRoutes from "./comment.routes.js";
 
 const router = express.Router();
 
@@ -34,6 +35,11 @@ router.use(
 router.use(
   "/search",
   searchRoutes
+)
+
+router.use(
+  "/comment",
+  commentRoutes
 )
 
 export default router;

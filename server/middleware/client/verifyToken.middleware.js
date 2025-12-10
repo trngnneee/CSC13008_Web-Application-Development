@@ -16,7 +16,7 @@ export const verifyToken = async (req, res, next) => {
     if (!token) {
       return res.json({
         code: "error",
-        message: "Token không tồn tại!"
+        message: "Vui lòng đăng nhập để tiếp tục!"
       })
     }
 
