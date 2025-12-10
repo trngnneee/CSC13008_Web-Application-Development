@@ -404,6 +404,13 @@ export const getProductDetailByID = async (req, res) => {
         .join("user", "product.created_by", "user.id_user")
         .first();
 
+    const descriptionHistory = await db('description_history')
+        .select('*')
+        .where('id_product', id)
+        .orderBy('time', 'desc');
+
+    productDetail.descriptionHistory = descriptionHistory;
+
     res.json({
         code: "success",
         message: "Lấy chi tiết sản phẩm thành công",
