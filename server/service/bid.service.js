@@ -27,7 +27,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
       const approvedRequest = await db("bid_request")
         .where("id_bidder", id_user)
         .where("id_product", id_product)
-        .where("id_seller", product.id_seller)
+        .where("id_seller", product.updated_by)
         .where("status", "approved")
         .first();
 
@@ -35,7 +35,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         const existingRequest = await db("bid_request")
           .where("id_bidder", id_user)
           .where("id_product", id_product)
-          .where("id_seller", product.id_seller)
+          .where("id_seller", product.updated_by)
           .where("status", "pending")
           .first();
 
@@ -49,7 +49,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
           .insert({
             id_bidder: id_user,
             id_product,
-            id_seller: product.id_seller,
+            id_seller: product.updated_by,
             bid_price,
             status: "pending",
             created_at: new Date(),

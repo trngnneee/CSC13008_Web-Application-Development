@@ -57,7 +57,8 @@ export const verifyToken = async (req, res, next) => {
     //   });
     // }
 
-    req.account = existUser
+    req.account = existUser;
+    req.account.role = existUser.role;
   }
   catch (error) {
     res.json({
