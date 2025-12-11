@@ -1,5 +1,6 @@
 import db from "../../config/database.config.js"
 import { sendNewCommentNotificationMail } from "../../helper/mail.helper.js";
+import { findRootCommentId, getFullThread } from "../../helper/comment.helper.js";
 
 export const commentRootCreatePost = async (req, res) => {
   const result = await db('comments').insert({
@@ -51,6 +52,20 @@ export const commentReplyCreatePost = async (req, res) => {
     reply_to_user: req.body.reply_to_user
   }).returning('*');
 
+  const rootID = await findRootCommentId(result[0].id_comment);
+  const fullThread = await getFullThread(rootID);
+
+  const userIDs = req.account.role == "seller" ? [...new Set(fullThread.map(c => c.id_user).filter(id => id !== req.account.id_user))] : [...new Set(fullThread.map(c => c.id_user))];
+  const participants = await db('user').whereIn('id_user', userIDs).whereIn('role', ['admin', 'bidder']);
+
+  const productData = await db('product')
+    .select('name')
+    .where('id_product', req.body.id_product)
+    .first();
+  for (const participant of participants) {
+    sendNewCommentNotificationMail(participant.email, productData.name, req.account.fullname, req.body.content, `${process.env.CLIENT_URL}/product/${req.body.id_product}`);
+  }
+  
   res.json({
     code: "success",
     message: "Đã gửi phản hồi!",
