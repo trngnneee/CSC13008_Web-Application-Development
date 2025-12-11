@@ -58,14 +58,25 @@ export const commentReplyCreatePost = async (req, res) => {
   const userIDs = req.account.role == "seller" ? [...new Set(fullThread.map(c => c.id_user).filter(id => id !== req.account.id_user))] : [...new Set(fullThread.map(c => c.id_user))];
   const participants = await db('user').whereIn('id_user', userIDs).whereIn('role', ['admin', 'bidder']);
 
-  const productData = await db('product')
-    .select('name')
-    .where('id_product', req.body.id_product)
-    .first();
-  for (const participant of participants) {
-    sendNewCommentNotificationMail(participant.email, productData.name, req.account.fullname, req.body.content, `${process.env.CLIENT_URL}/product/${req.body.id_product}`);
+  if (req.account.role == "seller") {
+    const productData = await db('product')
+      .select('name')
+      .where('id_product', req.body.id_product)
+      .first();
+      
+    if (productData && productData.created_by === req.account.id_user) {
+      for (const participant of participants) {
+        sendNewCommentNotificationMail(
+          participant.email,
+          productData.name,
+          req.account.fullname,
+          req.body.content,
+          `${process.env.CLIENT_URL}/product/${req.body.id_product}`
+        );
+      }
+    }
   }
-  
+
   res.json({
     code: "success",
     message: "Đã gửi phản hồi!",
