@@ -9,11 +9,14 @@ import { useParams } from "next/navigation";
 import { clientProductDetail } from "@/lib/clientAPI/product";
 import { ProductDescription } from "./components/ProductDescription";
 import { CommentSection } from "./components/CommentSection";
+import { BidRequest } from "./components/BidRequest";
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
 
 export default function ProductPage() {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState(null);
-  
+  const { userInfo } = useClientAuthContext();
+
   useEffect(() => {
     const fetchData = async () => {
       const promise = await clientProductDetail(id);
@@ -37,6 +40,12 @@ export default function ProductPage() {
         <div className="my-[50px]">
           <div className="text-[30px] font-extrabold mb-2.5">Lịch sử đấu giá:</div>
           <BidHistory />
+          {userInfo && userInfo.role == "seller" && (
+            <>
+              <div className="text-[30px] font-extrabold mb-2.5 mt-10">Danh sách đấu giá chờ duyệt của Bidder:</div>
+              <BidRequest />
+            </>
+          )}
         </div>
         <CommentSection />
         {productDetail && (
