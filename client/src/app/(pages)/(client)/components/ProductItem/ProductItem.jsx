@@ -8,27 +8,28 @@ import Link from "next/link";
 import { WishListButton } from "../WishlistButton";
 import { Badge } from "@/components/ui/badge";
 
-export const ProductItem = ({ item }) => {
+export const ProductItem = ({ item, newProductMinutes = 30 }) => {
   const router = useRouter();
   const { isLogin } = useClientAuthContext();
 
-  const isNewProduct = (() => {
+  // Sử dụng is_new từ server nếu có, nếu không thì tính toán client-side
+  const isNewProduct = item.is_new !== undefined ? item.is_new : (() => {
     const posted = new Date(item.posted_date_time).getTime();
     const now = Date.now();
     const diffMinutes = (now - posted) / (1000 * 60);
-    return diffMinutes <= 60;
+    return diffMinutes <= newProductMinutes;
   })();
 
   return (
     <Link href={`/product/${item.id_product}`}>
       <div
         className={`
-          p-5 bg-white rounded-[10px] transition-all duration-300 cursor-pointer shadow-2xl hover:scale-[1.02]
+          relative p-5 bg-white rounded-[10px] transition-all duration-300 cursor-pointer shadow-2xl hover:scale-[1.02]
           ${isNewProduct ? "border-2 border-[var(--main-client-color)] shadow-[0_0_15px_rgba(0,70,99,0.6)]" : ""}
         `}
       >
         {isNewProduct && (
-          <Badge className="absolute -mt-3 -ml-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold shadow-md">
+          <Badge className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold shadow-md z-10">
             MỚI ĐĂNG
           </Badge>
         )}
