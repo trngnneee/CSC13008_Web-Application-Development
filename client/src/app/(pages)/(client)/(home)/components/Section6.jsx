@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react"
 import { ProductItem } from "../../components/ProductItem/ProductItem"
 import { SectionHeader } from "./SectionHeader"
-import { clientProductListTopPrice } from "@/lib/clientAPI/product"
+import { clientProductListMostBidded } from "@/lib/clientAPI/product"
 import { ProductItemSkeleton } from "../../components/ProductItem/ProductItemSkeleton"
 
-export const Section3 = () => {
+export const Section6 = () => {
   const [productList, setProductList] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const promise = await clientProductListTopPrice();
+      const promise = await clientProductListMostBidded();
       if (promise.code == "success")
       {
         setProductList(promise.productList);
@@ -24,7 +24,7 @@ export const Section3 = () => {
     <>
       <div className="container mx-auto mt-[75px] border-b border-b-black pb-[120px] mb-[120px]">
         <SectionHeader
-          title="Top 5 sản phẩm chưa kết thúc có giá cao nhất"
+          title="Top 5 sản phẩm có nhiều lượt ra giá nhất"
           subtitle="Xem tất cả"
           link="#"
         />

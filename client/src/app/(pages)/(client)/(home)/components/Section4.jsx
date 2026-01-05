@@ -24,18 +24,18 @@ export const Section4 = () => {
     <>
       <div className="container mx-auto mt-[75px] border-b border-b-black pb-[120px] mb-[120px]">
         <SectionHeader
-          title="Sản phẩm sắp kết thúc"
+          title="Top 5 sản phẩm gần kết thúc"
           subtitle="Xem tất cả"
           link="#"
         />
-        <div className="grid grid-cols-4 gap-[30px] mt-[50px]">
+        <div className="grid grid-cols-5 gap-[30px] mt-[50px]">
           {productList.length > 0 ? productList.map((item, index) => (
             <ProductItem
               key={index}
               item={item}
             />
           )) : (
-            [...Array(4)].map((_, index) => (
+            [...Array(5)].map((_, index) => (
               <ProductItemSkeleton 
                 key={index}
               />

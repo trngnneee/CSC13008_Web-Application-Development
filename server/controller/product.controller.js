@@ -389,12 +389,13 @@ export const getTopPriceProductList = async (req, res) => {
         .where(function() {
             this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
         })
+        .where('product.end_date_time', '>', db.fn.now())
         .orderBy("price", "desc")
-        .limit(4);
+        .limit(5);
 
     res.json({
         code: "success",
-        message: "Lấy danh sách sản phẩm có giá cao nhất thành công",
+        message: "Lấy danh sách Top 5 sản phẩm chưa kết thúc có giá cao nhất thành công",
         productList: productList,
     })
 }
@@ -406,12 +407,36 @@ export const getEndingSoonProductList = async (req, res) => {
         .where(function() {
             this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
         })
+        .where('product.end_date_time', '>', db.fn.now())
         .orderBy("end_date_time", "asc")
-        .limit(4);
+        .limit(5);
     
     res.json({
         code: "success",
-        message: "Lấy danh sách sản phẩm sắp kết thúc thành công",
+        message: "Lấy danh sách Top 5 sản phẩm gần kết thúc thành công",
+        productList: productList,
+    })
+}
+
+export const getMostBiddedProductList = async (req, res) => {
+    const productList = await db("product")
+        .select(
+            "product.*", 
+            'user.fullname as seller',
+            db.raw('COUNT(bid.id_bid) as bid_count')
+        )
+        .join("user", "product.created_by", "user.id_user")
+        .leftJoin("bid", "product.id_product", "bid.id_product")
+        .where(function() {
+            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+        })
+        .groupBy("product.id_product", "user.fullname")
+        .orderBy("bid_count", "desc")
+        .limit(5);
+    
+    res.json({
+        code: "success",
+        message: "Lấy danh sách Top 5 sản phẩm có nhiều lượt ra giá nhất thành công",
         productList: productList,
     })
 }

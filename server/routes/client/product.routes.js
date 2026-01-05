@@ -17,6 +17,8 @@ router.get("/list/top-price", productController.getTopPriceProductList);
 
 router.get("/list/ending-soon", productController.getEndingSoonProductList);
 
+router.get("/list/most-bidded", productController.getMostBiddedProductList);
+
 router.get("/detail/:id", productController.getProductDetailByID);
 
 router.get("/list/seller/:sellerID", productController.getProductListBySeller);
