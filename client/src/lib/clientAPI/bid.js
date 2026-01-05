@@ -17,7 +17,8 @@ export const placeBid = async (id_product, bid_price, id_user) => {
 
   const data = await res.json();
 
-  if (data.code !== "success") {
+  // "success" hoặc "pending_approval" đều là kết quả hợp lệ
+  if (data.code !== "success" && data.code !== "pending_approval") {
     throw new Error(data.message || "Đấu giá thất bại");
   }
 

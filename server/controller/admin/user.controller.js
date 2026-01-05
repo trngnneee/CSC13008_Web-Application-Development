@@ -198,8 +198,35 @@ export const resetPassword = async (req, res) => {
             });
         }
 
-        // Tạo mật khẩu ngẫu nhiên 8 ký tự
-        const newPassword = Math.random().toString(36).slice(-8);
+        // Tạo mật khẩu ngẫu nhiên đảm bảo:
+        // - Ít nhất 8 ký tự
+        // - Ít nhất 1 ký tự đặc biệt
+        // - Ít nhất 1 ký tự in hoa
+        // - Ít nhất 1 số
+        const generateSecurePassword = () => {
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const special = '!@#$%^&*';
+            
+            // Đảm bảo có ít nhất 1 ký tự từ mỗi loại
+            let password = '';
+            password += uppercase[Math.floor(Math.random() * uppercase.length)];
+            password += lowercase[Math.floor(Math.random() * lowercase.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += special[Math.floor(Math.random() * special.length)];
+            
+            // Thêm 4 ký tự ngẫu nhiên nữa để đủ 8 ký tự
+            const allChars = uppercase + lowercase + numbers + special;
+            for (let i = 0; i < 4; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+            
+            // Xáo trộn mật khẩu
+            return password.split('').sort(() => Math.random() - 0.5).join('');
+        };
+        
+        const newPassword = generateSecurePassword();
         
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(newPassword, salt);

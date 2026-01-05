@@ -80,12 +80,12 @@ export default function ProductTable({ filter, selectedItem, setSelectedItem }) 
                 />
               </td>
               <td className="p-3 text-center">{item.name_category}</td>
-              <td className="p-3 text-center">{parseInt(item.price).toLocaleString("vi-VN")}</td>
-              <td className="p-3 text-center">{parseInt(item.starting_price).toLocaleString("vi-VN")}</td>
-              <td className="p-3 text-center">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")}</td>
+              <td className="p-3 text-center">{parseInt(item.price).toLocaleString("vi-VN")} VND</td>
+              <td className="p-3 text-center">{parseInt(item.starting_price).toLocaleString("vi-VN")} VND</td>
+              <td className="p-3 text-center">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")} VND</td>
               <td className="p-3 text-center text-[12px] text-gray-500">{(new Date(item.posted_date_time)).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
               <td className="p-3 text-center text-[12px] text-gray-500">{(new Date(item.end_date_time)).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}</td>
-              <td className="p-3 text-center">{parseInt(item.pricing_step).toLocaleString("vi-VN")}</td>
+              <td className="p-3 text-center">{parseInt(item.pricing_step).toLocaleString("vi-VN")} VND</td>
               <td className="p-3 flex items-center justify-center gap-2">
                 <AdminDeleteButton
                   api={`${process.env.NEXT_PUBLIC_API_URL}/admin/product/delete/${item.id_product}`}

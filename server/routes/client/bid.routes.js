@@ -6,7 +6,8 @@ import { authorizeRole, verifyToken } from '../../middleware/client/verifyToken.
 
 const router = express.Router();
 
-router.post('/', verifyToken, authorizeRole("bidder"), bidController.placeBidPost);
+// Cho phép cả bidder và seller đấu giá (seller có thể mua hàng từ seller khác)
+router.post('/', verifyToken, authorizeRole("bidder", "seller"), bidController.placeBidPost);
 
 router.get('/', verifyToken, authorizeRole("seller"), bidController.bidRequestGet);
     

@@ -11,6 +11,11 @@ export const placeBid = async (id_product, bid_price, id_user) => {
       throw new Error("Sản phẩm không tồn tại");
     }
 
+    // Kiểm tra seller không thể đấu giá sản phẩm của chính mình
+    if (product.updated_by === id_user) {
+      throw new Error("Bạn không thể đấu giá sản phẩm của chính mình");
+    }
+
     // Kiểm tra bidder
     const bidder = await db("user")
       .where("id_user", id_user)

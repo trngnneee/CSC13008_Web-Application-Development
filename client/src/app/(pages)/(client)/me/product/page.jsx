@@ -70,9 +70,9 @@ export default function SellerProductPage() {
                   </div>
                 </td>
                 <td className="p-3 text-center">{item.name_category}</td>
-                <td className="p-3 text-center">{parseInt(item.starting_price).toLocaleString("vi-VN")}</td>
-                <td className="p-3 text-center">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")}</td>
-                <td className="p-3 text-center">{parseInt(item.pricing_step).toLocaleString("vi-VN")}</td>
+                <td className="p-3 text-center">{parseInt(item.starting_price).toLocaleString("vi-VN")} VND</td>
+                <td className="p-3 text-center">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")} VND</td>
+                <td className="p-3 text-center">{parseInt(item.pricing_step).toLocaleString("vi-VN")} VND</td>
                 <td className="p-3 text-center text-[12px] text-gray-500">{dateFormat(new Date(item.posted_date_time))}</td>
                 <td className="p-3 text-center text-[12px] text-gray-500">{item.end_date_time ? dateFormat(new Date(item.end_date_time)) : "-"}</td>
                 <td className="p-3 flex items-center justify-center gap-2">

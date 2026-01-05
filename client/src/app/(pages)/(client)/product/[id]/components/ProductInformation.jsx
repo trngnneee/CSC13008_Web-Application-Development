@@ -9,15 +9,30 @@ import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 import { WishListButton } from "../../../components/WishlistButton";
 import { placeBid } from "@/lib/clientAPI/bid";
 import { toastHandler } from "@/lib/toastHandler";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin, userInfo } = useClientAuthContext();
   const [bidPrice, setBidPrice] = useState("");
   const [bidLoading, setBidLoading] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const isSellerDeleted = productDetail?.seller_status === 'inactive';
 
-  const handlePlaceBid = async () => {
+  // Tính giá đấu tối thiểu
+  const minBidPrice = productDetail ? 
+    parseInt(productDetail.price) + parseInt(productDetail.pricing_step || 0) : 0;
+
+  const handlePlaceBidClick = () => {
     if (!bidPrice || Number(bidPrice) <= 0) {
       toastHandler("Vui lòng nhập số tiền đấu giá hợp lệ", "error");
       return;
@@ -28,16 +43,33 @@ export const ProdcutInformation = ({ productDetail }) => {
       return;
     }
 
+    // Kiểm tra giá tối thiểu ở frontend
+    if (Number(bidPrice) < minBidPrice) {
+      toastHandler(`Giá đấu tối thiểu là ${minBidPrice.toLocaleString("vi-VN")} VND`, "error");
+      return;
+    }
+
+    // Hiển thị dialog xác nhận
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmBid = async () => {
+    setShowConfirmDialog(false);
     setBidLoading(true);
     try {
       const result = await placeBid(productDetail.id_product, Number(bidPrice), userInfo.id_user);
-      toastHandler("Đấu giá thành công", "success");
+      toastHandler(result.message || "Đấu giá thành công", "success");
       setBidPrice("");
     } catch (error) {
       toastHandler(error.message, "error");
     } finally {
       setBidLoading(false);
     }
+  };
+
+  // Đặt giá đề nghị tối thiểu khi click
+  const handleSetMinBid = () => {
+    setBidPrice(minBidPrice.toString());
   };
 
   return (
@@ -64,10 +96,10 @@ export const ProdcutInformation = ({ productDetail }) => {
               </>
             )}
             <div className="flex items-center gap-5 mt-5">
-              <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.starting_price).toLocaleString("vi-VN")}</span></div>
-              <div className="text-[15px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.price).toLocaleString("vi-VN")}</span></div>
-              <div className="text-[15px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")}</span></div>
-              <div className="text-[15px] font-bold"><span className="">Bước giá:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.pricing_step).toLocaleString("vi-VN")}</span></div>
+              <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.starting_price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[15px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[15px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[15px] font-bold"><span className="">Bước giá:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.pricing_step).toLocaleString("vi-VN")} VND</span></div>
             </div>
     
             <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
@@ -87,6 +119,21 @@ export const ProdcutInformation = ({ productDetail }) => {
 
           <div className="mt-[30px]">
             <div className="text-[20px] font-bold mb-[10px]">Đấu giá</div>
+            
+            {/* Hiển thị giá đề nghị tối thiểu */}
+            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <span className="text-blue-700 font-medium">
+                Giá đấu tối thiểu: <span className="font-bold">{minBidPrice.toLocaleString("vi-VN")} VND</span>
+              </span>
+              <Button 
+                variant="link" 
+                className="text-blue-600 p-0 ml-2 h-auto"
+                onClick={handleSetMinBid}
+              >
+                Đặt giá này
+              </Button>
+            </div>
+
             <div className="flex items-center gap-5">
               <div><DollarSign /></div>
               <Input
@@ -95,16 +142,42 @@ export const ProdcutInformation = ({ productDetail }) => {
                 value={bidPrice}
                 onChange={(e) => setBidPrice(e.target.value)}
                 disabled={!isLogin || bidLoading}
+                min={minBidPrice}
               />
               <Button 
-                onClick={handlePlaceBid}
+                onClick={handlePlaceBidClick}
                 disabled={!isLogin || bidLoading}
                 className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90 text-white"
               >
-                {bidLoading ? "Đang gửi..." : "Gửi"}
+                {bidLoading ? "Đang gửi..." : "Đấu giá"}
               </Button>
             </div>
+
+            {!isLogin && (
+              <p className="text-red-500 text-sm mt-2">Vui lòng đăng nhập để đấu giá</p>
+            )}
           </div>
+
+          {/* Dialog xác nhận đấu giá */}
+          <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Xác nhận đấu giá</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Bạn có chắc chắn muốn đặt giá <span className="font-bold text-[var(--main-client-color)]">{Number(bidPrice).toLocaleString("vi-VN")} VND</span> cho sản phẩm này?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleConfirmBid}
+                  className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90"
+                >
+                  Xác nhận đấu giá
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       )}
     </>
