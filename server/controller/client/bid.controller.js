@@ -15,3 +15,17 @@ export const placeBidPost = async (req, res) => {
     res.status(400).json({ code: "error", message: error.message });
   }
 }
+
+export const bidRequestGet = async (req, res) => {
+  try {
+    const result = await bidService.getBidRequests();
+
+    return res.json({
+      code: "success",
+      message: "Bid requests retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({ code: "error", message: error.message });
+  }
+}

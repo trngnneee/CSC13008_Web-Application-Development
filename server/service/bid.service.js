@@ -109,3 +109,12 @@ export const placeBid = async (id_product, bid_price, id_user) => {
     throw error;
   }
 };
+
+export const getBidRequests = async () => {
+  try {
+    const bidRequests = await db("bid_request").select("*");
+    return bidRequests;
+  } catch (error) {
+    throw error;
+  }
+};

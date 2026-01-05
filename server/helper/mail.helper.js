@@ -103,3 +103,33 @@ export const sendNewCommentNotificationMail = async (toEmail, productName, comme
     };
     await transporter.sendMail(mailOptions);
 }
+
+export const sendResetPasswordMail = async (toEmail, newPassword) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: "Mật khẩu của bạn đã được đặt lại",
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Thông báo đặt lại mật khẩu</h2>
+                <p>Mật khẩu tài khoản của bạn đã được đặt lại bởi quản trị viên.</p>
+                <p>Mật khẩu mới của bạn là:</p>
+                <h3 style="color: #2B3674; font-size: 24px; background: #f5f5f5; padding: 10px 20px; border-radius: 6px; display: inline-block;">${newPassword}</h3>
+                <p style="color: #e74c3c;"><strong>Vui lòng đổi mật khẩu ngay sau khi đăng nhập để bảo mật tài khoản.</strong></p>
+                <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng liên hệ với quản trị viên.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}

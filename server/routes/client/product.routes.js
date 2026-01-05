@@ -33,6 +33,7 @@ router.post("/update/:id", clientMiddleware.verifyToken, productController.updat
 
 router.get("/description-history/:id", productController.getProductDescriptionHistory);
 
+//Bid routes
 router.use("/bid", bidRoutes);
 
 export default router;

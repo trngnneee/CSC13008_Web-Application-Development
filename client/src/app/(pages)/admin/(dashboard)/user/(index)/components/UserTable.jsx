@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminDeleteButton } from "../../../components/TableButton/DeleteButton";
 import { AdminEditButton } from "../../../components/TableButton/EditButton";
+import { AdminResetPasswordButton } from "../../../components/TableButton/ResetPasswordButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { adminUserList, adminUserTotalPage } from "@/lib/adminAPI/user";
 import { roleVariable } from "@/config/variable";
@@ -74,6 +75,7 @@ export default function UserTable({ filter, selectedItem, setSelectedItem }) {
                 <td className="p-3 text-center">{roleVariable.find(role => role.value === item.role)?.label || "-"}</td>
                 <td className="p-3 flex items-center justify-center gap-2">
                   <AdminEditButton link={`/admin/user/update/${item.id_user}`} />
+                  <AdminResetPasswordButton api={`${process.env.NEXT_PUBLIC_API_URL}/admin/user/reset-password/${item.id_user}`} />
                   <AdminDeleteButton api={`${process.env.NEXT_PUBLIC_API_URL}/admin/user/delete/${item.id_user}`} />
                 </td>
               </tr>

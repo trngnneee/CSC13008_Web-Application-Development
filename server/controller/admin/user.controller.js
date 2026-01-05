@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import * as userService from "../../service/user.service.js";
+import { sendResetPasswordMail } from "../../helper/mail.helper.js";
 
 export const getUserList = async (req, res) => {
     try {
@@ -180,6 +181,44 @@ export const deleteUserList = async (req, res) => {
         res.status(500).json({
             code: "error",
             message: "Xóa danh sách người dùng thất bại!",
+            error: error.message
+        });
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const user = await userService.findUserById(id);
+        if (!user) {
+            return res.status(404).json({
+                code: "error",
+                message: "Không tìm thấy người dùng!"
+            });
+        }
+
+        // Tạo mật khẩu ngẫu nhiên 8 ký tự
+        const newPassword = Math.random().toString(36).slice(-8);
+        
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = bcrypt.hashSync(newPassword, salt);
+
+        await userService.updateUserById(id, {
+            password: hashPassword
+        });
+
+        // Gửi mail thông báo mật khẩu mới cho người dùng
+        await sendResetPasswordMail(user.email, newPassword);
+
+        return res.status(200).json({
+            code: "success",
+            message: "Đặt lại mật khẩu thành công! Email đã được gửi đến người dùng."
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: "error",
+            message: "Đặt lại mật khẩu thất bại!",
             error: error.message
         });
     }

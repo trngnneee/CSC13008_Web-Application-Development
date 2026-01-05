@@ -49,7 +49,7 @@ export default function AdminProduct() {
             <Plus className="w-4 h-4" />
             <span>Thêm sản phẩm</span>
           </Button>
-          <Button onClick={() => router.push("/admin/product/import")} variant="outline" className="aspect-auto bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white gap-2">
+          <Button hidden onClick={() => router.push("/admin/product/import")} variant="outline" className="aspect-auto bg-[var(--main-color)] hover:bg-[var(--main-hover)] text-white hover:text-white gap-2">
             <Download className="w-4 h-4" />
             <span>Import dữ liệu</span>
           </Button>

@@ -46,14 +46,14 @@ export const getCategoryName = async (id, trx = null) => {
 
 export const deleteCategoryID = async (id, trx = null) => {
   const kx = trx || db;
-  return kx("category").where("id_category", id).del();
+  return kx("category").where("id_category", id).update({ is_deleted: true });
 };
 
 export const deleteCategory = async (id) => {
   const category = await db("category").where("id_category", id).first();
   if (!category) return null;
 
-  await db("category").where("id_category", id).del();
+  await db("category").where("id_category", id).update({ is_deleted: true });
   return category;
 };
 

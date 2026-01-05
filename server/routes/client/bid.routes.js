@@ -8,4 +8,6 @@ const router = express.Router();
 
 router.post('/', verifyToken, authorizeRole("bidder"), bidController.placeBidPost);
 
+router.get('/', verifyToken, authorizeRole("seller"), bidController.bidRequestGet);
+    
 export default router;

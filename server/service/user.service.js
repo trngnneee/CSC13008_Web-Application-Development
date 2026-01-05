@@ -218,23 +218,30 @@ export const changeUserRole = async (id_user, role) => {
 }
 
 export const downgradeExpiredSellers = async () => {
-  // Find all sellers whose expiration date has passed
-  const expiredSellers = await db("user")
-    .where("role", "seller")
-    .where("Expires_at", "<", db.raw("NOW()"))
-    .select("id_user");
+  // Find all sellers whose upgrade_request has expired
+  const expiredSellers = await db("upgrade_request")
+    .join("user", "upgrade_request.id_user", "user.id_user")
+    .where("user.role", "seller")
+    .where("upgrade_request.status", "approved")
+    .where("upgrade_request.expires_at", "<", db.raw("NOW()"))
+    .select("user.id_user", "upgrade_request.id_request");
 
   // Downgrade them back to bidder
   if (expiredSellers.length > 0) {
-    const count = await db("user")
-      .where("role", "seller")
-      .where("Expires_at", "<", db.raw("NOW()"))
-      .update({ 
-        role: "bidder",
-        Expires_at: null
-      });
+    const userIds = expiredSellers.map(s => s.id_user);
+    const requestIds = expiredSellers.map(s => s.id_request);
 
-    return count;
+    // Update user role to bidder
+    await db("user")
+      .whereIn("id_user", userIds)
+      .update({ role: "bidder" });
+
+    // Update upgrade_request status to expired
+    await db("upgrade_request")
+      .whereIn("id_request", requestIds)
+      .update({ status: "expired" });
+
+    return expiredSellers.length;
   }
 
   return 0;
@@ -253,10 +260,10 @@ export const deleteExpiredForgotPasswordTokens = async () => {
 }
 
 export const deleteUserById = async (id) => {
-  return db('user').where({ id_user: id }).del();
+  return db('user').where({ id_user: id }).update({ status: 'inactive' });
 }
 
-export const updateUserById = async (id, { fullname, date_of_birth, role }) => {
+export const updateUserById = async (id, { fullname, date_of_birth, role, password }) => {
   const user = await db('user').where({ id_user: id }).first();
   if (!user) return null;
 
@@ -270,6 +277,9 @@ export const updateUserById = async (id, { fullname, date_of_birth, role }) => {
   }
   if (role !== undefined && role !== null) {
     updateData.role = role;
+  }
+  if (password !== undefined && password !== null) {
+    updateData.password = password;
   }
 
   const [updatedUser] = await db('user')

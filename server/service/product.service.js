@@ -72,22 +72,22 @@ export async function insertListProducts(records, chunkSize = 500) {
 export const deleteProductID = async (id) => {
   return db("product")
     .where("id_product", id)
-    .del();
+    .update({ status: 'inactive' });
 }
 
 export const deleteProductList = async (ids, trx = null) => {
   const kx = trx ? trx : db;
-  return kx("product").whereIn("id_product", ids).del();
+  return kx("product").whereIn("id_product", ids).update({ status: 'inactive' });
 }
 
 export const deleteProductByCategoryName = async (categoryName, trx = null) => {
   const kx = trx ? trx : db;
-  return kx("product").where("name_category", categoryName).del();
+  return kx("product").where("name_category", categoryName).update({ status: 'inactive' });
 }
 
 export const deleteProductByCategoryId = async (categoryId, trx = null) => {
   const kx = trx ? trx : db;
-  return kx("product").where("id_category", categoryId).del();
+  return kx("product").where("id_category", categoryId).update({ status: 'inactive' });
 }
 
 export const insertProduct = async (productData) => {

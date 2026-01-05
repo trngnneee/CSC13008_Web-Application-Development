@@ -19,6 +19,8 @@ router.delete("/delete/:id", userController.deleteUser);
 
 router.delete("/delete-list", userController.deleteUserList);
 
+router.post("/reset-password/:id", userController.resetPassword);
+
 router.use(
   "/upgrade-requests",
   upgradeRequestRoutes
