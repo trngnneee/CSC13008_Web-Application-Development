@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
@@ -14,26 +13,25 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import TextEditor from "../../components/TinyMCE";
 import { ImageUploader } from "../../components/ImageUploader";
-import JustValidate from "just-validate";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { getCategoryList } from "@/lib/adminAPI/category";
 import { buildCategoryTree, renderCategoryTree } from "@/helper/category";
-import { toastHandler } from "@/lib/toastHandler";
 import { useRouter } from "next/navigation";
+import { Calendar } from "@/components/ui/calendar";
+import { formatDate } from "date-fns";
 
 export default function AdminProductCreatePage() {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [categoryName, setCategoryName] = useState("Chọn danh mục");
   const [imageList, setImageList] = useState([]);
-  const [avatar, setAvatar] = useState(null);
   const [price, setPrice] = useState(0);
   const [instantPrice, setInstantPrice] = useState(0);
   const [startingPrice, setStartingPrice] = useState(0);
   const [priceStep, setPriceStep] = useState(0);
   const [desc, setDesc] = useState("");
-  const [postedDate, setPostedDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [submit, setSubmit] = useState(false);
   const router = useRouter();
 
@@ -83,14 +81,12 @@ export default function AdminProductCreatePage() {
       toast.error("Vui lòng nhập bước giá hợp lệ!");
       return;
     }
-    if (!price || Number(price) < 0) {
-      toast.error("Vui lòng nhập giá hiện tại hợp lệ!");
-      return;
-    }
     if (!desc) {
       toast.error("Vui lòng nhập mô tả sản phẩm!");
       return;
     }
+
+    setSubmit(true);
 
     const formData = new FormData();
     formData.append("id_category", category);
@@ -103,7 +99,8 @@ export default function AdminProductCreatePage() {
     formData.append("description", desc);
     formData.append("pricing_step", priceStep);
     formData.append("starting_price", startingPrice);
-    formData.append("auto_renew", e.target.autoRenew.checked);
+    formData.append("auto_renew", e.target.autoRenew?.checked || false);
+    formData.append("end_date_time", date ? date.toISOString() : "");
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/product/create`, {
@@ -116,6 +113,7 @@ export default function AdminProductCreatePage() {
 
       if (!res.ok || data.code !== "success") {
         toast.error(data.message || "Tạo sản phẩm thất bại!");
+        setSubmit(false);
         return;
       }
 
@@ -123,6 +121,7 @@ export default function AdminProductCreatePage() {
       router.push("/admin/product");
     } catch (error) {
       toast.error("Lỗi khi tạo sản phẩm!");
+      setSubmit(false);
     }
   }
 
@@ -174,79 +173,24 @@ export default function AdminProductCreatePage() {
           </div>
         </div>
 
-        <div className="flex gap-[30px] mb-6">
-          <div className="w-full flex flex-col gap-3">
-            <Label
-              htmlFor="avatar"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Hình ảnh đại diện
-            </Label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/*"
-                onChange={(e) => setAvatar(e.target.files?.[0] || null)}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-              {avatar && <p className="text-sm text-green-600 mt-2">✓ {avatar.name}</p>}
-            </div>
-          </div>
-
-          <div className="w-full flex flex-col gap-3">
-            <Label
-              htmlFor="image"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Hình ảnh sản phẩm (tối đa 10 ảnh)
-            </Label>
-            <ImageUploader
-              value={imageList}
-              onChange={setImageList}
-              maxFiles={10}
-              id="image"
-              name="image"
-            />
-          </div>
+        <div className="flex flex-col gap-2 mb-6">
+          <Label
+            htmlFor="image"
+            className="text-sm font-semibold text-[#606060]"
+          >
+            Hình ảnh sản phẩm (tối thiểu 3 ảnh)
+          </Label>
+          <ImageUploader
+            value={imageList}
+            onChange={setImageList}
+            maxFiles={10}
+            id="image"
+            name="image"
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-5 mb-6">
-          <div className="flex flex-col gap-3">
-            <Label
-              htmlFor="postedDate"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Ngày đăng
-            </Label>
-            <Input
-              id="postedDate"
-              name="postedDate"
-              type="datetime-local"
-              value={postedDate}
-              onChange={(e) => setPostedDate(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            <Label
-              htmlFor="endDate"
-              className="text-sm font-semibold text-[#606060]"
-            >
-              Ngày kết thúc
-            </Label>
-            <Input
-              id="endDate"
-              name="endDate"
-              type="datetime-local"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-5 mb-6">
-          <div className="flex flex-col gap-3">
+        <div className="flex gap-5 mb-6">
+          <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="price"
               className="text-sm font-semibold text-[#606060]"
@@ -262,7 +206,7 @@ export default function AdminProductCreatePage() {
               onChange={(e) => setPrice(e.target.value)}
             />
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="startingPrice"
               className="text-sm font-semibold text-[#606060]"
@@ -278,10 +222,7 @@ export default function AdminProductCreatePage() {
               onChange={(e) => setStartingPrice(e.target.value)}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-5 mb-6">
-          <div className="flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="instantPrice"
               className="text-sm font-semibold text-[#606060]"
@@ -297,7 +238,7 @@ export default function AdminProductCreatePage() {
               onChange={(e) => setInstantPrice(e.target.value)}
             />
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-3">
             <Label
               htmlFor="priceStep"
               className="text-sm font-semibold text-[#606060]"
@@ -315,6 +256,45 @@ export default function AdminProductCreatePage() {
           </div>
         </div>
 
+        <div className="mb-6">
+          <div className="w-full flex flex-col gap-3">
+            <Label
+              htmlFor="endDate"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Ngày kết thúc đấu giá
+            </Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Input
+                  type="text"
+                  id="endDate"
+                  name="endDate"
+                  value={formatDate(date, "dd/MM/yyyy")}
+                  readOnly
+                  className="cursor-pointer"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="w-full flex items-center gap-3 mt-5">
+            <Label
+              htmlFor="autoRenew"
+              className="text-sm font-semibold text-[#606060]"
+            >
+              Tự động gia hạn
+            </Label>
+            <Checkbox id="autoRenew" name="autoRenew" className="data-[state=checked]:bg-[var(--main-color)]" />
+          </div>
+        </div>
+
         <div className="mb-6 flex flex-col gap-3">
           <Label
             htmlFor="desc"
@@ -329,7 +309,9 @@ export default function AdminProductCreatePage() {
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <Button type="submit" className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] w-full font-bold text-lg">Tạo sản phẩm</Button>
+          <Button disabled={submit} type="submit" className="bg-[var(--main-color)] hover:bg-[var(--main-hover)] w-full font-bold text-lg">
+            {submit ? "Đang tạo..." : "Tạo sản phẩm"}
+          </Button>
           <Link href="/admin/product" className="text-[var(--main-color)] hover:text-[var(--main-hover)] hover:underline">Quay trở lại danh sách</Link>
         </div>
       </form>

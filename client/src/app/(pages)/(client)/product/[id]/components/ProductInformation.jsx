@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Heart } from "lucide-react";
+import { DollarSign, Heart, AlertTriangle } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { dateTimeFormat, getRelativeEndTime } from "@/utils/date";
 import { WishListButton } from "../../../components/WishlistButton";
@@ -14,6 +14,8 @@ export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin, userInfo } = useClientAuthContext();
   const [bidPrice, setBidPrice] = useState("");
   const [bidLoading, setBidLoading] = useState(false);
+
+  const isSellerDeleted = productDetail?.seller_status === 'inactive';
 
   const handlePlaceBid = async () => {
     if (!bidPrice || Number(bidPrice) <= 0) {
@@ -50,8 +52,17 @@ export const ProdcutInformation = ({ productDetail }) => {
           </div>
           <div className="z-10 border-b-2 border-black pb-[30px]">
             <div className="text-[40px] font-extrabold  mb-6">{productDetail.name}</div>
-            <div className="text-[20px] ">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
-            <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
+            {isSellerDeleted ? (
+              <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg">
+                <AlertTriangle className="w-5 h-5" />
+                <span className="font-semibold">Người bán đã bị xóa</span>
+              </div>
+            ) : (
+              <>
+                <div className="text-[20px] ">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
+                <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
+              </>
+            )}
             <div className="flex items-center gap-5 mt-5">
               <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.starting_price).toLocaleString("vi-VN")}</span></div>
               <div className="text-[15px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[18px]">${parseInt(productDetail.price).toLocaleString("vi-VN")}</span></div>

@@ -23,7 +23,11 @@ export async function insertCategory(name_category, parent) {
 }
 
 export const getAllCategory = (filter = {}) => {
-  const query = db("category").select("*");
+  const query = db("category")
+    .select("*")
+    .where(function() {
+      this.where('is_deleted', false).orWhereNull('is_deleted');
+    });
   if (filter.keyword) {
     query.whereRaw(
       "fts @@ to_tsquery('english', remove_accents(?) || ':*')",

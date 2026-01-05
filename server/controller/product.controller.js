@@ -386,6 +386,9 @@ export const getTopPriceProductList = async (req, res) => {
     const productList = await db("product")
         .select("product.*", 'user.fullname as seller')
         .join("user", "product.created_by", "user.id_user")
+        .where(function() {
+            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+        })
         .orderBy("price", "desc")
         .limit(4);
 
@@ -400,6 +403,9 @@ export const getEndingSoonProductList = async (req, res) => {
     const productList = await db("product")
         .select("product.*", 'user.fullname as seller')
         .join("user", "product.created_by", "user.id_user")
+        .where(function() {
+            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+        })
         .orderBy("end_date_time", "asc")
         .limit(4);
     
@@ -414,11 +420,26 @@ export const getProductDetailByID = async (req, res) => {
     const id = req.params.id;
 
     const productDetail = await db("product")
-        .select("product.*", 'category.name_category', 'user.fullname as seller', 'user.id_user as seller_id', 'user.email as seller_email')
+        .select("product.*", 'category.name_category', 'user.fullname as seller', 'user.id_user as seller_id', 'user.email as seller_email', 'user.status as seller_status')
         .where("product.id_product", id)
         .join("category", "product.id_category", "category.id_category")
         .join("user", "product.created_by", "user.id_user")
         .first();
+
+    if (!productDetail) {
+        return res.status(404).json({
+            code: "error",
+            message: "Không tìm thấy sản phẩm."
+        });
+    }
+
+    // Check if product is inactive
+    if (productDetail.status === 'inactive') {
+        return res.status(404).json({
+            code: "error",
+            message: "Sản phẩm này đã bị xóa."
+        });
+    }
 
     const descriptionHistory = await db('description_history')
         .select('*')
@@ -439,11 +460,19 @@ export const getProductListBySeller = async (req, res) => {
 
     const query = db("product")
         .where("created_by", sellerID)
+        .where(function() {
+            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+        })
         .select("product.*", 'category.name_category')
         .join("category", "product.id_category", "category.id_category");
 
     const pageSize = 5;
-    const countResult = await db('product').where("created_by", sellerID).count('* as count').first();
+    const countResult = await db('product')
+        .where("created_by", sellerID)
+        .where(function() {
+            this.where('status', '!=', 'inactive').orWhereNull('status');
+        })
+        .count('* as count').first();
     const totalPages = Math.ceil(Number(countResult.count) / pageSize);
     if (req.query.page) {
         const page = parseInt(req.query.page) || 1;
@@ -535,10 +564,21 @@ export const getProductListByCategory = async (req, res) => {
 
         const categoryIDs = await getAllChildCategoryIDs(categoryDetail.id_category);
 
-        const query = db("product").whereIn("id_category", categoryIDs).join('user', 'product.created_by', 'user.id_user').select('product.*', 'user.fullname as seller');
+        const query = db("product")
+            .whereIn("id_category", categoryIDs)
+            .where(function() {
+                this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+            })
+            .join('user', 'product.created_by', 'user.id_user')
+            .select('product.*', 'user.fullname as seller');
 
         const pageSize = 4 * 3;
-        const countResult = await db('product').whereIn("id_category", categoryIDs).count('* as count').first();
+        const countResult = await db('product')
+            .whereIn("id_category", categoryIDs)
+            .where(function() {
+                this.where('status', '!=', 'inactive').orWhereNull('status');
+            })
+            .count('* as count').first();
         const totalPages = Math.ceil(Number(countResult.count) / pageSize);
         if (req.query.page) {
             const page = parseInt(req.query.page) || 1;

@@ -140,7 +140,9 @@ export const resetPasswordByEmail = async (email, password) => {
 };
 
 export const getAllUsers = async (filter = {}) => {
-  const users = db('user').select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status');
+  const users = db('user')
+    .select('id_user', 'fullname', 'email', 'date_of_birth', 'role', 'status')
+    .where('status', '!=', 'inactive');
   if (filter.page && filter.limit) {
     const offset = (filter.page - 1) * filter.limit;
     users.offset(offset).limit(filter.limit);
