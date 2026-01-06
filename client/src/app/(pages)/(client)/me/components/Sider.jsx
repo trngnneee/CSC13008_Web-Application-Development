@@ -32,7 +32,7 @@ export const Sider = () => {
     }] : []),
     ...(userInfo?.role == "seller" ? [
       {
-        title: "Danh sách sản phẩm của tôi",
+        title: "Sản phẩm của tôi",
         href: "/me/product",
         icon: Package
       },
