@@ -108,13 +108,13 @@ export const ProdcutInformation = ({ productDetail }) => {
             {isLogin && (
               <div className="flex items-center gap-5 justify-between">
                 <div className="mt-[30px] w-full">
-                  <div className="mb-3 p-3 bg-gray-100 border border-[var(--main-color)] rounded-lg">
-                    <span className="text-[var(--main-color)] font-light text-[16px]">
+                  <div className="mb-3 p-3 bg-gray-100 border border-[var(--main-client-color)] rounded-lg">
+                    <span className="text-[var(--main-client-color)] font-light text-[16px]">
                       Giá đấu tối thiểu: <span className="font-extrabold text-[20px]">{minBidPrice.toLocaleString("vi-VN")} VND</span>
                     </span>
                     <Button
                       variant="link"
-                      className="text-[var(--main-color)] text-[16px] p-0 ml-2 h-auto -translate-y-0.5 cursor-pointer"
+                      className="text-[var(--main-client-color)] text-[16px] p-0 ml-2 h-auto -translate-y-0.5 cursor-pointer"
                       onClick={handleSetMinBid}
                     >
                       Đặt giá này
