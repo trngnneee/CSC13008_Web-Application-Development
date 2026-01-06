@@ -10,11 +10,14 @@ import JustValidate from "just-validate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [rememberLogin, setRememberLogin] = useState(false);
-  
+  const [captcha, setCaptcha] = useState(null);
+
   useEffect(() => {
     const validation = new JustValidate("#adminLoginForm");
     validation
@@ -57,6 +60,11 @@ export default function AdminLoginPage() {
       .onSuccess((event) => {
         event.preventDefault();
 
+        if (!captcha) {
+          toast.error("Vui lòng xác minh reCAPTCHA!");
+          return;
+        }
+
         const finalData = {
           email: event.target.email.value,
           password: event.target.password.value,
@@ -97,6 +105,13 @@ export default function AdminLoginPage() {
           </div>
           <Link href="/admin/account/forgot-password" className="text-sm text-[var(--main-color)] font-medium hover:underline">Quên mật khẩu?</Link>
         </div>
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+          onChange={(value) => {
+            setCaptcha(value);
+          }}
+          className="mb-5"
+        />
         <Button className="w-full bg-[var(--main-color)] hover:bg-[var(--main-hover)]">Đăng nhập</Button>
       </form>
       <div className="mt-[26px] text-[var(--main-color)] text-center">Chưa có tài khoản? <Link className="font-bold hover:underline" href="/admin/account/register">Đăng ký</Link></div>
