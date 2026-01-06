@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin, userInfo } = useClientAuthContext();

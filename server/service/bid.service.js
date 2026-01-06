@@ -44,20 +44,15 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         .where("id_bidder", id_user)
         .where("id_product", id_product)
         .where("id_seller", product.updated_by)
+        .where("status", "approved")
         .first();
 
-      if(approvedRequest.bid_price !== bid_price) {
-        return {
-          status: "pending_approval",
-          message: "Giá đấu giá không khớp với yêu cầu đã phê duyệt trước đó. Vui lòng gửi lại yêu cầu với giá đúng",
-          data: approvedRequest,
-        }
-      }
+      console.log("Approved request:", approvedRequest);
 
-      if (approvedRequest && approvedRequest.status === "approved") {
-        console.log("Found approved request:", approvedRequest);
-      } else
-      {
+      if (approvedRequest) {
+        // Đã có request được approved, cho phép đấu giá
+        console.log("Found approved request, proceeding to bid");
+      } else {
         const existingRequest = await db("bid_request")
           .where("id_bidder", id_user)
           .where("id_product", id_product)
@@ -70,9 +65,10 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         if (existingRequest) {
           console.log("Already has pending request");
           return {
-            status: "pending_approval",
+            status: "success",
             message: "Yêu cầu duyệt từ bạn đang chờ xử lý. Vui lòng chờ người bán phê duyệt",
             data: existingRequest,
+            requiresApproval: true,
           };
         }
 
@@ -91,10 +87,11 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         console.log("Bid request created:", bidRequest);
 
         return {
-          status: "pending_approval",
+          status: "success",
           message:
             "Yêu cầu của bạn đã được gửi tới người bán. Vui lòng chờ phê duyệt",
           data: bidRequest,
+          requiresApproval: true,
         };
       }
     }
@@ -116,16 +113,26 @@ export const placeBid = async (id_product, bid_price, id_user) => {
       .first();
     
     console.log("Latest product price:", latestProduct.price);
+    console.log("Immediate purchase price:", latestProduct.immediate_purchase_price);
+    console.log("Bid price:", bid_price);
     
-    if (bid_price <= latestProduct.price) {
+    // Kiểm tra nếu đây là mua ngay (giá đấu >= giá mua ngay)
+    const isImmediatePurchase = latestProduct.immediate_purchase_price && 
+      Number(bid_price) >= Number(latestProduct.immediate_purchase_price);
+    
+    // Giá đấu phải lớn hơn giá hiện tại (trừ khi là mua ngay)
+    if (bid_price <= latestProduct.price && !isImmediatePurchase) {
       throw new Error(
         `Giá đấu giá phải lớn hơn giá hiện tại (${parseInt(latestProduct.price).toLocaleString("vi-VN")} VND)`
       );
     }
 
-    const minBidPrice = latestProduct.price + (latestProduct.pricing_step || 0);
+    const minBidPrice = Number(latestProduct.price) + Number(latestProduct.pricing_step || 0);
     console.log("Min bid price:", minBidPrice, "(price:", latestProduct.price, "+ step:", latestProduct.pricing_step, ")");
-    if (bid_price < minBidPrice) {
+    
+    // Cho phép đấu giá nếu giá >= giá tối thiểu (giá hiện tại + bước giá)
+    // Hoặc giá = giá mua ngay (mua ngay)
+    if (bid_price < minBidPrice && !isImmediatePurchase) {
       throw new Error(
         `Giá đấu giá tối thiểu là ${parseInt(minBidPrice).toLocaleString("vi-VN")} VND (giá hiện tại + bước giá)`
       );
@@ -144,17 +151,25 @@ export const placeBid = async (id_product, bid_price, id_user) => {
 
     console.log("New bid inserted:", newBid);
 
+    // Nếu là mua ngay, cập nhật cả end_date_time để kết thúc đấu giá
+    const updateData = { price: bid_price };
+    if (isImmediatePurchase) {
+      updateData.end_date_time = new Date(); // Kết thúc đấu giá ngay lập tức
+      console.log("Immediate purchase - ending auction now");
+    }
+    
     await db("product")
       .where("id_product", id_product)
-      .update({ price: bid_price });
+      .update(updateData);
 
     console.log("Product price updated to:", bid_price);
     console.log("=== BID SERVICE SUCCESS ===");
 
     return {
       status: "success",
-      message: "Đấu giá thành công",
+      message: isImmediatePurchase ? "Mua ngay thành công! Bạn là người thắng đấu giá." : "Đấu giá thành công",
       data: newBid,
+      isImmediatePurchase,
     };
   } catch (error) {
     console.log("=== BID SERVICE ERROR ===");
@@ -208,10 +223,28 @@ export const approveBidRequest = async (id_request, id_seller) => {
       throw new Error("Yêu cầu đã được xử lý");
     }
 
+    // Cập nhật trạng thái bid_request thành approved
     const [updated] = await db("bid_request")
       .where("id", id_request)
-      .update({ status: "approved" })
+      .update({ status: "approved", updated_at: new Date() })
       .returning("*");
+
+    // Thêm bid mới vào bảng bid
+    const [newBid] = await db("bid")
+      .insert({
+        id_user: bidRequest.id_bidder,
+        id_product: bidRequest.id_product,
+        bid_price: bidRequest.bid_price,
+        time: new Date(),
+      })
+      .returning("*");
+
+    // Cập nhật giá sản phẩm
+    await db("product")
+      .where("id_product", bidRequest.id_product)
+      .update({ price: bidRequest.bid_price });
+
+    console.log("Bid approved and inserted:", newBid);
 
     return updated;
   } catch (error) {

@@ -490,6 +490,7 @@ export const getProductDetailByID = async (req, res) => {
 
 export const getProductListBySeller = async (req, res) => {
     const { sellerID } = req.params;
+    const { status: filterStatus } = req.query; // 'active' = đang bán, 'sold' = đã bán
 
     const query = db("product")
         .where("created_by", sellerID)
@@ -499,13 +500,36 @@ export const getProductListBySeller = async (req, res) => {
         .select("product.*", 'category.name_category')
         .join("category", "product.id_category", "category.id_category");
 
+    // Filter theo trạng thái
+    if (filterStatus === 'active') {
+        // Sản phẩm đang bán: chưa hết hạn hoặc không có end_date_time
+        query.where(function() {
+            this.where('product.end_date_time', '>', new Date())
+                .orWhereNull('product.end_date_time');
+        });
+    } else if (filterStatus === 'sold') {
+        // Sản phẩm đã bán: đã hết hạn
+        query.where('product.end_date_time', '<=', new Date());
+    }
+
     const pageSize = 5;
-    const countResult = await db('product')
+    const countQuery = db('product')
         .where("created_by", sellerID)
         .where(function() {
             this.where('status', '!=', 'inactive').orWhereNull('status');
-        })
-        .count('* as count').first();
+        });
+    
+    // Apply same filter for count
+    if (filterStatus === 'active') {
+        countQuery.where(function() {
+            this.where('end_date_time', '>', new Date())
+                .orWhereNull('end_date_time');
+        });
+    } else if (filterStatus === 'sold') {
+        countQuery.where('end_date_time', '<=', new Date());
+    }
+
+    const countResult = await countQuery.count('* as count').first();
     const totalPages = Math.ceil(Number(countResult.count) / pageSize);
     if (req.query.page) {
         const page = parseInt(req.query.page) || 1;
