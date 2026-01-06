@@ -12,6 +12,9 @@ router.post('/', verifyToken, authorizeRole("bidder", "seller"), bidController.p
 // Seller xem danh sách yêu cầu đấu giá
 router.get('/', verifyToken, authorizeRole("seller"), bidController.bidRequestGet);
 
+// Seller xem danh sách yêu cầu đấu giá theo sản phẩm
+router.get('/product/:id_product', verifyToken, authorizeRole("seller"), bidController.bidRequestByProductGet);
+
 // Seller phê duyệt yêu cầu đấu giá
 router.post('/approve', verifyToken, authorizeRole("seller"), bidController.approveBidRequestPost);
 

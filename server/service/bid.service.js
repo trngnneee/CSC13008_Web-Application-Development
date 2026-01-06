@@ -145,7 +145,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         id_product,
         id_user,
         bid_price,
-        bid_time: new Date(),
+        time: new Date(),
       })
       .returning("*");
 
@@ -204,6 +204,25 @@ export const getBidRequests = async (id_seller) => {
   } catch (error) {
     console.log("=== getBidRequests ERROR ===");
     console.log("Error:", error.message);
+    throw error;
+  }
+};
+
+export const getBidRequestsByProduct = async (id_product) => {
+  try {
+    const bidRequests = await db("bid_request")
+      .select(
+        "bid_request.*",
+        "bidder.fullname as bidder_name",
+        "bidder.email as bidder_email"
+      )
+      .leftJoin("user as bidder", "bid_request.id_bidder", "bidder.id_user")
+      .where("bid_request.id_product", id_product)
+      .andWhere("bid_request.status", "pending")
+      .orderBy("bid_request.created_at", "desc");
+    
+    return bidRequests;
+  } catch (error) {
     throw error;
   }
 };
