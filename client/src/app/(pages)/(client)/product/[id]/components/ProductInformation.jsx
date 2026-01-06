@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin, userInfo } = useClientAuthContext();
@@ -34,18 +35,18 @@ export const ProdcutInformation = ({ productDetail }) => {
 
   const handlePlaceBidClick = () => {
     if (!bidPrice || Number(bidPrice) <= 0) {
-      toastHandler("Vui lòng nhập số tiền đấu giá hợp lệ", "error");
+      toast.error("Vui lòng nhập giá đấu hợp lệ");
       return;
     }
 
     if (!userInfo || !userInfo.id_user) {
-      toastHandler("Vui lòng đăng nhập để đấu giá", "error");
+      toast.error("Vui lòng đăng nhập để đấu giá");
       return;
     }
 
     // Kiểm tra giá tối thiểu ở frontend
     if (Number(bidPrice) < minBidPrice) {
-      toastHandler(`Giá đấu tối thiểu là ${minBidPrice.toLocaleString("vi-VN")} VND`, "error");
+      toast.error(`Giá đấu phải lớn hơn hoặc bằng ${minBidPrice.toLocaleString("vi-VN")} VND`);
       return;
     }
 
@@ -58,10 +59,10 @@ export const ProdcutInformation = ({ productDetail }) => {
     setBidLoading(true);
     try {
       const result = await placeBid(productDetail.id_product, Number(bidPrice), userInfo.id_user);
-      toastHandler(result.message || "Đấu giá thành công", "success");
+      toast.success(result.message || "Đấu giá thành công");
       setBidPrice("");
     } catch (error) {
-      toastHandler(error.message, "error");
+      toast.error(error.message || "Đấu giá thất bại");
     } finally {
       setBidLoading(false);
     }

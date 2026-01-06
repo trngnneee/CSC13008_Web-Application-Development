@@ -9,7 +9,7 @@ export const placeBidPost = async (req, res) => {
     console.log("id_product:", id_product);
     console.log("bid_price:", bid_price);
     console.log("id_user:", id_user);
-    console.log("User from token:", req.user);
+    console.log("User from token:", req.account);
 
     const result = await bidService.placeBid(id_product, bid_price, id_user);
     
