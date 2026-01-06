@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { useClientAuthContext } from "@/provider/clientAuthProvider"
-import { Gavel, Heart, Package, Star, User, ClipboardList } from "lucide-react"
+import { Gavel, Heart, Package, Star, User, ClipboardList, Activity } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -26,13 +26,9 @@ export const Sider = () => {
       icon: Heart
     },
     ...(userInfo?.role == "bidder" ? [{
-      title: "Danh sách đấu giá của tôi",
-      href: "/me/bid",
-      icon: Gavel
-    }, {
       title: "Đang tham gia đấu giá",
       href: "/me/bidding-list",
-      icon: Gavel
+      icon: Activity
     }, {
       title: "Sản phẩm đã thắng",
       href: "/me/won-product",

@@ -403,67 +403,98 @@ export const rejectBidRequest = async (id_request, id_seller) => {
 };
 
 /**
- * Get products that user is actively bidding on
- * Returns products where:
- * - User has placed a bid
- * - Product is still active (status = 'active')
- * - Auction hasn't ended yet
+ * Get products that user is actively bidding on (Bidding List)
+ * 
+ * Definition: Products where:
+ * 1. User has placed at least one bid (bid.id_user = current_user.id)
+ * 2. product.end_date_time > NOW() (auction not ended)
+ * 3. Product status is 'active'
+ * 
+ * Returns one product only once even if user bid multiple times
  */
 export const getMyBiddingProducts = async (id_user) => {
   try {
     console.log("=== getMyBiddingProducts SERVICE ===");
     console.log("id_user:", id_user);
 
-    // Get distinct products where user has bid and product is still active
+    const now = new Date();
+
+    // Get distinct products where user has bid and auction not ended yet
     const products = await db("bid")
       .select(
         "product.id_product",
-        "product.name as product_name",
-        "product.avatar as product_avatar",
-        "product.price as current_price",
-        "product.step_price",
+        "product.name",
+        "product.avatar",
+        "product.starting_price",
         "product.end_date_time",
-        "product.status",
-        "seller.fullname as seller_name",
-        db.raw("MAX(bid.bid_price) as my_highest_bid"),
-        db.raw("COUNT(bid.id) as my_bid_count"),
-        db.raw("MIN(bid.time) as first_bid_time")
+        "product.status"
       )
       .leftJoin("product", "bid.id_product", "product.id_product")
-      .leftJoin("user as seller", "product.updated_by", "seller.id_user")
       .where("bid.id_user", id_user)
       .where("product.status", "active")
+      .where("product.end_date_time", ">", now)
       .groupBy(
         "product.id_product",
         "product.name",
         "product.avatar",
-        "product.price",
-        "product.step_price",
+        "product.starting_price",
         "product.end_date_time",
-        "product.status",
-        "seller.fullname"
+        "product.status"
       )
-      .orderBy("product.end_date_time", "asc"); // Sắp xếp theo thời gian kết thúc sớm nhất
+      .orderBy("product.end_date_time", "asc"); // Ending soon first
 
-    // Get highest bid for each product to check if user is winning
-    const productsWithStatus = await Promise.all(
+    // For each product, get additional info
+    const productsWithDetails = await Promise.all(
       products.map(async (product) => {
-        const highestBid = await db("bid")
-          .where("id_product", product.id_product)
-          .orderBy("bid_price", "desc")
-          .orderBy("time", "asc")
-          .first();
+        // Get all bids for this product
+        const bids = await db("bid")
+          .select("bid.*", "user.fullname as bidder_name")
+          .leftJoin("user", "bid.id_user", "user.id_user")
+          .where("bid.id_product", product.id_product)
+          .orderBy("bid.bid_price", "desc")
+          .orderBy("bid.time", "asc");
+
+        // Total bid count
+        const bid_count = bids.length;
+
+        // Current price = MAX(bid_price) or starting_price
+        const current_price = bids.length > 0 
+          ? bids[0].bid_price 
+          : product.starting_price;
+
+        // Highest bidder info
+        const highestBid = bids[0];
+        const is_user_leading = highestBid?.id_user === id_user;
+
+        // Mask bidder name (e.g., "Nguyễn Văn A" -> "N***n V*n A")
+        const maskName = (name) => {
+          if (!name) return "***";
+          const parts = name.split(" ");
+          return parts.map(part => {
+            if (part.length <= 2) return part[0] + "*";
+            return part[0] + "*".repeat(part.length - 2) + part[part.length - 1];
+          }).join(" ");
+        };
+
+        const current_highest_bidder = highestBid 
+          ? maskName(highestBid.bidder_name)
+          : null;
 
         return {
-          ...product,
-          highest_bid: highestBid?.bid_price || product.current_price,
-          is_winning: highestBid?.id_user === id_user,
+          id_product: product.id_product,
+          name: product.name,
+          avatar: product.avatar,
+          current_price: parseInt(current_price),
+          bid_count,
+          end_date_time: product.end_date_time,
+          is_user_leading,
+          current_highest_bidder,
         };
       })
     );
 
-    console.log("Products found:", productsWithStatus.length);
-    return productsWithStatus;
+    console.log("Products found:", productsWithDetails.length);
+    return productsWithDetails;
   } catch (error) {
     console.log("=== getMyBiddingProducts ERROR ===");
     console.log("Error:", error.message);
