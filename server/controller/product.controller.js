@@ -155,6 +155,14 @@ export const insertProduct = async (req, res) => {
     const productData = req.body;
     const files = req.files || {};
 
+    // Kiểm tra bắt buộc phải có ít nhất 3 ảnh
+    if (!files || files.length < 3) {
+        return res.status(400).json({
+            code: "error",
+            message: "Vui lòng tải lên ít nhất 3 hình ảnh sản phẩm!",
+        });
+    }
+
     productData.created_by = req.account?.id_user || null;
     productData.updated_by = req.account?.id_user || null;
     if (files && files.length > 0) {

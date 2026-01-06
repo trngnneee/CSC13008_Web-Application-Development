@@ -8,16 +8,16 @@ import Link from "next/link";
 import { WishListButton } from "../WishlistButton";
 import { Badge } from "@/components/ui/badge";
 
-export const ProductItem = ({ item, newProductMinutes = 30 }) => {
+export const ProductItem = ({ item }) => {
   const router = useRouter();
   const { isLogin } = useClientAuthContext();
 
-  // Sử dụng is_new từ server nếu có, nếu không thì tính toán client-side
-  const isNewProduct = item.is_new !== undefined ? item.is_new : (() => {
+  // Tính toán sản phẩm mới đăng trong 60 phút
+  const isNewProduct = (() => {
     const posted = new Date(item.posted_date_time).getTime();
     const now = Date.now();
     const diffMinutes = (now - posted) / (1000 * 60);
-    return diffMinutes <= newProductMinutes;
+    return diffMinutes <= 60;
   })();
 
   return (
