@@ -98,3 +98,19 @@ export const rejectBidRequest = async (id_request) => {
 
   return data;
 }
+
+export const getBidRequestsByProduct = async (id_product) => {
+  const token = localStorage.getItem("clientToken");
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/product/${id_product}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
+
+  const data = await res.json();
+  return data;
+}

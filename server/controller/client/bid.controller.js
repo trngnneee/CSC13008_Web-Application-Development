@@ -90,3 +90,22 @@ export const rejectBidRequestPost = async (req, res) => {
     res.status(400).json({ code: "error", message: error.message });
   }
 }
+
+export const bidRequestByProductGet = async (req, res) => {
+  try {
+    const { id_product } = req.params;
+    
+    if (!id_product) {
+      return res.status(400).json({ code: "error", message: "Không tìm thấy id sản phẩm" });
+    }
+    
+    const result = await bidService.getBidRequestsByProduct(id_product);
+
+    return res.json({
+      code: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({ code: "error", message: error.message });
+  }
+}
