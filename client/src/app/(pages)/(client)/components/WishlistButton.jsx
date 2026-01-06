@@ -64,11 +64,15 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
   return (
     userInfoState && userInfoState.watchList.length > 0 && userInfoState.watchList.includes(id) ? (
       <AlertDialog>
-        <AlertDialogTrigger asChild>
+        <AlertDialogTrigger asChild onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}>
           <Button
             className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
             }}
           >
             <Heart fill="var(--main-client-color)" />
@@ -94,7 +98,10 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
 
           <AlertDialogFooter>
             <AlertDialogCancel
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
             >
               Hủy
             </AlertDialogCancel>
@@ -103,6 +110,7 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
               className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]"
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 onClickSuccess?.(e);
                 handleRemoveFromWishlist();
               }}

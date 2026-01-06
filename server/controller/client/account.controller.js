@@ -83,7 +83,7 @@ export const verifyTokenGet = async (req, res) => {
 export const forgotPasswordPost = async (req, res) => {
   const { email } = req.body;
 
-  const result = await handleForgotPassword(email, "bidder");
+  const result = await handleForgotPassword(email, ["bidder", "seller"]);
   
   if (result.success) {
     return res.json({
@@ -101,7 +101,7 @@ export const forgotPasswordPost = async (req, res) => {
 export const otpPasswordPost = async (req, res) => {
   const { email, otp } = req.body;
 
-  const result = await handleOtpPassword(email, otp, "bidder");
+  const result = await handleOtpPassword(email, otp, ["bidder", "seller"]);
   
   if (!result.success) {
     return res.json({

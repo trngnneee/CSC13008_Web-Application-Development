@@ -60,6 +60,7 @@ export const clientOTPPassword = async (finalData) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(finalData),
+    credentials: "include"
   });
 
   const data = await res.json();

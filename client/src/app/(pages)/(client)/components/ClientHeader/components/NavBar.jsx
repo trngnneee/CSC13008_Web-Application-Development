@@ -65,7 +65,7 @@ export const NavBar = () => {
                           {/* Submenu for children */}
                           {hoveredCategoryId == parentCategory.id_category && (
                             <div 
-                              className="absolute left-full top-0 ml-0 bg-white border border-gray-200 shadow-lg rounded-md min-w-[200px] z-[100]"
+                              className="fixed ml-30 bg-white border border-gray-200 shadow-lg rounded-md min-w-[200px] z-[100]"
                             >
                               <ul className="p-2">
                                 {parentCategory.children.map((childCategory, childIndex) => (

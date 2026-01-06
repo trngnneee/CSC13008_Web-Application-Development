@@ -21,7 +21,9 @@ export const ProductItem = ({ item, newProductMinutes = 30 }) => {
   })();
 
   return (
-    <Link href={`/product/${item.id_product}`}>
+    <div onClick={() => {
+      router.push(`/product/${item.id_product}`);
+    }}>
       <div
         className={`
           relative p-5 bg-white rounded-[10px] transition-all duration-300 cursor-pointer shadow-2xl hover:scale-[1.02]
@@ -68,7 +70,9 @@ export const ProductItem = ({ item, newProductMinutes = 30 }) => {
           <div className="flex items-center mt-[30px] gap-2.5">
             <Button className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]">Đấu giá</Button>
             <WishListButton
-              onClickSuccess={(e) => e.stopPropagation()}
+              onClickSuccess={(e) => {
+                e.stopPropagation()
+              }}
               id={item.id_product}
             />
           </div>
@@ -78,6 +82,6 @@ export const ProductItem = ({ item, newProductMinutes = 30 }) => {
           </div>
         )}
       </div>
-    </Link>
+    </div>
   )
 }
