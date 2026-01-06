@@ -27,8 +27,12 @@ export const Sider = () => {
     },
     ...(userInfo?.role == "bidder" ? [{
       title: "Danh sách đấu giá của tôi",
-      href: "/me/auction",
+      href: "/me/bid",
       icon: Gavel
+    }, {
+      title: "Sản phẩm đã thắng",
+      href: "/me/won-product",
+      icon: Package
     }] : []),
     ...(userInfo?.role == "seller" ? [
       {

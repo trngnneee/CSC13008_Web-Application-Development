@@ -69,7 +69,7 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
           e.preventDefault();
         }}>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -84,7 +84,7 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
 
         <AlertDialogContent onClick={(e) => e.stopPropagation()}>
           <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border">
+            <div className="flex size-9 shrink-0 items-center justify-center border">
               <CircleAlertIcon className="opacity-80" size={16} />
             </div>
 
@@ -124,7 +124,7 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button
-            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] rounded-full text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
+            className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
             }}

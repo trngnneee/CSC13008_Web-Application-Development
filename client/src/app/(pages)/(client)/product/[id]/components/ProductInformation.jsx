@@ -30,7 +30,7 @@ export const ProdcutInformation = ({ productDetail }) => {
   const isSellerDeleted = productDetail?.seller_status === 'inactive';
 
   // Tính giá đấu tối thiểu
-  const minBidPrice = productDetail ? 
+  const minBidPrice = productDetail ?
     parseInt(productDetail.price) + parseInt(productDetail.pricing_step || 0) : 0;
 
   const handlePlaceBidClick = () => {
@@ -84,7 +84,7 @@ export const ProdcutInformation = ({ productDetail }) => {
             />
           </div>
           <div className="z-10 border-b-2 border-black pb-[30px]">
-            <div className="text-[40px] font-extrabold  mb-6">{productDetail.name}</div>
+            <div className="text-[30px] font-extrabold  mb-6">{productDetail.name}</div>
             {isSellerDeleted ? (
               <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg">
                 <AlertTriangle className="w-5 h-5" />
@@ -96,66 +96,64 @@ export const ProdcutInformation = ({ productDetail }) => {
                 <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
               </>
             )}
-            <div className="flex items-center gap-5 mt-5">
-              <div className="text-[15px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.starting_price).toLocaleString("vi-VN")} VND</span></div>
-              <div className="text-[15px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.price).toLocaleString("vi-VN")} VND</span></div>
-              <div className="text-[15px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")} VND</span></div>
-              <div className="text-[15px] font-bold"><span className="">Bước giá:</span> <span className="text-[var(--main-client-color)] text-[18px]">{parseInt(productDetail.pricing_step).toLocaleString("vi-VN")} VND</span></div>
+            <div className="flex items-center gap-3 mt-5">
+              <div className="text-[14px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.starting_price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[14px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[14px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")} VND</span></div>
+              <div className="text-[14px] font-bold"><span className="">Bước giá:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.pricing_step).toLocaleString("vi-VN")} VND</span></div>
             </div>
-    
+
             <div className="text-[15px] mt-[30px] font-bold">Thời điểm đăng: <span className="font-light">{dateTimeFormat(productDetail.posted_date_time)}</span></div>
             <div className="text-[15px] font-bold">Phiên đấu giá kết thúc tại: <span className="font-light">{productDetail.end_date_time ? dateTimeFormat(productDetail.end_date_time) : "-"}</span></div>
             {isLogin && (
-              <div className="mt-[30px] flex justify-center">
-                <WishListButton
-                  onClickSuccess={(e) => {
-                    e.stopPropagation();
-                  }}
-                  id={productDetail.id_product}
-                  showTitle={true}
-                />
+              <div className="flex items-center gap-5 justify-between">
+                <div className="mt-[30px] w-full">
+                  <div className="mb-3 p-3 bg-gray-100 border border-[var(--main-color)] rounded-lg">
+                    <span className="text-[var(--main-color)] font-light text-[16px]">
+                      Giá đấu tối thiểu: <span className="font-extrabold text-[20px]">{minBidPrice.toLocaleString("vi-VN")} VND</span>
+                    </span>
+                    <Button
+                      variant="link"
+                      className="text-[var(--main-color)] text-[16px] p-0 ml-2 h-auto -translate-y-0.5 cursor-pointer"
+                      onClick={handleSetMinBid}
+                    >
+                      Đặt giá này
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center gap-5">
+                    {/* <div><DollarSign /></div> */}
+                    <Input
+                      type="number"
+                      placeholder="Nhập số tiền đấu giá"
+                      value={bidPrice}
+                      onChange={(e) => setBidPrice(e.target.value)}
+                      disabled={!isLogin || bidLoading}
+                      min={minBidPrice}
+                    />
+                    <div className="flex gap-3 items-center">
+                      <Button
+                        onClick={handlePlaceBidClick}
+                        disabled={!isLogin || bidLoading}
+                        className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90 text-white"
+                      >
+                        {bidLoading ? "Đang gửi..." : "Đấu giá"}
+                      </Button>
+                      <WishListButton
+                        onClickSuccess={(e) => {
+                          e.stopPropagation();
+                        }}
+                        id={productDetail.id_product}
+                        showTitle={false}
+                      />
+                    </div>
+                  </div>
+
+                  {!isLogin && (
+                    <p className="text-red-500 text-sm mt-2">Vui lòng đăng nhập để đấu giá</p>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-
-          <div className="mt-[30px]">
-            <div className="text-[20px] font-bold mb-[10px]">Đấu giá</div>
-            
-            {/* Hiển thị giá đề nghị tối thiểu */}
-            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <span className="text-blue-700 font-medium">
-                Giá đấu tối thiểu: <span className="font-bold">{minBidPrice.toLocaleString("vi-VN")} VND</span>
-              </span>
-              <Button 
-                variant="link" 
-                className="text-blue-600 p-0 ml-2 h-auto"
-                onClick={handleSetMinBid}
-              >
-                Đặt giá này
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-5">
-              <div><DollarSign /></div>
-              <Input
-                type="number"
-                placeholder="Nhập số tiền đấu giá"
-                value={bidPrice}
-                onChange={(e) => setBidPrice(e.target.value)}
-                disabled={!isLogin || bidLoading}
-                min={minBidPrice}
-              />
-              <Button 
-                onClick={handlePlaceBidClick}
-                disabled={!isLogin || bidLoading}
-                className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90 text-white"
-              >
-                {bidLoading ? "Đang gửi..." : "Đấu giá"}
-              </Button>
-            </div>
-
-            {!isLogin && (
-              <p className="text-red-500 text-sm mt-2">Vui lòng đăng nhập để đấu giá</p>
             )}
           </div>
 
@@ -170,7 +168,7 @@ export const ProdcutInformation = ({ productDetail }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={handleConfirmBid}
                   className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-color)]/90"
                 >

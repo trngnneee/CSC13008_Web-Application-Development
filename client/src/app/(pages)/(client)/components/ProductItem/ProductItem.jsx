@@ -44,15 +44,15 @@ export const ProductItem = ({ item }) => {
         </div>
 
         <div className="mt-[23px]">
-          <div className="text-[20px] font-bold line-clamp-1">{item.name}</div>
+          <div className="text-[18px] font-bold min-h-[72px] line-clamp-3">{item.name}</div>
           <div className="text-[15px]">by: <span className="font-bold">{item.seller}</span></div>
         </div>
 
-        <div className="text-[14px] mt-[20px]">
+        <div className="text-[12px] mt-[20px]">
           Giá hiện tại: <span className="font-bold">{parseInt(item.price).toLocaleString("vi-VN")} VND</span>
         </div>
 
-        <div className="text-[14px] border-b border-b-[black] pb-2.5 mb-2.5">
+        <div className="text-[12px] border-b border-b-[black] pb-2.5 mb-2.5">
           Giá mua ngay: <span className="font-bold">{parseInt(item.immediate_purchase_price).toLocaleString("vi-VN")} VND</span>
         </div>
 
