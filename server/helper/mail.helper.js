@@ -133,3 +133,100 @@ export const sendResetPasswordMail = async (toEmail, newPassword) => {
 
     await transporter.sendMail(mailOptions);
 }
+
+export const sendAuctionEndedNoWinnerMail = async (toEmail, productName, sellerName) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: `Đấu giá kết thúc - "${productName}"`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Thông báo kết thúc đấu giá</h2>
+                <p>Xin chào <strong>${sellerName}</strong>,</p>
+                <p>Cuộc đấu giá cho sản phẩm <strong>"${productName}"</strong> đã kết thúc.</p>
+                <p style="color: #e74c3c;"><strong>Rất tiếc, không có ai tham gia đấu giá cho sản phẩm này.</strong></p>
+                <p>Bạn có thể tạo một phiên đấu giá mới cho sản phẩm nếu muốn.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
+export const sendAuctionSuccessMail = async (toEmail, productName, sellerName, winnerName, finalPrice) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: `Đấu giá thành công - "${productName}"`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>🎉 Chúc mừng! Đấu giá thành công</h2>
+                <p>Xin chào <strong>${sellerName}</strong>,</p>
+                <p>Cuộc đấu giá cho sản phẩm <strong>"${productName}"</strong> đã kết thúc thành công!</p>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <p><strong>Người thắng:</strong> ${winnerName}</p>
+                    <p><strong>Giá cuối cùng:</strong> ${parseInt(finalPrice).toLocaleString("vi-VN")} VND</p>
+                </div>
+                <p>Vui lòng truy cập hệ thống để hoàn tất giao dịch với người mua.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
+export const sendAuctionWonMail = async (toEmail, productName, winnerName, finalPrice) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: `Chúc mừng! Bạn đã thắng đấu giá - "${productName}"`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>🎉 Chúc mừng! Bạn đã thắng đấu giá</h2>
+                <p>Xin chào <strong>${winnerName}</strong>,</p>
+                <p>Bạn đã thắng cuộc đấu giá cho sản phẩm <strong>"${productName}"</strong>!</p>
+                <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #c3e6cb;">
+                    <p><strong>Giá thắng:</strong> ${parseInt(finalPrice).toLocaleString("vi-VN")} VND</p>
+                </div>
+                <p>Vui lòng truy cập hệ thống để:</p>
+                <ol>
+                    <li>Tải lên hóa đơn thanh toán</li>
+                    <li>Cung cấp địa chỉ giao hàng</li>
+                </ol>
+                <p>Người bán sẽ xác nhận và gửi hàng cho bạn.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}

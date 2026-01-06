@@ -5,6 +5,7 @@ import productRoutes from "./product.routes.js";
 import categoryRoutes from "./category.routes.js";
 import searchRoutes from "./search.routes.js";
 import commentRoutes from "./comment.routes.js";
+import orderRoutes from "./order.routes.js";
 
 const router = express.Router();
 
@@ -40,6 +41,11 @@ router.use(
 router.use(
   "/comment",
   commentRoutes
+)
+
+router.use(
+  "/order",
+  orderRoutes
 )
 
 export default router;

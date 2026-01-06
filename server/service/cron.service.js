@@ -1,5 +1,18 @@
 import cron from "node-cron";
 import { deleteExpiredVerifyTokens, deleteExpiredForgotPasswordTokens, downgradeExpiredSellers } from './user.service.js';
+import { processEndedAuctions } from './auction.service.js';
+
+// Run every minute - process ended auctions
+cron.schedule("* * * * *", async () => {
+  try {
+    const result = await processEndedAuctions();
+    if (result.processed > 0) {
+      console.log(`Đã xử lý ${result.processed} phiên đấu giá kết thúc`);
+    }
+  } catch (error) {
+    console.error("Cron error (process auctions):", error);
+  }
+});
 
 // Run every 2 minutes - delete expired tokens
 cron.schedule("*/2 * * * *", async () => {

@@ -494,39 +494,36 @@ export const getProductListBySeller = async (req, res) => {
 
     const query = db("product")
         .where("created_by", sellerID)
-        .where(function() {
-            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-        })
         .select("product.*", 'category.name_category')
         .join("category", "product.id_category", "category.id_category");
 
     // Filter theo trạng thái
     if (filterStatus === 'active') {
-        // Sản phẩm đang bán: chưa hết hạn hoặc không có end_date_time
-        query.where(function() {
-            this.where('product.end_date_time', '>', new Date())
-                .orWhereNull('product.end_date_time');
-        });
+        // Sản phẩm đang bán: status = 'active' (chưa kết thúc đấu giá)
+        query.where('product.status', 'active');
     } else if (filterStatus === 'sold') {
-        // Sản phẩm đã bán: đã hết hạn
-        query.where('product.end_date_time', '<=', new Date());
+        // Sản phẩm đã bán: status = 'ended_success' hoặc 'ended_no_winner'
+        query.whereIn('product.status', ['ended_success', 'ended_no_winner']);
+    } else {
+        // Mặc định: không hiện sản phẩm bị xóa mềm (inactive)
+        query.where(function() {
+            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
+        });
     }
 
     const pageSize = 5;
     const countQuery = db('product')
-        .where("created_by", sellerID)
-        .where(function() {
-            this.where('status', '!=', 'inactive').orWhereNull('status');
-        });
+        .where("created_by", sellerID);
     
     // Apply same filter for count
     if (filterStatus === 'active') {
-        countQuery.where(function() {
-            this.where('end_date_time', '>', new Date())
-                .orWhereNull('end_date_time');
-        });
+        countQuery.where('status', 'active');
     } else if (filterStatus === 'sold') {
-        countQuery.where('end_date_time', '<=', new Date());
+        countQuery.whereIn('status', ['ended_success', 'ended_no_winner']);
+    } else {
+        countQuery.where(function() {
+            this.where('status', '!=', 'inactive').orWhereNull('status');
+        });
     }
 
     const countResult = await countQuery.count('* as count').first();

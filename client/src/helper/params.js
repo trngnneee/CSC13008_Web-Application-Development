@@ -18,5 +18,14 @@ export const buildParams = (filter) => {
     }
     params += `page=${encodeURIComponent(filter.page)}`;
   }
+  if (filter.status)
+  {
+    if (params.length > 0) {
+      params += `&`;
+    } else {
+      params += `?`;
+    }
+    params += `status=${encodeURIComponent(filter.status)}`;
+  }
   return params;
 }
