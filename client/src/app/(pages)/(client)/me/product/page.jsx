@@ -118,13 +118,13 @@ export default function SellerProductPage() {
                 <td className="p-3 text-center text-[12px] text-gray-500">{item.end_date_time ? dateFormat(new Date(item.end_date_time)) : "-"}</td>
                 <td className="p-3 text-center">
                   {activeTab === "active" ? (
-                    <Badge className="bg-green-500">Đang bán</Badge>
+                    <Badge>Đang bán</Badge>
                   ) : (
-                    <Badge className="bg-blue-500">Đã kết thúc</Badge>
+                    <Badge className="bg-green-100 text-green-800">Đã kết thúc</Badge>
                   )}
                 </td>
                 {activeTab === "active" && (
-                  <td className="p-3 flex items-center justify-center gap-2">
+                  <td className="p-3 gap-2">
                     <Button onClick={() => router.push(`/me/product/update/${item.id_product}`)} className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)] p-0 w-8 h-8"}>
                       <Pen />
                     </Button>
