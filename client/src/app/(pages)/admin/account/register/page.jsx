@@ -9,11 +9,14 @@ import { toastHandler } from "@/lib/toastHandler";
 import JustValidate from "just-validate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
-export default function AdminRegisterPage() {  
+export default function AdminRegisterPage() {
   const router = useRouter();
-  
+  const [captcha, setCaptcha] = useState(null);
+
   useEffect(() => {
     const validation = new JustValidate("#adminRegisterFrom");
     validation
@@ -80,6 +83,11 @@ export default function AdminRegisterPage() {
       .onSuccess((event) => {
         event.preventDefault();
 
+        if (!captcha) {
+          toast.error("Vui lòng xác minh reCAPTCHA!");
+          return;
+        }
+
         const finalData = {
           fullname: event.target.fullname.value,
           email: event.target.email.value,
@@ -94,7 +102,7 @@ export default function AdminRegisterPage() {
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-color)]">Đăng ký</div>
-      <div className="text-gray-400 mb-10">Nhập họ tên, email và mật khẩu để đăng ký</div>
+      <div className="text-gray-400 mb-5">Nhập họ tên, email và mật khẩu để đăng ký</div>
       <form id="adminRegisterFrom">
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="fullname" className="text-sm font-medium text-[var(--main-color)] ">Họ tên*</Label>
@@ -128,6 +136,13 @@ export default function AdminRegisterPage() {
             Đồng ý với chính sách điều khoản
           </Label>
         </div>
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+          onChange={(value) => {
+            setCaptcha(value);
+          }}
+          className="mb-5"
+        />
         <div id="agreeContainer" className="mb-[33px]"></div>
         <Button className="w-full bg-[var(--main-color)] hover:bg-[var(--main-hover)]">Đăng ký</Button>
       </form>

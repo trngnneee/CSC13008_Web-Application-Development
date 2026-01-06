@@ -26,6 +26,7 @@ export default function CategoryPage() {
   const [status, setStatus] = useState("normal");
   const { id } = useParams();
   useEffect(() => {
+    setProductList([]);
     const fetchData = async () => {
       const params = buildParams({ page: currentPage });
       const promise = await clientProductListByCategory(id, params, status);
