@@ -199,6 +199,66 @@ export const getWinnerOrdersBySeller = async (id_seller) => {
 };
 
 /**
+ * Get rating status for an order
+ */
+export const getRatingStatus = async (id_order, id_user) => {
+  const order = await db("winner_order")
+    .select(
+      "winner_order.*",
+      "product.updated_by as seller_id",
+      "product.created_by as product_creator",
+      "product.status as product_status"
+    )
+    .leftJoin("product", "winner_order.id_product", "product.id_product")
+    .where("winner_order.id_order", id_order)
+    .first();
+
+  if (!order) {
+    throw new Error("Không tìm thấy đơn hàng");
+  }
+
+  const sellerId = order.seller_id || order.product_creator;
+  const isWinner = order.id_user === id_user;
+  const isSeller = sellerId === id_user;
+
+  if (!isWinner && !isSeller) {
+    throw new Error("Bạn không có quyền xem thông tin đơn hàng này");
+  }
+
+  // Get all ratings for this product from service_judge
+  const ratings = await db("service_judge")
+    .where("id_product", order.id_product);
+
+  const hasWinnerRated = ratings.some(r => r.id_user === order.id_user);
+  const hasSellerRated = ratings.some(r => r.id_user === sellerId);
+
+  // Check if current user has rated
+  const myRating = ratings.find(r => r.id_user === id_user);
+  
+  // Get the rating I received (the other party rated me)
+  const otherPartyId = isWinner ? sellerId : order.id_user;
+  const ratingReceived = ratings.find(r => r.id_user === otherPartyId);
+
+  // Determine if rating is allowed
+  const allowedStatuses = ["pending_rating", "completed"];
+  const canRate = !myRating && 
+    order.product_status === "ended_success" && 
+    allowedStatuses.includes(order.status);
+
+  return {
+    canRate,
+    hasRated: !!myRating,
+    myRating: myRating || null,
+    ratingReceived: ratingReceived || null,
+    hasWinnerRated,
+    hasSellerRated,
+    bothRated: hasWinnerRated && hasSellerRated,
+    orderStatus: order.status,
+    isWinner,
+    isSeller,
+  };
+};
+/**
  * Winner uploads payment bill and address
  */
 export const submitPaymentInfo = async (id_order, id_user, payment_bill, address) => {
@@ -289,10 +349,26 @@ export const confirmReceived = async (id_order, id_user) => {
 
 /**
  * Rate the other party (seller rates winner or winner rates seller)
+ * Following the RATING FEATURE specification
  */
-export const rateOrder = async (id_order, id_rater, rating, comment) => {
+export const rateOrder = async (id_order, id_rater, score, comment) => {
+  // Validate score
+  if (score !== 1 && score !== -1) {
+    throw new Error("Điểm đánh giá phải là +1 hoặc -1");
+  }
+
+  // Validate comment
+  if (comment && comment.length > 500) {
+    throw new Error("Bình luận không được vượt quá 500 ký tự");
+  }
+
   const order = await db("winner_order")
-    .select("winner_order.*", "product.updated_by as seller_id")
+    .select(
+      "winner_order.*", 
+      "product.updated_by as seller_id",
+      "product.created_by as product_creator",
+      "product.status as product_status"
+    )
     .leftJoin("product", "winner_order.id_product", "product.id_product")
     .where("winner_order.id_order", id_order)
     .first();
@@ -301,91 +377,125 @@ export const rateOrder = async (id_order, id_rater, rating, comment) => {
     throw new Error("Không tìm thấy đơn hàng");
   }
 
+  // Get seller id (updated_by or created_by)
+  const sellerId = order.seller_id || order.product_creator;
+
+  // Validate product status
+  if (order.product_status !== "ended_success") {
+    throw new Error("Chỉ có thể đánh giá khi đấu giá đã kết thúc thành công");
+  }
+
+  // Validate order status - must be at least pending_rating (delivery done)
+  const allowedStatuses = ["pending_rating", "completed"];
+  if (!allowedStatuses.includes(order.status)) {
+    throw new Error("Chỉ có thể đánh giá sau khi đơn hàng đã được giao");
+  }
+
   const isWinner = order.id_user === id_rater;
-  const isSeller = order.seller_id === id_rater;
+  const isSeller = sellerId === id_rater;
 
   if (!isWinner && !isSeller) {
     throw new Error("Bạn không có quyền đánh giá đơn hàng này");
   }
 
   // Determine who is being rated
-  const id_rated = isWinner ? order.seller_id : order.id_user;
-  const raterRole = isWinner ? "winner" : "seller";
+  // Seller rates winner, Winner rates seller
+  const id_to_user = isWinner ? sellerId : order.id_user;
 
-  // Check if already rated
-  const existingRating = await db("service_judge")
-    .where("id_product", order.id_product)
-    .where("id_user", id_rater)
-    .first();
-
-  if (existingRating) {
-    throw new Error("Bạn đã đánh giá đơn hàng này rồi");
+  // Prevent self-rating
+  if (id_rater === id_to_user) {
+    throw new Error("Bạn không thể tự đánh giá chính mình");
   }
 
-  // Insert rating
-  await db("service_judge").insert({
-    id_product: order.id_product,
-    id_user: id_rater,
-    content: comment || "",
-    rating_point: rating, // +1 or -1
-  });
+  // Use transaction
+  return await db.transaction(async (trx) => {
+    // Check if already rated (PRIMARY KEY: id_product + id_user)
+    const existingRating = await trx("service_judge")
+      .where("id_user", id_rater)
+      .where("id_product", order.id_product)
+      .first();
 
-  // Update user_point for the rated user
-  const userPoint = await db("user_point")
-    .where("id_user", id_rated)
-    .first();
-
-  if (userPoint) {
-    const updateData = {};
-    if (rating > 0) {
-      updateData.number_of_plus = (userPoint.number_of_plus || 0) + 1;
-    } else {
-      updateData.number_of_minus = (userPoint.number_of_minus || 0) + 1;
+    if (existingRating) {
+      throw new Error("Bạn đã đánh giá đơn hàng này rồi");
     }
-    
-    // Recalculate judge_point
-    const totalPlus = (updateData.number_of_plus ?? userPoint.number_of_plus) || 0;
-    const totalMinus = (updateData.number_of_minus ?? userPoint.number_of_minus) || 0;
-    const total = totalPlus + totalMinus;
-    updateData.judge_point = total > 0 ? totalPlus / total : 0;
 
-    await db("user_point")
-      .where("id_user", id_rated)
-      .update(updateData);
-  } else {
-    // Create user_point if not exists
-    await db("user_point").insert({
-      id_user: id_rated,
-      judge_point: rating > 0 ? 1 : 0,
-      number_of_plus: rating > 0 ? 1 : 0,
-      number_of_minus: rating < 0 ? 1 : 0,
-    });
-  }
+    // Insert rating record into service_judge
+    await trx("service_judge")
+      .insert({
+        id_product: order.id_product,
+        id_user: id_rater,
+        content: comment || "",
+        rating_point: score,
+      });
 
-  // Check if both parties have rated
-  const ratings = await db("service_judge")
-    .where("id_product", order.id_product)
-    .select("id_user");
+    const newRating = {
+      id_product: order.id_product,
+      id_user: id_rater,
+      content: comment || "",
+      rating_point: score,
+    };
 
-  const hasWinnerRated = ratings.some(r => r.id_user === order.id_user);
-  const hasSellerRated = ratings.some(r => r.id_user === order.seller_id);
+    // Update user_point for the rated user (id_to_user)
+    const userPoint = await trx("user_point")
+      .where("id_user", id_to_user)
+      .first();
 
-  if (hasWinnerRated && hasSellerRated) {
-    // Both rated, mark order as completed
-    await db("winner_order")
-      .where("id_order", id_order)
-      .update({ status: "completed" });
-  }
+    if (userPoint) {
+      const newPlus = score > 0 ? (userPoint.number_of_plus || 0) + 1 : (userPoint.number_of_plus || 0);
+      const newMinus = score < 0 ? (userPoint.number_of_minus || 0) + 1 : (userPoint.number_of_minus || 0);
+      const total = newPlus + newMinus;
+      const newJudgePoint = total > 0 ? newPlus / total : 0;
 
-  return { success: true, raterRole };
+      await trx("user_point")
+        .where("id_user", id_to_user)
+        .update({
+          number_of_plus: newPlus,
+          number_of_minus: newMinus,
+          judge_point: newJudgePoint,
+        });
+    } else {
+      // Create user_point if not exists
+      await trx("user_point").insert({
+        id_user: id_to_user,
+        judge_point: score > 0 ? 1 : 0,
+        number_of_plus: score > 0 ? 1 : 0,
+        number_of_minus: score < 0 ? 1 : 0,
+      });
+    }
+
+    // Check if both parties have rated
+    const ratings = await trx("service_judge")
+      .where("id_product", order.id_product)
+      .select("id_user");
+
+    const hasWinnerRated = ratings.some(r => r.id_user === order.id_user);
+    const hasSellerRated = ratings.some(r => r.id_user === sellerId);
+
+    if (hasWinnerRated && hasSellerRated) {
+      // Both rated, mark order as completed
+      await trx("winner_order")
+        .where("id_order", id_order)
+        .update({ status: "completed" });
+    }
+
+    return { 
+      success: true, 
+      rating: newRating,
+      raterRole: isWinner ? "winner" : "seller" 
+    };
+  });
 };
 
 /**
- * Seller cancels the order
+ * Seller cancels the order (auto-rates winner with -1)
  */
 export const cancelOrder = async (id_order, id_seller) => {
   const order = await db("winner_order")
-    .select("winner_order.*", "product.updated_by as seller_id")
+    .select(
+      "winner_order.*", 
+      "product.updated_by as seller_id",
+      "product.created_by as product_creator"
+    )
     .leftJoin("product", "winner_order.id_product", "product.id_product")
     .where("winner_order.id_order", id_order)
     .first();
@@ -394,7 +504,9 @@ export const cancelOrder = async (id_order, id_seller) => {
     throw new Error("Không tìm thấy đơn hàng");
   }
 
-  if (order.seller_id !== id_seller) {
+  const sellerId = order.seller_id || order.product_creator;
+
+  if (sellerId !== id_seller) {
     throw new Error("Bạn không có quyền hủy đơn hàng này");
   }
 
@@ -402,36 +514,56 @@ export const cancelOrder = async (id_order, id_seller) => {
     throw new Error("Không thể hủy đơn hàng đã hoàn thành hoặc đã hủy");
   }
 
-  // Cancel the order
-  await db("winner_order")
-    .where("id_order", id_order)
-    .update({ status: "cancelled" });
+  // Use transaction
+  return await db.transaction(async (trx) => {
+    // Cancel the order
+    await trx("winner_order")
+      .where("id_order", id_order)
+      .update({ status: "cancelled" });
 
-  // Give winner -1 rating (as per spec)
-  const winnerPoint = await db("user_point")
-    .where("id_user", order.id_user)
-    .first();
+    // Auto-rate winner with -1 (as per spec)
+    // Check if seller hasn't already rated
+    const existingRating = await trx("service_judge")
+      .where("id_user", id_seller)
+      .where("id_product", order.id_product)
+      .first();
 
-  if (winnerPoint) {
-    const newMinus = (winnerPoint.number_of_minus || 0) + 1;
-    const totalPlus = winnerPoint.number_of_plus || 0;
-    const total = totalPlus + newMinus;
-    const newJudgePoint = total > 0 ? totalPlus / total : 0;
-
-    await db("user_point")
-      .where("id_user", order.id_user)
-      .update({
-        number_of_minus: newMinus,
-        judge_point: newJudgePoint,
+    if (!existingRating) {
+      // Create auto-rating from seller to winner in service_judge
+      await trx("service_judge").insert({
+        id_product: order.id_product,
+        id_user: id_seller,
+        content: "Người thắng đấu giá không hoàn thành thanh toán",
+        rating_point: -1,
       });
-  } else {
-    await db("user_point").insert({
-      id_user: order.id_user,
-      judge_point: 0,
-      number_of_plus: 0,
-      number_of_minus: 1,
-    });
-  }
 
-  return { success: true };
+      // Update user_point for winner (add minus)
+      const winnerPoint = await trx("user_point")
+        .where("id_user", order.id_user)
+        .first();
+
+      if (winnerPoint) {
+        const newMinus = (winnerPoint.number_of_minus || 0) + 1;
+        const newPlus = winnerPoint.number_of_plus || 0;
+        const total = newPlus + newMinus;
+        const newJudgePoint = total > 0 ? newPlus / total : 0;
+
+        await trx("user_point")
+          .where("id_user", order.id_user)
+          .update({
+            number_of_minus: newMinus,
+            judge_point: newJudgePoint,
+          });
+      } else {
+        await trx("user_point").insert({
+          id_user: order.id_user,
+          judge_point: 0,
+          number_of_plus: 0,
+          number_of_minus: 1,
+        });
+      }
+    }
+
+    return { success: true };
+  });
 };

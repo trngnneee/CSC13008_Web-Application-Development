@@ -117,18 +117,38 @@ export const confirmReceivedPost = async (req, res) => {
 
 export const rateOrderPost = async (req, res) => {
   try {
-    const { id_order, rating, comment } = req.body;
+    const { id_order, score, comment } = req.body;
     const id_rater = req.account.id_user;
 
-    if (rating !== 1 && rating !== -1) {
-      return res.status(400).json({ code: "error", message: "Rating phải là +1 hoặc -1" });
+    if (score !== 1 && score !== -1) {
+      return res.status(400).json({ code: "error", message: "Điểm đánh giá phải là +1 hoặc -1" });
     }
 
-    const result = await auctionService.rateOrder(id_order, id_rater, rating, comment);
+    if (comment && comment.length > 500) {
+      return res.status(400).json({ code: "error", message: "Bình luận không được vượt quá 500 ký tự" });
+    }
+
+    const result = await auctionService.rateOrder(id_order, id_rater, score, comment);
 
     return res.json({
       code: "success",
       message: "Đã đánh giá thành công",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({ code: "error", message: error.message });
+  }
+};
+
+export const getRatingStatusGet = async (req, res) => {
+  try {
+    const { id_order } = req.params;
+    const id_user = req.account.id_user;
+
+    const result = await auctionService.getRatingStatus(id_order, id_user);
+
+    return res.json({
+      code: "success",
       data: result,
     });
   } catch (error) {

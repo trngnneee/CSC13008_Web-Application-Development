@@ -155,3 +155,16 @@ export const clientProductGetDescription = async (id) => {
   }
   return data;
 }
+
+export const clientProductGetBidHistory = async (id) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid-history/${id}`, {
+    method: "GET",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || data.code !== "success") {
+    throw new Error(data.message || "Lấy lịch sử đấu giá thất bại");
+  }
+  return data;
+}

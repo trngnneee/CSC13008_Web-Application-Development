@@ -99,7 +99,7 @@ export const confirmReceived = async (id_order) => {
   return data;
 };
 
-export const rateOrder = async (id_order, rating, comment) => {
+export const rateOrder = async (id_order, score, comment) => {
   const token = localStorage.getItem("clientToken");
 
   const res = await fetch(`${baseUrl}/order/rate`, {
@@ -109,7 +109,23 @@ export const rateOrder = async (id_order, rating, comment) => {
       "Authorization": token ? `Bearer ${token}` : "",
     },
     credentials: "include",
-    body: JSON.stringify({ id_order, rating, comment }),
+    body: JSON.stringify({ id_order, score, comment }),
+  });
+
+  const data = await res.json();
+  return data;
+};
+
+export const getRatingStatus = async (id_order) => {
+  const token = localStorage.getItem("clientToken");
+
+  const res = await fetch(`${baseUrl}/order/rating-status/${id_order}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
   });
 
   const data = await res.json();

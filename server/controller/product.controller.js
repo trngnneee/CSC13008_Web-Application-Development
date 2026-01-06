@@ -226,6 +226,43 @@ export const getProductDescriptionHistory = async (req, res) => {
     })
 }
 
+export const getProductBidHistory = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const bidHistory = await db('bid')
+            .select(
+                'bid.bid_price',
+                'bid.time',
+                'user.fullname as bidder_name',
+                'user.email as bidder_email'
+            )
+            .leftJoin('user', 'bid.id_user', 'user.id_user')
+            .where('bid.id_product', id)
+            .orderBy('bid.time', 'desc');
+
+        // Mask bidder email for privacy
+        const maskedHistory = bidHistory.map(bid => ({
+            ...bid,
+            bidder_display: bid.bidder_email 
+                ? `${bid.bidder_email[0]}${'*'.repeat(8)}${bid.bidder_email.slice(-3)}`
+                : bid.bidder_name || 'Ẩn danh'
+        }));
+
+        res.json({
+            code: "success",
+            message: "Lấy lịch sử đấu giá thành công",
+            data: maskedHistory
+        });
+    } catch (error) {
+        res.status(500).json({
+            code: "error",
+            message: "Lỗi khi lấy lịch sử đấu giá",
+            data: error.message
+        });
+    }
+}
+
 export const getTotalPage = async (req, res) => {
     try {
         const products = await productService.getAllProducts();

@@ -109,3 +109,23 @@ export const bidRequestByProductGet = async (req, res) => {
     res.status(400).json({ code: "error", message: error.message });
   }
 }
+
+export const myBiddingProductsGet = async (req, res) => {
+  try {
+    const id_user = req.account?.id_user;
+    
+    if (!id_user) {
+      return res.status(400).json({ code: "error", message: "Không tìm thấy thông tin người dùng" });
+    }
+    
+    const result = await bidService.getMyBiddingProducts(id_user);
+
+    return res.json({
+      code: "success",
+      message: "Lấy danh sách sản phẩm đang đấu giá thành công",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({ code: "error", message: error.message });
+  }
+}

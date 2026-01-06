@@ -30,6 +30,10 @@ export const Sider = () => {
       href: "/me/bid",
       icon: Gavel
     }, {
+      title: "Đang tham gia đấu giá",
+      href: "/me/bidding-list",
+      icon: Gavel
+    }, {
       title: "Sản phẩm đã thắng",
       href: "/me/won-product",
       icon: Package

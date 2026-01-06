@@ -1,10 +1,57 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { clientProductGetBidHistory } from "@/lib/clientAPI/product";
+import { dateTimeFormat } from "@/utils/date";
+
 export const BidHistory = () => {
-  const bids = [
-    { bidder: "d********3", amount: "$700", time: "7/8/2022 03:21:59" },
-    { bidder: "d********3", amount: "$500", time: "3/8/2022 02:42:13" },
-    { bidder: "d********3", amount: "$450", time: "2/8/2022 11:10:39" },
-    { bidder: "d********3", amount: "$400", time: "30/7/2022 03:03:04" },
-  ];
+  const params = useParams();
+  const [bids, setBids] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBidHistory = async () => {
+      try {
+        setLoading(true);
+        const result = await clientProductGetBidHistory(params.id);
+        setBids(result.data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchBidHistory();
+    }
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        Đang tải lịch sử đấu giá...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        {error}
+      </div>
+    );
+  }
+
+  if (bids.length === 0) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        Chưa có lượt đấu giá nào
+      </div>
+    );
+  }
 
   return (
     <>
@@ -23,14 +70,18 @@ export const BidHistory = () => {
                 key={idx}
                 className="border-t border-gray-200 hover:bg-gray-50 transition"
               >
-                <td className="px-4 py-3">{bid.bidder}</td>
-                <td className="px-4 py-3 font-medium">{bid.amount}</td>
-                <td className="px-4 py-3 text-gray-600">{bid.time}</td>
+                <td className="px-4 py-3">{bid.bidder_display}</td>
+                <td className="px-4 py-3 font-medium">
+                  {Number(bid.bid_price).toLocaleString("vi-VN")} VND
+                </td>
+                <td className="px-4 py-3 text-gray-600">
+                  {dateTimeFormat(bid.time)}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     </>
-  )
-}
+  );
+};

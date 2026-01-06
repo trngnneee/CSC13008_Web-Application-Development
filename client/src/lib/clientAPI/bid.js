@@ -114,3 +114,24 @@ export const getBidRequestsByProduct = async (id_product) => {
   const data = await res.json();
   return data;
 }
+
+export const getMyBiddingProducts = async () => {
+  const token = localStorage.getItem("clientToken");
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/my-bidding`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách sản phẩm đang đấu giá thất bại");
+  }
+
+  return data;
+}

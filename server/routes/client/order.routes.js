@@ -25,6 +25,9 @@ router.post('/confirm-received', verifyToken, authorizeRole("bidder", "seller"),
 // Rate the other party
 router.post('/rate', verifyToken, authorizeRole("bidder", "seller"), orderController.rateOrderPost);
 
+// Get rating status for an order
+router.get('/rating-status/:id_order', verifyToken, authorizeRole("bidder", "seller"), orderController.getRatingStatusGet);
+
 // Seller cancels order
 router.post('/cancel', verifyToken, authorizeRole("seller"), orderController.cancelOrderPost);
 

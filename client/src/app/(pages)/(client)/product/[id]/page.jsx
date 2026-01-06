@@ -40,7 +40,8 @@ export default function ProductPage() {
         <div className="my-[50px]">
           <div className="text-[30px] font-extrabold mb-2.5">Lịch sử đấu giá:</div>
           <BidHistory />
-          {userInfo && userInfo.role == "seller" && (
+          {userInfo && productDetail && 
+            (productDetail.updated_by === userInfo.id_user || productDetail.created_by === userInfo.id_user) && (
             <>
               <div className="text-[30px] font-extrabold mb-2.5 mt-10">Danh sách đấu giá chờ duyệt của Bidder:</div>
               <BidRequest />

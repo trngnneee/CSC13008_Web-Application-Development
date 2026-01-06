@@ -20,5 +20,8 @@ router.post('/approve', verifyToken, authorizeRole("seller"), bidController.appr
 
 // Seller từ chối yêu cầu đấu giá
 router.post('/reject', verifyToken, authorizeRole("seller"), bidController.rejectBidRequestPost);
+
+// Bidder xem danh sách sản phẩm đang tham gia đấu giá
+router.get('/my-bidding', verifyToken, authorizeRole("bidder", "seller"), bidController.myBiddingProductsGet);
     
 export default router;
