@@ -46,13 +46,13 @@ export default function SellerTable() {
               <td className="p-3">{dateTimeFormat(item.created_at)}</td>
               <td className="p-3">
                 {item.status === "pending" && (
-                  <Badge>Pending</Badge>
+                  <Badge>Chờ duyệt</Badge>
                 )}
                 {item.status === "approved" && (
-                  <Badge className="bg-green-100 text-green-800">Approved</Badge>
+                  <Badge className="bg-green-100 text-green-800">Đã duyệt</Badge>
                 )}
                 {item.status === "rejected" && (
-                  <Badge className="bg-red-100 text-red-800">Rejected</Badge>
+                  <Badge className="bg-red-100 text-red-800">Đã từ chối</Badge>
                 )}
               </td>
               <td className="p-3">{dateTimeFormat(item.reviewed_at) || "-"}</td>

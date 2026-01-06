@@ -36,10 +36,6 @@ export const placeBid = async (id_product, bid_price, id_user) => {
 
 export const getBidRequests = async () => {
   const token = localStorage.getItem("clientToken");
-  
-  console.log("=== getBidRequests API CALL ===");
-  console.log("Token:", token ? "exists" : "missing");
-  console.log("URL:", `${process.env.NEXT_PUBLIC_API_URL}/product/bid`);
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid`, {
     method: "GET",
@@ -50,9 +46,7 @@ export const getBidRequests = async () => {
     credentials: "include",
   });
 
-  console.log("Response status:", res.status);
   const data = await res.json();
-  console.log("Response data:", data);
 
   if (data.code !== "success") {
     throw new Error(data.message || "Lấy danh sách yêu cầu thất bại");
