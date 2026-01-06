@@ -17,6 +17,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [rememberLogin, setRememberLogin] = useState(false);
   const [captcha, setCaptcha] = useState(null);
+  const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
     const validation = new JustValidate("#adminLoginForm");
@@ -57,30 +58,38 @@ export default function AdminLoginPage() {
           errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
         },
       ])
-      .onSuccess((event) => {
-        event.preventDefault();
-
-        if (!captcha) {
-          toast.error("Vui lòng xác minh reCAPTCHA!");
-          return;
-        }
-
-        const finalData = {
-          email: event.target.email.value,
-          password: event.target.password.value,
-          rememberPassword: rememberLogin
-        }
-
-        const promise = adminLogin(finalData);
-        toastHandler(promise, router, "/admin/category");
+      .onSuccess(() => {
+        setSubmit(true);
       })
   }, [])
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!submit) return;
+
+    if (captcha === "" || captcha === null) {
+      toast.error("Vui lòng xác minh reCAPTCHA!");
+      setSubmit(false);
+      return;
+    }
+
+    const finalData = {
+      email: event.target.email.value,
+      password: event.target.password.value,
+      rememberPassword: rememberLogin
+    }
+
+    const promise = adminLogin(finalData);
+    toastHandler(promise, router, "/admin/category");
+    setSubmit(false);
+  }
 
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-color)]">Đăng nhập</div>
       <div className="text-gray-400 mb-10">Nhập email và mật khẩu để đăng nhập</div>
-      <form id="adminLoginForm">
+      <form id="adminLoginForm" onSubmit={handleSubmit}>
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="email" className="text-sm font-medium text-[var(--main-color)] ">Email*</Label>
           <Input

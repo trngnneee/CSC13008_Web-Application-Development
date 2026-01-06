@@ -71,11 +71,11 @@ export default function BidRequestsPage() {
   const getStatusBadge = (status) => {
     switch (status) {
       case "pending":
-        return <Badge className="bg-yellow-500">Chờ duyệt</Badge>;
+        return <Badge>Chờ duyệt</Badge>;
       case "approved":
-        return <Badge className="bg-green-500">Đã duyệt</Badge>;
+        return <Badge className="bg-green-100 text-green-800">Đã duyệt</Badge>;
       case "rejected":
-        return <Badge className="bg-red-500">Đã từ chối</Badge>;
+        return <Badge className="bg-red-100 text-red-800">Đã từ chối</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -122,7 +122,6 @@ export default function BidRequestsPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-lg font-bold">{request.product_name}</h3>
-                      {getStatusBadge(request.status)}
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
@@ -146,7 +145,8 @@ export default function BidRequestsPage() {
 
                   {/* Actions */}
                   {request.status === "pending" && (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                      {getStatusBadge(request.status)}
                       <Button
                         size="sm"
                         className="bg-green-500 hover:bg-green-600"

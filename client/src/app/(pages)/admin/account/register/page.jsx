@@ -16,6 +16,7 @@ import { toast } from "sonner";
 export default function AdminRegisterPage() {
   const router = useRouter();
   const [captcha, setCaptcha] = useState(null);
+  const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
     const validation = new JustValidate("#adminRegisterFrom");
@@ -81,29 +82,36 @@ export default function AdminRegisterPage() {
       errorsContainer: '#agreeContainer'
     })
       .onSuccess((event) => {
-        event.preventDefault();
-
-        if (!captcha) {
-          toast.error("Vui lòng xác minh reCAPTCHA!");
-          return;
-        }
-
-        const finalData = {
-          fullname: event.target.fullname.value,
-          email: event.target.email.value,
-          password: event.target.password.value,
-        };
-
-        const promise = adminRegister(finalData);
-        toastHandler(promise, router, '/admin/account/initial');
+        setSubmit(true);
       })
   }, [])
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!submit) return;
+
+    if (!captcha) {
+      toast.error("Vui lòng xác minh reCAPTCHA!");
+      setSubmit(false);
+      return;
+    }
+
+    const finalData = {
+      fullname: event.target.fullname.value,
+      email: event.target.email.value,
+      password: event.target.password.value,
+    };
+
+    const promise = adminRegister(finalData);
+    toastHandler(promise, router, '/admin/account/initial');
+    setSubmit(false);
+  }
 
   return (
     <>
       <div className="font-bold text-[36px] text-[var(--main-color)]">Đăng ký</div>
       <div className="text-gray-400 mb-5">Nhập họ tên, email và mật khẩu để đăng ký</div>
-      <form id="adminRegisterFrom">
+      <form  id="adminRegisterForm" onSubmit={handleSubmit}>
         <div className="mb-6 *:not-first:mt-2">
           <Label htmlFor="fullname" className="text-sm font-medium text-[var(--main-color)] ">Họ tên*</Label>
           <Input
