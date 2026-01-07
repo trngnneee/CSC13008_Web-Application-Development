@@ -273,12 +273,8 @@ export const ProdcutInformation = ({ productDetail }) => {
               </div>
             ) : (
               <>
-<<<<<<< HEAD
-                <div className="text-[20px]">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
-=======
                 <div className="text-[20px] ">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
                 <div><FeedbackList role={"bidder"} /></div>
->>>>>>> a91418ff5eef493654a891a0856dc4ae96f640fd
                 <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
               </>
             )}

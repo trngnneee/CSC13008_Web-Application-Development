@@ -105,7 +105,7 @@ export default function ProfilePage() {
             </div>
             <Leaf size={30} />
           </div>
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4 mt-4 max-h-[600px] overflow-y-scroll border border-gray-200 p-4 rounded-lg">
             {userInfo && userInfo.feedBackList && userInfo.feedBackList.length > 0 && userInfo.feedBackList.map((item, index) => (
               <div key={index} className="border border-gray-200 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center justify-between">
