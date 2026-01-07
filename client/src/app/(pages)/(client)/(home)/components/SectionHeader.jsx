@@ -5,7 +5,7 @@ export const SectionHeader = ({ title, subtitle, link }) => {
     <>
       <div className="flex justify-between items-center">
         <div className="font-bold text-[40px]">{title}</div>
-        <Link className="font-bold text-[18px] hover:underline" href={link}>{subtitle}</Link>
+        {/* <Link className="font-bold text-[18px] hover:underline" href={link}>{subtitle}</Link> */}
       </div>
     </>
   )
