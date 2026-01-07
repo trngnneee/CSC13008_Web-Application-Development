@@ -230,3 +230,58 @@ export const sendAuctionWonMail = async (toEmail, productName, winnerName, final
 
     await transporter.sendMail(mailOptions);
 }
+
+export const sendKickBidderMail = async (toEmail, productName, sellerName) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: `Thông báo bị loại khỏi đấu giá - "${productName}"`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Thông báo loại khỏi đấu giá</h2>
+                <p>Xin chào,</p>
+                <p>Bạn đã bị loại khỏi cuộc đấu giá cho sản phẩm <strong>"${productName}"</strong> do người bán <strong>${sellerName}</strong>.</p>
+                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với người bán để biết thêm chi tiết.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+export const sendRecoveryMail = async (toEmail, productName, sellerName) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASSWORD,
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_NAME,
+        to: toEmail,
+        subject: `Thông báo phục hồi đấu giá - "${productName}"`,
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Thông báo phục hồi đấu giá</h2>
+                <p>Xin chào,</p>
+                <p>Bạn đã được phục hồi tham gia cuộc đấu giá cho sản phẩm <strong>"${productName}"</strong> do người bán <strong>${sellerName}</strong>.</p>
+                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với người bán để biết thêm chi tiết.</p>
+            </div>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}

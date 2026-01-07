@@ -27,6 +27,7 @@ import { toast } from "sonner";
 
 export default function ProfilePage() {
   const { userInfo } = useClientAuthContext();
+  console.log("userInfo:", userInfo);
   const [date, setDate] = useState(new Date());
   const [submit, setSubmit] = useState(false);
   const router = useRouter();

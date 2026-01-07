@@ -1,9 +1,12 @@
+import { sendKickBidderMail, sendRecoveryMail } from '../../helper/mail.helper.js';
 import * as bidService from '../../service/bid.service.js';
+import db from "../../config/database.config.js";
+import { findUserById } from '../../service/user.service.js';
 
 export const placeBidPost = async (req, res) => {
   try {
     const { id_product, bid_price, id_user } = req.body;
-    
+
     console.log("=== BID REQUEST ===");
     console.log("Request body:", req.body);
     console.log("id_product:", id_product);
@@ -12,13 +15,13 @@ export const placeBidPost = async (req, res) => {
     console.log("User from token:", req.account);
 
     const result = await bidService.placeBid(id_product, bid_price, id_user);
-    
+
     console.log("=== BID RESULT ===");
     console.log("Result:", result);
 
     return res.json({
       code: result.status,      // "success" | "pending_approval"
-      message: result.message,  
+      message: result.message,
       data: result.data,
     });
   } catch (error) {
@@ -35,12 +38,12 @@ export const bidRequestGet = async (req, res) => {
     console.log("req.account:", req.account);
     const id_seller = req.account?.id_user;
     console.log("id_seller:", id_seller);
-    
+
     if (!id_seller) {
       console.log("ERROR: id_seller is undefined");
       return res.status(400).json({ code: "error", message: "Không tìm thấy thông tin người bán" });
     }
-    
+
     const result = await bidService.getBidRequests(id_seller);
     console.log("Bid requests found:", result?.length || 0);
     console.log("Result:", result);
@@ -94,11 +97,11 @@ export const rejectBidRequestPost = async (req, res) => {
 export const bidRequestByProductGet = async (req, res) => {
   try {
     const { id_product } = req.params;
-    
+
     if (!id_product) {
       return res.status(400).json({ code: "error", message: "Không tìm thấy id sản phẩm" });
     }
-    
+
     const result = await bidService.getBidRequestsByProduct(id_product);
 
     return res.json({
@@ -113,11 +116,11 @@ export const bidRequestByProductGet = async (req, res) => {
 export const myBiddingProductsGet = async (req, res) => {
   try {
     const id_user = req.account?.id_user;
-    
+
     if (!id_user) {
       return res.status(400).json({ code: "error", message: "Không tìm thấy thông tin người dùng" });
     }
-    
+
     const result = await bidService.getMyBiddingProducts(id_user);
 
     return res.json({
@@ -152,6 +155,23 @@ export const kickBidderPost = async (req, res) => {
 
   await bidService.kickBidderFromProduct(id_product, id_bidder);
 
+  const bidderInfo = await findUserById(id_bidder);
+  const sellerInfo = await db('user')
+    .join('product', 'user.id_user', 'product.created_by')
+    .select('user.fullname')
+    .where('product.id_product', id_product)
+    .first();
+  const productInfo = await db('product')
+    .select('name')
+    .where('id_product', id_product)
+    .first();
+
+  await sendKickBidderMail(
+    bidderInfo.email,
+    productInfo.name,
+    sellerInfo.fullname
+  );
+
   res.json({
     code: "success",
     message: "Đã kick người đấu giá khỏi sản phẩm đấu giá",
@@ -161,6 +181,23 @@ export const kickBidderPost = async (req, res) => {
 export const recoverBidderPost = async (req, res) => {
   const { id_product, id_bidder } = req.body;
   await bidService.recoverBidderToProduct(id_product, id_bidder);
+
+  const bidderInfo = await findUserById(id_bidder);
+  const sellerInfo = await db('user')
+    .join('product', 'user.id_user', 'product.created_by')
+    .select('user.fullname')
+    .where('product.id_product', id_product)
+    .first();
+  const productInfo = await db('product')
+    .select('name')
+    .where('id_product', id_product)
+    .first();
+
+  await sendRecoveryMail(
+    bidderInfo.email,
+    productInfo.name,
+    sellerInfo.fullname
+  );
 
   res.json({
     code: "success",

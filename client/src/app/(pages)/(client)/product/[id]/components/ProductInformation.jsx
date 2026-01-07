@@ -96,7 +96,7 @@ export const ProdcutInformation = ({ productDetail }) => {
                 <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
               </>
             )}
-            <div className="flex items-center gap-3 mt-5">
+            <div className="grid grid-cols-2 gap-3 mt-5">
               <div className="text-[14px] font-bold"><span className="">Giá khởi điểm:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.starting_price).toLocaleString("vi-VN")} VND</span></div>
               <div className="text-[14px] font-bold"><span className="">Giá hiện tại:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.price).toLocaleString("vi-VN")} VND</span></div>
               <div className="text-[14px] font-bold"><span className="">Giá mua ngay:</span> <span className="text-[var(--main-client-color)] text-[16px]">{parseInt(productDetail.immediate_purchase_price).toLocaleString("vi-VN")} VND</span></div>
