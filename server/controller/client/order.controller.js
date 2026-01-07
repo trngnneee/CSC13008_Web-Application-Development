@@ -62,11 +62,14 @@ export const getOrderByProductGet = async (req, res) => {
 
 export const submitPaymentPost = async (req, res) => {
   try {
-    const { id_order, payment_bill, address } = req.body;
+    const { id_order, address } = req.body;
     const id_user = req.account.id_user;
 
+    // Get payment bill URL from uploaded file
+    const payment_bill = req.file ? req.file.path : null;
+
     if (!payment_bill || !address) {
-      return res.status(400).json({ code: "error", message: "Vui lòng cung cấp đầy đủ thông tin" });
+      return res.status(400).json({ code: "error", message: "Vui lòng cung cấp đầy đủ thông tin (ảnh hóa đơn và địa chỉ)" });
     }
 
     const result = await auctionService.submitPaymentInfo(id_order, id_user, payment_bill, address);
@@ -83,8 +86,11 @@ export const submitPaymentPost = async (req, res) => {
 
 export const confirmPaymentPost = async (req, res) => {
   try {
-    const { id_order, b_l } = req.body;
+    const { id_order } = req.body;
     const id_seller = req.account.id_user;
+
+    // Get shipping bill URL from uploaded file (optional)
+    const b_l = req.file ? req.file.path : null;
 
     const result = await auctionService.confirmPaymentAndShip(id_order, id_seller, b_l);
 

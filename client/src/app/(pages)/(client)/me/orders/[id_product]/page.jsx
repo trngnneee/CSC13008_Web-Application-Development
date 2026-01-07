@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getOrderByProduct, submitPayment, confirmPayment, confirmReceived, rateOrder, cancelOrder } from "@/lib/clientAPI/order";
+import { getOrderByProduct, submitPayment, confirmPayment, confirmReceived, rateOrder, cancelOrder, getRatingStatus } from "@/lib/clientAPI/order";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Check, X, Star, Truck, CreditCard, Package, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Check, X, Star, Truck, CreditCard, Package, ThumbsUp, ThumbsDown, Upload, Image } from "lucide-react";
 
 const statusLabels = {
   pending_payment: { label: "Chờ thanh toán", color: "bg-yellow-500", step: 1 },
@@ -23,10 +23,13 @@ export default function OrderDetailPage() {
   const router = useRouter();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [ratingStatus, setRatingStatus] = useState(null);
   const [formData, setFormData] = useState({
-    payment_bill: "",
+    payment_bill: null, // File object
+    payment_bill_preview: "", // Preview URL
     address: "",
-    b_l: "",
+    b_l: null, // File object
+    b_l_preview: "", // Preview URL
     rating: 0,
     comment: "",
   });
@@ -35,6 +38,13 @@ export default function OrderDetailPage() {
     const response = await getOrderByProduct(id_product);
     if (response.code === "success") {
       setOrder(response.data);
+      // Fetch rating status if order is in rating phase
+      if (["pending_rating", "completed"].includes(response.data.status)) {
+        const ratingRes = await getRatingStatus(response.data.id_order);
+        if (ratingRes.code === "success") {
+          setRatingStatus(ratingRes.data);
+        }
+      }
     }
     setLoading(false);
   };
@@ -45,7 +55,7 @@ export default function OrderDetailPage() {
 
   const handleSubmitPayment = async () => {
     if (!formData.payment_bill || !formData.address) {
-      alert("Vui lòng điền đầy đủ thông tin");
+      alert("Vui lòng tải ảnh hóa đơn và nhập địa chỉ giao hàng");
       return;
     }
     const response = await submitPayment(order.id_order, formData.payment_bill, formData.address);
@@ -53,6 +63,18 @@ export default function OrderDetailPage() {
       fetchOrder();
     } else {
       alert(response.message);
+    }
+  };
+
+  const handleFileChange = (e, field) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        [field]: file,
+        [`${field}_preview`]: previewUrl,
+      });
     }
   };
 
@@ -177,15 +199,33 @@ export default function OrderDetailPage() {
             <h3 className="font-semibold mb-4">Bước 1: Thanh toán</h3>
             <div className="space-y-4">
               <div>
-                <Label>Link hóa đơn thanh toán</Label>
-                <Input
-                  placeholder="Nhập link ảnh hóa đơn..."
-                  value={formData.payment_bill}
-                  onChange={(e) => setFormData({ ...formData, payment_bill: e.target.value })}
-                />
+                <Label>Ảnh hóa đơn chuyển tiền <span className="text-red-500">*</span></Label>
+                <div className="mt-2">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-gray-300">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      {formData.payment_bill_preview ? (
+                        <img src={formData.payment_bill_preview} alt="Preview" className="h-20 object-contain" />
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                          <p className="text-sm text-gray-500">Click để tải ảnh hóa đơn</p>
+                        </>
+                      )}
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, "payment_bill")}
+                    />
+                  </label>
+                  {formData.payment_bill && (
+                    <p className="text-sm text-green-600 mt-1">✓ Đã chọn: {formData.payment_bill.name}</p>
+                  )}
+                </div>
               </div>
               <div>
-                <Label>Địa chỉ giao hàng</Label>
+                <Label>Địa chỉ giao hàng <span className="text-red-500">*</span></Label>
                 <Input
                   placeholder="Nhập địa chỉ giao hàng..."
                   value={formData.address}
@@ -210,17 +250,41 @@ export default function OrderDetailPage() {
           <div>
             <h3 className="font-semibold mb-4">Bước 2: Xác nhận thanh toán & Gửi hàng</h3>
             <div className="mb-4 p-4 bg-gray-50 rounded">
-              <p><strong>Hóa đơn thanh toán:</strong> <a href={order.payment_bill} target="_blank" className="text-blue-500 underline">{order.payment_bill}</a></p>
+              <div className="mb-2">
+                <strong>Hóa đơn thanh toán:</strong>
+                <a href={order.payment_bill} target="_blank" className="ml-2 text-blue-500 underline">Xem ảnh hóa đơn</a>
+              </div>
+              {order.payment_bill && (
+                <img src={order.payment_bill} alt="Hóa đơn" className="max-w-xs rounded border mb-2" />
+              )}
               <p><strong>Địa chỉ giao hàng:</strong> {order.address}</p>
             </div>
             <div className="space-y-4">
               <div>
-                <Label>Mã vận đơn (B/L) - không bắt buộc</Label>
-                <Input
-                  placeholder="Nhập mã vận đơn..."
-                  value={formData.b_l}
-                  onChange={(e) => setFormData({ ...formData, b_l: e.target.value })}
-                />
+                <Label>Ảnh vận đơn (B/L) - không bắt buộc</Label>
+                <div className="mt-2">
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-gray-300">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      {formData.b_l_preview ? (
+                        <img src={formData.b_l_preview} alt="Preview" className="h-20 object-contain" />
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                          <p className="text-sm text-gray-500">Click để tải ảnh vận đơn</p>
+                        </>
+                      )}
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, "b_l")}
+                    />
+                  </label>
+                  {formData.b_l && (
+                    <p className="text-sm text-green-600 mt-1">✓ Đã chọn: {formData.b_l.name}</p>
+                  )}
+                </div>
               </div>
               <Button onClick={handleConfirmPayment} className="bg-[var(--main-color)]">
                 Xác nhận đã gửi hàng
@@ -240,7 +304,10 @@ export default function OrderDetailPage() {
           <div>
             <h3 className="font-semibold mb-4">Bước 3: Xác nhận nhận hàng</h3>
             {order.b_l && (
-              <p className="mb-4"><strong>Mã vận đơn:</strong> {order.b_l}</p>
+              <div className="mb-4 p-4 bg-gray-50 rounded">
+                <p className="mb-2"><strong>Ảnh vận đơn:</strong></p>
+                <img src={order.b_l} alt="Vận đơn" className="max-w-xs rounded border" />
+              </div>
             )}
             <Button onClick={handleConfirmReceived} className="bg-[var(--main-color)]">
               Xác nhận đã nhận hàng
@@ -249,8 +316,14 @@ export default function OrderDetailPage() {
         )}
 
         {order.status === "pending_delivery" && order.isSeller && (
-          <div className="text-center text-gray-500">
-            Đang chờ người mua xác nhận nhận hàng...
+          <div>
+            <h3 className="font-semibold mb-4 text-center">Đang chờ người mua xác nhận nhận hàng...</h3>
+            {order.b_l && (
+              <div className="p-4 bg-blue-50 rounded border border-blue-200">
+                <p className="mb-2"><strong>Ảnh vận đơn đã gửi:</strong></p>
+                <img src={order.b_l} alt="Vận đơn" className="max-w-xs rounded border" />
+              </div>
+            )}
           </div>
         )}
 
@@ -258,31 +331,75 @@ export default function OrderDetailPage() {
         {order.status === "pending_rating" && (
           <div>
             <h3 className="font-semibold mb-4">Bước 4: Đánh giá {order.isWinner ? "người bán" : "người mua"}</h3>
-            <div className="space-y-4">
-              <div>
-                <Label>Nhận xét (không bắt buộc)</Label>
-                <Input
-                  placeholder="Nhập nhận xét..."
-                  value={formData.comment}
-                  onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                />
+            
+            {/* Show rating form if user hasn't rated yet */}
+            {ratingStatus && !ratingStatus.hasRated && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Nhận xét (không bắt buộc)</Label>
+                  <Input
+                    placeholder="Nhập nhận xét..."
+                    value={formData.comment}
+                    onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={() => handleRate(1)} 
+                    className="bg-green-500 hover:bg-green-600 flex-1"
+                  >
+                    <ThumbsUp className="mr-2" /> Tích cực (+1)
+                  </Button>
+                  <Button 
+                    onClick={() => handleRate(-1)} 
+                    variant="destructive"
+                    className="flex-1"
+                  >
+                    <ThumbsDown className="mr-2" /> Tiêu cực (-1)
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-4">
-                <Button 
-                  onClick={() => handleRate(1)} 
-                  className="bg-green-500 hover:bg-green-600 flex-1"
-                >
-                  <ThumbsUp className="mr-2" /> Tích cực (+1)
-                </Button>
-                <Button 
-                  onClick={() => handleRate(-1)} 
-                  variant="destructive"
-                  className="flex-1"
-                >
-                  <ThumbsDown className="mr-2" /> Tiêu cực (-1)
-                </Button>
+            )}
+
+            {/* Show waiting message if user has rated but other party hasn't */}
+            {ratingStatus && ratingStatus.hasRated && !ratingStatus.bothRated && (
+              <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <Check className="w-10 h-10 text-green-500 mx-auto mb-2" />
+                <p className="text-green-600 font-medium">Bạn đã đánh giá thành công!</p>
+                <p className="text-gray-500 mt-2">
+                  Đang chờ {order.isWinner ? "người bán" : "người mua"} đánh giá...
+                </p>
               </div>
-            </div>
+            )}
+
+            {/* Show if not loaded rating status yet */}
+            {!ratingStatus && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Nhận xét (không bắt buộc)</Label>
+                  <Input
+                    placeholder="Nhập nhận xét..."
+                    value={formData.comment}
+                    onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={() => handleRate(1)} 
+                    className="bg-green-500 hover:bg-green-600 flex-1"
+                  >
+                    <ThumbsUp className="mr-2" /> Tích cực (+1)
+                  </Button>
+                  <Button 
+                    onClick={() => handleRate(-1)} 
+                    variant="destructive"
+                    className="flex-1"
+                  >
+                    <ThumbsDown className="mr-2" /> Tiêu cực (-1)
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
