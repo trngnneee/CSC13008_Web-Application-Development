@@ -216,7 +216,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
 
     // === SEND EMAIL NOTIFICATIONS ===
     try {
-      const productUrl = `${process.env.CLIENT_URL}/product/${id_product}`;
+      const productUrl = `${process.env.FRONTEND_URL}/product/${id_product}`;
 
       // Get bidder info
       const bidder = await db("user").where("id_user", id_user).first();
@@ -898,7 +898,7 @@ export const runAutoBidEngine = async (id_product) => {
     // Send email notifications (outside transaction)
     setImmediate(async () => {
       try {
-        const productUrl = `${process.env.CLIENT_URL}/product/${id_product}`;
+        const productUrl = `${process.env.FRONTEND_URL}/product/${id_product}`;
         
         // Send email to winner (auto-bid success)
         if (winner.email) {

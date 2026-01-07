@@ -19,7 +19,7 @@ export const commentRootCreatePost = async (req, res) => {
       .select('user.email', 'product.name')
       .where('product.id_product', req.body.id_product)
       .first();
-    sendNewCommentNotificationMail(data.email, data.name, req.account.fullname, req.body.content, `${process.env.CLIENT_URL}/product/${req.body.id_product}`);
+    sendNewCommentNotificationMail(data.email, data.name, req.account.fullname, req.body.content, `${process.env.FRONTEND_URL}/product/${req.body.id_product}`);
   }
 
   res.json({
@@ -71,7 +71,7 @@ export const commentReplyCreatePost = async (req, res) => {
           productData.name,
           req.account.fullname,
           req.body.content,
-          `${process.env.CLIENT_URL}/product/${req.body.id_product}`
+          `${process.env.FRONTEND_URL}/product/${req.body.id_product}`
         );
       }
     }

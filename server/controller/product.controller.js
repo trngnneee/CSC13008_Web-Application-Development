@@ -170,20 +170,27 @@ export const insertProduct = async (req, res) => {
         productData.url_img = files.map((file) => file.path);
     }
 
+    // Helper function to convert empty string to null for numeric fields
+    const toNumericOrNull = (value) => {
+        if (value === "" || value === null || value === undefined) return null;
+        const num = Number(value);
+        return isNaN(num) ? null : num;
+    };
+
     const [product] = await db('product').insert({
         id_category: productData.id_category,
         avatar: files && files.length > 0 ? files[0].path : null,
         name: productData.name,
-        price: productData.price,
-        immediate_purchase_price: productData.immediate_purchase_price,
+        price: toNumericOrNull(productData.price),
+        immediate_purchase_price: toNumericOrNull(productData.immediate_purchase_price),
         posted_date_time: new Date(),
         description: productData.description,
-        pricing_step: productData.pricing_step,
-        starting_price: productData.starting_price,
+        pricing_step: toNumericOrNull(productData.pricing_step),
+        starting_price: toNumericOrNull(productData.starting_price),
         url_img: productData.url_img,
         updated_by: productData.updated_by,
         created_by: productData.created_by,
-        end_date_time: productData.end_date_time,
+        end_date_time: productData.end_date_time || null,
     })
         .returning('id_product');
 
@@ -221,7 +228,7 @@ export const updateProductDescription = async (req, res) => {
                 .where('bid.id_product', id)
                 .groupBy('user.id_user', 'user.email', 'user.fullname');
 
-            const productUrl = `${process.env.CLIENT_URL}/product/${id}`;
+            const productUrl = `${process.env.FRONTEND_URL}/product/${id}`;
 
             for (const bidder of bidders) {
                 if (bidder.email) {
