@@ -12,7 +12,6 @@ import { CommentSection } from "./components/CommentSection";
 import { BidRequest } from "./components/BidRequest";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { BidderList } from "./components/BidderList";
-import { FeedbackList } from "./components/FeedbackList";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -53,7 +52,6 @@ export default function ProductPage() {
           )}
         </div>
         <CommentSection />
-        <FeedbackList />
         {productDetail && (
           <div>
             <div className="text-[30px] font-extrabold">Các sản phẩm khác cùng danh mục</div>

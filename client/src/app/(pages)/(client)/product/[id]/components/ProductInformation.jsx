@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { FeedbackList } from "./FeedbackList";
 
 export const ProdcutInformation = ({ productDetail }) => {
   const { isLogin, userInfo } = useClientAuthContext();
@@ -93,6 +94,7 @@ export const ProdcutInformation = ({ productDetail }) => {
             ) : (
               <>
                 <div className="text-[20px] ">Người bán: <span className="font-extrabold">{productDetail.seller}</span></div>
+                <div><FeedbackList role={"bidder"} /></div>
                 <div className="text-[20px]">Liên hệ: <span className="font-extrabold">{productDetail.seller_email}</span></div>
               </>
             )}

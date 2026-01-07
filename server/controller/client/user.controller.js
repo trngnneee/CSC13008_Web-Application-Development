@@ -197,3 +197,44 @@ export const getWishlist = async (req, res) => {
     totalPages: totalPages,
   })
 }
+
+export const getFeedback = async (req, res) => {
+  const { role } = req.query;  
+  
+  const feedbacks = await db('rating')
+        .select(
+            'rating.content',
+            'u.fullname',
+            'rating.rating_point'
+        )
+        .join('user as u', 'rating.reviewer_id', 'u.id_user')
+        .where('rating.reviewer_role', role)
+        .orderBy('rating.created_at', 'desc');
+
+    res.json({
+        code: "success",
+        message: "Lấy phản hồi thành công",
+        data: feedbacks,
+    });
+};
+
+export const getFeedbackDetail = async (req, res) => {
+  const { id_user } = req.params;  
+  
+  const feedbacks = await db('rating')
+        .select(
+            'rating.content',
+            'u.fullname',
+            'rating.rating_point'
+        )
+        .join('user as u', 'rating.reviewer_id', 'u.id_user')
+        .where('rating.reviewer_role', 'seller')
+        .andWhere('rating.reviewee_id', id_user)
+        .orderBy('rating.created_at', 'desc');
+
+    res.json({
+        code: "success",
+        message: "Lấy phản hồi thành công",
+        data: feedbacks,
+    });
+};

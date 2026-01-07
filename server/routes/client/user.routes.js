@@ -20,4 +20,8 @@ router.post("/wishlist/remove", clientMiddleware.verifyToken, clientUserControll
 
 router.get("/wishlist", clientMiddleware.verifyToken, clientUserController.getWishlist);
 
+router.get("/feedback", clientUserController.getFeedback);
+
+router.get("/feedback/:id_user", clientUserController.getFeedbackDetail);
+
 export default router;
