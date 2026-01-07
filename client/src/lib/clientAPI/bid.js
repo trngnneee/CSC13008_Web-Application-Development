@@ -135,3 +135,41 @@ export const getMyBiddingProducts = async () => {
 
   return data;
 }
+
+export const getBidderListByProduct = async (id_product) => {
+  const token = localStorage.getItem("clientToken");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/product/${id_product}/bidders`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json", 
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Lấy danh sách người đấu giá thất bại");
+  }
+  return data;
+}
+
+export const kickBidderFromProduct = async (id_product, id_bidder) => {
+  const token = localStorage.getItem("clientToken");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/product/${id_product}/kick`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+    body: JSON.stringify({ id_product, id_bidder }),
+  });
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Kick người đấu giá thất bại");
+  } 
+  return data;
+}

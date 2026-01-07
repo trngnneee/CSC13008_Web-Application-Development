@@ -11,6 +11,7 @@ import { ProductDescription } from "./components/ProductDescription";
 import { CommentSection } from "./components/CommentSection";
 import { BidRequest } from "./components/BidRequest";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
+import { BidderList } from "./components/BidderList";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -45,6 +46,8 @@ export default function ProductPage() {
             <>
               <div className="text-[30px] font-extrabold mb-2.5 mt-10">Danh sách đấu giá chờ duyệt của Bidder:</div>
               <BidRequest />
+              <div className="text-[30px] font-extrabold mb-2.5 mt-10">Danh sách Bidder tham gia:</div>
+              <BidderList />
             </>
           )}
         </div>

@@ -129,3 +129,31 @@ export const myBiddingProductsGet = async (req, res) => {
     res.status(400).json({ code: "error", message: error.message });
   }
 }
+
+export const bidderListByProductGet = async (req, res) => {
+  try {
+    const { id_product } = req.params;
+    if (!id_product) {
+      return res.status(400).json({ code: "error", message: "Không tìm thấy id sản phẩm" });
+    }
+    const result = await bidService.getBidderListByProduct(id_product);
+
+    return res.json({
+      code: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({ code: "error", message: error.message });
+  }
+}
+
+export const kickBidderPost = async (req, res) => {
+  const { id_product, id_bidder } = req.body;
+
+  await bidService.kickBidderFromProduct(id_product, id_bidder);
+
+  res.json({
+    code: "success",
+    message: "Đã kick người đấu giá khỏi sản phẩm đấu giá",
+  })
+}

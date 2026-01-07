@@ -4,13 +4,13 @@ export const placeBid = async (id_product, bid_price, id_user) => {
   try {
     console.log("=== BID SERVICE START ===");
     console.log("Params - id_product:", id_product, "bid_price:", bid_price, "id_user:", id_user);
-    
+
     // === VALIDATION: Numeric check ===
     const numericBidPrice = Number(bid_price);
     if (isNaN(numericBidPrice) || numericBidPrice <= 0) {
       throw new Error("Giá đấu giá phải là số dương hợp lệ");
     }
-    
+
     // Lấy sản phẩm hiện tại để validate bid
     const product = await db("product")
       .where("id_product", id_product)
@@ -39,6 +39,15 @@ export const placeBid = async (id_product, bid_price, id_user) => {
       throw new Error("Bạn không thể đấu giá sản phẩm của chính mình");
     }
 
+    // Kiểm tra xem bidder có bị kick khỏi sản phẩm này không
+    const kickRecord = await db("kick")
+      .where("id_product", id_product)
+      .where("id_user", id_user)
+      .first();
+    if (kickRecord) {
+      throw new Error("Bạn đã bị kick khỏi phiên đấu giá này và không thể tham gia đấu giá");
+    }
+
     // Kiểm tra bidder và lấy rating từ user_point
     const bidder = await db("user")
       .select("user.*", "user_point.judge_point", "user_point.number_of_plus", "user_point.number_of_minus")
@@ -58,20 +67,20 @@ export const placeBid = async (id_product, bid_price, id_user) => {
     const minus = Number(bidder.number_of_minus || 0);
     const total = plus + minus;
     const ratingPercent = total > 0 ? (plus / total) : 0;
-    
+
     console.log("Rating check - plus:", plus, "minus:", minus, "percent:", ratingPercent);
-    
+
     // Nếu rating > 0 và < 80% → không được đấu giá
     if (ratingPercent > 0 && ratingPercent < 0.8) {
       throw new Error(
         `Điểm đánh giá của bạn (${(ratingPercent * 100).toFixed(1)}%) chưa đủ điều kiện (yêu cầu ≥ 80%). Vui lòng cải thiện điểm đánh giá của bạn`
       );
     }
-    
+
     // Nếu rating = 0 (chưa có đánh giá) → cần seller approval (bid_request flow)
     if (ratingPercent === 0) {
       console.log("Rating = 0, checking bid_request flow...");
-      
+
       const approvedRequest = await db("bid_request")
         .where("id_bidder", id_user)
         .where("id_product", id_product)
@@ -132,23 +141,23 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         };
       }
     }
-    
+
     // rating >= 80% → cho phép đấu giá trực tiếp
 
     // === DETERMINE CURRENT PRICE ===
     const currentPrice = product.price !== null ? Number(product.price) : Number(product.starting_price || 0);
     console.log("Current price:", currentPrice, "(from", product.price !== null ? "product.price" : "starting_price", ")");
-    
+
     // === VALIDATE BID PRICE ===
     const pricingStep = Number(product.pricing_step || 0);
     const minBidPrice = currentPrice + pricingStep;
     console.log("Min bid price:", minBidPrice, "(current:", currentPrice, "+ step:", pricingStep, ")");
-    
+
     // === IMMEDIATE PURCHASE CHECK ===
     const immediatePrice = product.immediate_purchase_price ? Number(product.immediate_purchase_price) : null;
     let isImmediatePurchase = false;
     let finalBidPrice = numericBidPrice;
-    
+
     if (immediatePrice && numericBidPrice >= immediatePrice) {
       isImmediatePurchase = true;
       finalBidPrice = immediatePrice; // Cap at immediate price
@@ -178,13 +187,13 @@ export const placeBid = async (id_product, bid_price, id_user) => {
 
       // Update product
       const updateData = { price: finalBidPrice };
-      
+
       if (isImmediatePurchase) {
         // End auction immediately
         updateData.status = "ended_success";
         updateData.end_date_time = new Date();
         console.log("Immediate purchase - ending auction");
-        
+
         // Create winner_order
         await trx("winner_order").insert({
           id_product,
@@ -194,7 +203,7 @@ export const placeBid = async (id_product, bid_price, id_user) => {
         });
         console.log("Winner order created for immediate purchase");
       }
-      
+
       await trx("product")
         .where("id_product", id_product)
         .update(updateData);
@@ -221,7 +230,7 @@ export const getBidRequests = async (id_seller) => {
   try {
     console.log("=== getBidRequests SERVICE ===");
     console.log("id_seller param:", id_seller);
-    
+
     const bidRequests = await db("bid_request")
       .select(
         "bid_request.*",
@@ -235,10 +244,10 @@ export const getBidRequests = async (id_seller) => {
       .where("bid_request.id_seller", id_seller)
       .andWhere("bid_request.status", "pending")
       .orderBy("bid_request.created_at", "desc");
-    
+
     console.log("Query result:", bidRequests);
     console.log("Total records:", bidRequests?.length || 0);
-    
+
     return bidRequests;
   } catch (error) {
     console.log("=== getBidRequests ERROR ===");
@@ -259,7 +268,7 @@ export const getBidRequestsByProduct = async (id_product) => {
       .where("bid_request.id_product", id_product)
       .andWhere("bid_request.status", "pending")
       .orderBy("bid_request.created_at", "desc");
-    
+
     return bidRequests;
   } catch (error) {
     throw error;
@@ -458,8 +467,8 @@ export const getMyBiddingProducts = async (id_user) => {
         const bid_count = bids.length;
 
         // Current price = MAX(bid_price) or starting_price
-        const current_price = bids.length > 0 
-          ? bids[0].bid_price 
+        const current_price = bids.length > 0
+          ? bids[0].bid_price
           : product.starting_price;
 
         // Highest bidder info
@@ -476,7 +485,7 @@ export const getMyBiddingProducts = async (id_user) => {
           }).join(" ");
         };
 
-        const current_highest_bidder = highestBid 
+        const current_highest_bidder = highestBid
           ? maskName(highestBid.bidder_name)
           : null;
 
@@ -501,3 +510,28 @@ export const getMyBiddingProducts = async (id_user) => {
     throw error;
   }
 };
+
+export const getBidderListByProduct = (id_product) => {
+  return db("bid")
+    .distinct(
+      "bid.id_user",
+      "user.fullname as bidder_name",
+      "user.email as bidder_email"
+    )
+    .leftJoin("user", "bid.id_user", "user.id_user")
+    .where("bid.id_product", id_product)
+    .whereNotIn("bid.id_user", function() {
+      this.select("id_user")
+        .from("kick")
+        .where("id_product", id_product);
+    });
+}
+
+export const kickBidderFromProduct = (id_product, id_bidder) => {
+  return db("kick")
+    .insert({
+      id_product,
+      id_user: id_bidder,
+      created_at: new Date(),
+    });
+}

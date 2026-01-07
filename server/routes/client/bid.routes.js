@@ -23,5 +23,11 @@ router.post('/reject', verifyToken, authorizeRole("seller"), bidController.rejec
 
 // Bidder xem danh sách sản phẩm đang tham gia đấu giá
 router.get('/my-bidding', verifyToken, authorizeRole("bidder", "seller"), bidController.myBiddingProductsGet);
+
+// Seller xem danh sách người đấu giá cho sản phẩm của mình
+router.get('/product/:id_product/bidders', verifyToken, authorizeRole("seller"), bidController.bidderListByProductGet);
+
+// Seller kick người đấu giá khỏi sản phẩm đấu giá của mình
+router.post('/product/:id_product/kick', verifyToken, authorizeRole("seller"), bidController.kickBidderPost);
     
 export default router;
