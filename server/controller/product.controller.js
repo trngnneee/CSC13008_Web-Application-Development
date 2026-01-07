@@ -462,9 +462,7 @@ export const getTopPriceProductList = async (req, res) => {
     const productList = await db("product")
         .select("product.*", 'user.fullname as seller')
         .join("user", "product.created_by", "user.id_user")
-        .where(function() {
-            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-        })
+        .where('product.status', 'active')
         .where('product.end_date_time', '>', db.fn.now())
         .orderBy("price", "desc")
         .limit(5);
@@ -480,9 +478,7 @@ export const getEndingSoonProductList = async (req, res) => {
     const productList = await db("product")
         .select("product.*", 'user.fullname as seller')
         .join("user", "product.created_by", "user.id_user")
-        .where(function() {
-            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-        })
+        .where('product.status', 'active')
         .where('product.end_date_time', '>', db.fn.now())
         .orderBy("end_date_time", "asc")
         .limit(5);
@@ -503,9 +499,8 @@ export const getMostBiddedProductList = async (req, res) => {
         )
         .join("user", "product.created_by", "user.id_user")
         .leftJoin("bid", "product.id_product", "bid.id_product")
-        .where(function() {
-            this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-        })
+        .where('product.status', 'active')
+        .where('product.end_date_time', '>', db.fn.now())
         .groupBy("product.id_product", "user.fullname")
         .orderBy("bid_count", "desc")
         .limit(5);
@@ -688,18 +683,16 @@ export const getProductListByCategory = async (req, res) => {
 
         const query = db("product")
             .whereIn("id_category", categoryIDs)
-            .where(function() {
-                this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-            })
+            .where('product.status', 'active')
+            .where('product.end_date_time', '>', db.fn.now())
             .join('user', 'product.created_by', 'user.id_user')
             .select('product.*', 'user.fullname as seller');
 
         const pageSize = 4 * 3;
         const countResult = await db('product')
             .whereIn("id_category", categoryIDs)
-            .where(function() {
-                this.where('status', '!=', 'inactive').orWhereNull('status');
-            })
+            .where('status', 'active')
+            .where('end_date_time', '>', db.fn.now())
             .count('* as count').first();
         const totalPages = Math.ceil(Number(countResult.count) / pageSize);
         if (req.query.page) {

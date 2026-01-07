@@ -107,9 +107,8 @@ export const insertProduct = async (productData) => {
 export const getAllProducts = async (filter = {}) => {
   const query = db("product")
     .select("*")
-    .where(function() {
-      this.where('status', '!=', 'inactive').orWhereNull('status');
-    });
+    .where('status', 'active')
+    .where('end_date_time', '>', db.fn.now());
   if (filter.keyword) {
     query.whereRaw(
       "fts @@ to_tsquery('english', remove_accents(?) || ':*')",
@@ -173,9 +172,8 @@ export const updateProduct = async (id, productData) => {
 export const getProductsByCategory = async (id_category, filter = {}) => {
   const query = db("product")
     .where("id_category", id_category)
-    .where(function() {
-      this.where('status', '!=', 'inactive').orWhereNull('status');
-    });
+    .where('status', 'active')
+    .where('end_date_time', '>', db.fn.now());
 
   if (filter.keyword) {
     query.where("name", "like", `%${filter.keyword}%`);

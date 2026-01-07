@@ -24,9 +24,8 @@ router.get("/", async (req, res) => {
       "fts @@ plainto_tsquery('english', remove_accents(?) || ':*')",
       [keyword]
     )
-    .where(function() {
-      this.where('product.status', '!=', 'inactive').orWhereNull('product.status');
-    })
+    .where('product.status', 'active')
+    .where('product.end_date_time', '>', db.fn.now())
     .modify((qb) => {
       if (filter.orderBy) {
         qb.orderBy(Object.keys(filter.orderBy)[0], Object.values(filter.orderBy)[0]);
