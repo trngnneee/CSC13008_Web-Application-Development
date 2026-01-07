@@ -516,16 +516,21 @@ export const getBidderListByProduct = (id_product) => {
     .distinct(
       "bid.id_user",
       "user.fullname as bidder_name",
-      "user.email as bidder_email"
+      "user.email as bidder_email",
+      db.raw(`
+        CASE 
+          WHEN kick.id_user IS NOT NULL THEN true
+          ELSE false
+        END as is_banned
+      `)
     )
     .leftJoin("user", "bid.id_user", "user.id_user")
-    .where("bid.id_product", id_product)
-    .whereNotIn("bid.id_user", function() {
-      this.select("id_user")
-        .from("kick")
-        .where("id_product", id_product);
-    });
-}
+    .leftJoin("kick", function () {
+      this.on("kick.id_user", "=", "bid.id_user")
+          .andOn("kick.id_product", "=", db.raw("?", [id_product]));
+    })
+    .where("bid.id_product", id_product);
+};
 
 export const kickBidderFromProduct = (id_product, id_bidder) => {
   return db("kick")
@@ -534,4 +539,11 @@ export const kickBidderFromProduct = (id_product, id_bidder) => {
       id_user: id_bidder,
       created_at: new Date(),
     });
+}
+
+export const recoverBidderToProduct = (id_product, id_bidder) => {
+  return db("kick")
+    .where("id_product", id_product)
+    .where("id_user", id_bidder)
+    .del();
 }

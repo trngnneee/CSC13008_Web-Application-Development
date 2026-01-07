@@ -24,7 +24,7 @@ export const ApproveBidRequestButton = ({ id_request, onSuccess }) => {
 
   return (
     <Button 
-      className={"bg-[var(--main-color)] hover:bg-[var(--main-hover)]"}
+      className={"bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"}
       onClick={handleApprove}
       disabled={loading}
     >

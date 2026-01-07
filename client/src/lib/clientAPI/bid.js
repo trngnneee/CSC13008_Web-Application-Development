@@ -173,3 +173,22 @@ export const kickBidderFromProduct = async (id_product, id_bidder) => {
   } 
   return data;
 }
+
+export const recoverBidderFromProduct = async (id_product, id_bidder) => {
+  const token = localStorage.getItem("clientToken");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/product/${id_product}/recover`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+    body: JSON.stringify({ id_product, id_bidder }),
+  });
+  const data = await res.json();
+  if (data.code !== "success") {
+    throw new Error(data.message || "Phục hồi người đấu giá thất bại");
+  }
+
+  return data;
+}

@@ -157,3 +157,13 @@ export const kickBidderPost = async (req, res) => {
     message: "Đã kick người đấu giá khỏi sản phẩm đấu giá",
   })
 }
+
+export const recoverBidderPost = async (req, res) => {
+  const { id_product, id_bidder } = req.body;
+  await bidService.recoverBidderToProduct(id_product, id_bidder);
+
+  res.json({
+    code: "success",
+    message: "Đã phục hồi người đấu giá cho sản phẩm đấu giá",
+  })
+}

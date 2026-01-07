@@ -29,5 +29,8 @@ router.get('/product/:id_product/bidders', verifyToken, authorizeRole("seller"),
 
 // Seller kick người đấu giá khỏi sản phẩm đấu giá của mình
 router.post('/product/:id_product/kick', verifyToken, authorizeRole("seller"), bidController.kickBidderPost);
+
+// Seller phục hồi người đấu giá đã bị kick khỏi sản phẩm đấu giá của mình
+router.post('/product/:id_product/recover', verifyToken, authorizeRole("seller"), bidController.recoverBidderPost);
     
 export default router;
