@@ -824,3 +824,24 @@ export const getProductsForCron = async (req, res) => {
     });
   }
 };
+
+export const getProductFeedbacks = async (req, res) => {
+    const { id } = req.params;
+
+    const feedbacks = await db('rating')
+        .select(
+            'rating.content',
+            'u.fullname',
+            'rating.rating_point'
+        )
+        .join('user as u', 'rating.reviewer_id', 'u.id_user')
+        .where('rating.id_product', id)
+        .andWhere('u.role', 'bidder')
+        .orderBy('rating.created_at', 'desc');
+
+    res.json({
+        code: "success",
+        message: "Lấy phản hồi sản phẩm thành công",
+        data: feedbacks,
+    });
+};
