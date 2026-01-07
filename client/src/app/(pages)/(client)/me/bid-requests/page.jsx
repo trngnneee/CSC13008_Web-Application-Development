@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { HeaderTitle } from "../components/HeaderTitle";
 
 export default function BidRequestsPage() {
   const [bidRequests, setBidRequests] = useState([]);
@@ -83,17 +84,8 @@ export default function BidRequestsPage() {
 
   return (
     <>
-      <div className="w-full overflow-hidden relative h-[100px]">
-        <img src="/shape3.svg" className="w-full h-full object-cover" />
-        <div className="text-white text-[50px] font-extrabold absolute bottom-1/2 translate-y-1/2 left-0 translate-x-1/5">
-          Yêu cầu đấu giá
-        </div>
-      </div>
-
-      <div className="container mx-auto my-[50px]">
-        <div className="text-[30px] font-extrabold mb-[30px]">
-          Danh sách yêu cầu đấu giá từ người mua
-        </div>
+      <div className="">
+        <HeaderTitle title="Danh sách yêu cầu đấu giá từ người mua" />
 
         {loading ? (
           <div className="text-center py-10">Đang tải...</div>

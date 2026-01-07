@@ -66,13 +66,13 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
       <AlertDialog>
         <AlertDialogTrigger asChild onClick={(e) => {
           e.stopPropagation();
-          e.preventDefault();
+          // e.preventDefault();
         }}>
           <Button
             className="bg-white hover:bg-gray-100 shadow-none border border-[var(--main-client-color)] text-[var(--main-client-color)] hover:text-[var(--main-client-hover)] flex items-center justify-center cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              e.preventDefault();
+              // e.preventDefault();
             }}
           >
             <Heart fill="var(--main-client-color)" />
@@ -107,10 +107,10 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
             </AlertDialogCancel>
 
             <AlertDialogAction
-              className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]"
+              className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
+                // e.preventDefault();
                 onClickSuccess?.(e);
                 handleRemoveFromWishlist();
               }}
@@ -158,7 +158,7 @@ export const WishListButton = ({ onClickSuccess, id, showTitle = false }) => {
             </AlertDialogCancel>
 
             <AlertDialogAction
-              className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]"
+              className="bg-[var(--main-client-color)] hover:bg-[var(--main-client-hover)]"
               onClick={(e) => {
                 e.stopPropagation();
                 onClickSuccess?.(e);
