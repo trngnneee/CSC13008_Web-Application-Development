@@ -1,4 +1,5 @@
 import db from "../config/database.config.js";
+import { sendBidSuccessMail, sendNewBidNotificationMail, sendOutbidNotificationMail } from "../helper/mail.helper.js";
 
 export const placeBid = async (id_product, bid_price, id_user) => {
   try {
@@ -212,6 +213,63 @@ export const placeBid = async (id_product, bid_price, id_user) => {
     });
 
     console.log("=== BID SERVICE SUCCESS ===");
+
+    // === SEND EMAIL NOTIFICATIONS ===
+    try {
+      const productUrl = `${process.env.CLIENT_URL}/product/${id_product}`;
+
+      // Get bidder info
+      const bidder = await db("user").where("id_user", id_user).first();
+      
+      // Get seller info
+      const seller = await db("user").where("id_user", product.updated_by || product.created_by).first();
+
+      // 1. Send email to bidder (bid success)
+      if (bidder?.email) {
+        await sendBidSuccessMail(
+          bidder.email,
+          bidder.fullname,
+          product.name,
+          finalBidPrice,
+          productUrl
+        );
+      }
+
+      // 2. Send email to seller (new bid notification)
+      if (seller?.email) {
+        await sendNewBidNotificationMail(
+          seller.email,
+          seller.fullname,
+          product.name,
+          bidder?.fullname || "Người đấu giá",
+          finalBidPrice,
+          productUrl
+        );
+      }
+
+      // 3. Send email to previous bidders who have been outbid (excluding current bidder)
+      const previousBidders = await db("bid")
+        .select("user.id_user", "user.email", "user.fullname")
+        .leftJoin("user", "bid.id_user", "user.id_user")
+        .where("bid.id_product", id_product)
+        .whereNot("bid.id_user", id_user)
+        .groupBy("user.id_user", "user.email", "user.fullname");
+
+      for (const prevBidder of previousBidders) {
+        if (prevBidder.email) {
+          await sendOutbidNotificationMail(
+            prevBidder.email,
+            prevBidder.fullname,
+            product.name,
+            finalBidPrice,
+            productUrl
+          );
+        }
+      }
+    } catch (emailError) {
+      console.error("Failed to send bid notification emails:", emailError);
+      // Don't throw - bid was successful, email is secondary
+    }
 
     return {
       status: "success",

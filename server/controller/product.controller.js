@@ -4,6 +4,7 @@ import { uploadImagesToSupabase, uploadImageToSupabase, deleteImageFromSupabase 
 import db from "../config/database.config.js";
 import { getAllChildCategoryIDs } from "../helper/category.helper.js";
 import JSZip from "jszip";
+import { sendDescriptionChangeMail } from "../helper/mail.helper.js";
 
 export async function uploadCSVProduct(req, res, next) {
     try {
@@ -207,6 +208,36 @@ export const updateProductDescription = async (req, res) => {
         time: new Date(),
         description: description,
     });
+
+    // Send email to all bidders of this product
+    try {
+        const product = await db('product').where('id_product', id).first();
+        
+        if (product && product.status === 'active') {
+            // Get all unique bidders for this product
+            const bidders = await db('bid')
+                .select('user.id_user', 'user.email', 'user.fullname')
+                .leftJoin('user', 'bid.id_user', 'user.id_user')
+                .where('bid.id_product', id)
+                .groupBy('user.id_user', 'user.email', 'user.fullname');
+
+            const productUrl = `${process.env.CLIENT_URL}/product/${id}`;
+
+            for (const bidder of bidders) {
+                if (bidder.email) {
+                    await sendDescriptionChangeMail(
+                        bidder.email,
+                        bidder.fullname,
+                        product.name,
+                        productUrl
+                    );
+                }
+            }
+        }
+    } catch (emailError) {
+        console.error("Failed to send description change emails:", emailError);
+        // Don't throw - description update was successful, email is secondary
+    }
     
     res.json({
         code: "success",
