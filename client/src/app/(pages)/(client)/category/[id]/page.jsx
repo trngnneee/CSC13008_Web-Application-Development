@@ -24,8 +24,10 @@ export default function CategoryPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("normal");
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
   useEffect(() => {
+    setLoading(true);
     setProductList([]);
     const fetchData = async () => {
       const params = buildParams({ page: currentPage });
@@ -34,6 +36,7 @@ export default function CategoryPage() {
         setProductList(promise.productList);
         setCategoryName(promise.categoryName || "");
         setTotalPages(promise.totalPages || 0);
+        setLoading(false);
       }
     };
     fetchData();
@@ -60,7 +63,7 @@ export default function CategoryPage() {
         <div
           className="grid grid-cols-4 gap-[30px] mb-[30px]"
         >
-          {productList.length > 0 ? productList.map((item, index) => (
+          {productList.length > 0 ? !loading ? productList.map((item, index) => (
             <ProductItem
               key={index}
               item={item}
@@ -69,6 +72,8 @@ export default function CategoryPage() {
             [...Array(8)].map((_, index) => (
               <ProductItemSkeleton key={index} />
             ))
+          ) : (
+            <p className="text-center col-span-4 text-muted-foreground">Không có sản phẩm nào trong danh mục này.</p>
           )}
         </div>
         <Pagination>
