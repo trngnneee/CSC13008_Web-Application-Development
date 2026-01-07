@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { getBidRequests, approveBidRequest, rejectBidRequest } from "@/lib/clientAPI/bid";
-import { toastHandler } from "@/lib/toastHandler";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Clock, User, Package } from "lucide-react";
@@ -17,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export default function BidRequestsPage() {
   const [bidRequests, setBidRequests] = useState([]);
@@ -30,7 +30,7 @@ export default function BidRequestsPage() {
       const result = await getBidRequests();
       setBidRequests(result.data);
     } catch (error) {
-      toastHandler(error.message, "error");
+      toast.error("Lỗi khi tải yêu cầu đấu giá");
     } finally {
       setLoading(false);
     }
@@ -45,10 +45,10 @@ export default function BidRequestsPage() {
     setActionLoading(id_request);
     try {
       await approveBidRequest(id_request);
-      toastHandler("Đã phê duyệt yêu cầu đấu giá", "success");
+      toast.success("Đã phê duyệt yêu cầu đấu giá");
       fetchBidRequests();
     } catch (error) {
-      toastHandler(error.message, "error");
+      toast.error(error.message);
     } finally {
       setActionLoading(null);
     }
@@ -59,10 +59,10 @@ export default function BidRequestsPage() {
     setActionLoading(id_request);
     try {
       await rejectBidRequest(id_request);
-      toastHandler("Đã từ chối yêu cầu đấu giá", "success");
+      toast.success("Đã từ chối yêu cầu đấu giá");
       fetchBidRequests();
     } catch (error) {
-      toastHandler(error.message, "error");
+      toast.error("Lỗi khi tải yêu cầu đấu giá");
     } finally {
       setActionLoading(null);
     }

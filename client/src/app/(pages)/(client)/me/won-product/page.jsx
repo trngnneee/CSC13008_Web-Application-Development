@@ -44,7 +44,7 @@ export default function MyWonProductPage() {
       const response = await getMyWonOrders();
       if (response.code === "success") {
         setWonList(response.data || []);
-        
+
         // Fetch rating status for each order in pending_rating or completed status
         const statusPromises = (response.data || [])
           .filter(order => ["pending_rating", "completed"].includes(order.status))
@@ -56,7 +56,7 @@ export default function MyWonProductPage() {
               return { id_order: order.id_order, status: null };
             }
           });
-        
+
         const statuses = await Promise.all(statusPromises);
         const statusMap = {};
         statuses.forEach(s => {
@@ -99,7 +99,7 @@ export default function MyWonProductPage() {
     try {
       setSubmitting(true);
       const response = await rateOrder(confirmDialog.order.id_order, score, comment);
-      
+
       if (response.code === "success") {
         toast.success("Đánh giá thành công!");
         setConfirmDialog({ open: false, order: null });
@@ -157,16 +157,12 @@ export default function MyWonProductPage() {
 
                   {/* Product Info */}
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-2 gap-5">
                       <Link href={`/product/${order.id_product}`}>
                         <h3 className="text-lg font-bold hover:text-[var(--main-color)] transition">
                           {order.product_name}
                         </h3>
                       </Link>
-                      <Badge className={`${statusConfig[order.status]?.color || "bg-gray-500"} flex items-center gap-1`}>
-                        <StatusIcon className="w-3 h-3" />
-                        {statusConfig[order.status]?.label || order.status}
-                      </Badge>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
@@ -194,12 +190,17 @@ export default function MyWonProductPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2">
+                    <Badge className={`${statusConfig[order.status]?.color || "bg-gray-500"} flex items-center gap-1`}>
+                      <StatusIcon className="w-3 h-3" />
+                      {statusConfig[order.status]?.label || order.status}
+                    </Badge>
+
                     <Link href={`/me/orders/${order.id_product}`}>
                       <Button variant="outline" className="w-full">
                         Xem chi tiết
                       </Button>
                     </Link>
-                    
+
                     {canRate(order) && (
                       <Button
                         className="bg-[var(--main-color)] hover:bg-[var(--main-hover)]"
@@ -230,9 +231,9 @@ export default function MyWonProductPage() {
               Người bán: <strong>{confirmDialog.order?.seller_name}</strong>
             </AlertDialogDescription>
             <div className="mt-5">
-              <RadioGroup 
-                className="gap-2" 
-                defaultValue="1" 
+              <RadioGroup
+                className="gap-2"
+                defaultValue="1"
                 value={String(score)}
                 onValueChange={(value) => setScore(parseInt(value))}
               >
