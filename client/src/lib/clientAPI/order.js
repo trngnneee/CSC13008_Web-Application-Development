@@ -48,34 +48,45 @@ export const getOrderByProduct = async (id_product) => {
   return data;
 };
 
-export const submitPayment = async (id_order, payment_bill, address) => {
+export const submitPayment = async (id_order, payment_bill_file, address) => {
   const token = localStorage.getItem("clientToken");
+
+  const formData = new FormData();
+  formData.append("id_order", id_order);
+  formData.append("address", address);
+  if (payment_bill_file) {
+    formData.append("payment_bill", payment_bill_file);
+  }
 
   const res = await fetch(`${baseUrl}/order/payment`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": token ? `Bearer ${token}` : "",
     },
     credentials: "include",
-    body: JSON.stringify({ id_order, payment_bill, address }),
+    body: formData,
   });
 
   const data = await res.json();
   return data;
 };
 
-export const confirmPayment = async (id_order, b_l) => {
+export const confirmPayment = async (id_order, b_l_file) => {
   const token = localStorage.getItem("clientToken");
+
+  const formData = new FormData();
+  formData.append("id_order", id_order);
+  if (b_l_file) {
+    formData.append("b_l", b_l_file);
+  }
 
   const res = await fetch(`${baseUrl}/order/confirm-payment`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": token ? `Bearer ${token}` : "",
     },
     credentials: "include",
-    body: JSON.stringify({ id_order, b_l }),
+    body: formData,
   });
 
   const data = await res.json();

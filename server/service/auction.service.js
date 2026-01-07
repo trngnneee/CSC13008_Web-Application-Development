@@ -143,6 +143,7 @@ export const getWinnerOrderByProduct = async (id_product) => {
       "product.name as product_name",
       "product.avatar as product_avatar",
       "product.price as final_price",
+      "product.updated_by as seller_id",
       "winner.fullname as winner_name",
       "winner.email as winner_email",
       "seller.fullname as seller_name",

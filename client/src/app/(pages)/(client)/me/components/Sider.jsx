@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { useClientAuthContext } from "@/provider/clientAuthProvider"
-import { Gavel, Heart, Package, Star, User, ClipboardList, Activity } from "lucide-react"
+import { Gavel, Heart, Package, Star, User, ClipboardList, Activity, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -39,6 +39,11 @@ export const Sider = () => {
         title: "Sản phẩm của tôi",
         href: "/me/product",
         icon: Package
+      },
+      {
+        title: "Đơn hàng đã bán",
+        href: "/me/sold-orders",
+        icon: ShoppingBag
       },
       {
         title: "Yêu cầu đấu giá",
