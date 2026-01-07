@@ -41,4 +41,6 @@ router.get("/bid-history/:id", productController.getProductBidHistory);
 //Bid routes
 router.use("/bid", bidRoutes);
 
+router.get("/:id/feedback", productController.getProductFeedbacks);
+
 export default router;

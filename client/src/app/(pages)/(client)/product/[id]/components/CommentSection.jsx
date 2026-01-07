@@ -106,7 +106,7 @@ export function CommentSection() {
 
   return (
     <div className="my-[50px] bg-white shadow-xl border border-gray-100 p-10 rounded-xl max-h-[800px] overflow-y-scroll">
-      <div className="text-[30px] font-extrabold">Hỏi người bán</div>
+      <div className="text-[30px] font-extrabold">Hỏi người bán:</div>
 
       <div className="my-5">
         <form onSubmit={handleSendComment} className="w-full flex items-center gap-3">
