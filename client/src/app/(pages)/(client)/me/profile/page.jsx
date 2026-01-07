@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import JustValidate from "just-validate";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { CircleAlertIcon } from "lucide-react";
+import { CircleAlertIcon, Leaf, Star } from "lucide-react";
 import { useClientAuthContext } from "@/provider/clientAuthProvider";
 import { clientProfileUpdate, clientUpgrade, getClientProfile } from "@/lib/clientAPI/user";
 import { toastHandler } from "@/lib/toastHandler";
@@ -95,6 +95,26 @@ export default function ProfilePage() {
 
   return (
     <>
+      <div className="mb-10">
+        <HeaderTitle title="Điểm của bạn" />
+        <div>
+          <div className="flex justify-center items-center gap-3 text-[30px] font-extrabold border border-gray-300 shadow-md rounded-xl py-3 max-w-md mx-auto my-5">
+            <Leaf size={30} className="scale-x-[-1]" />
+            <div>
+              {parseFloat(userInfo?.user_point || 0).toFixed(1) || 0} / 1.0
+            </div>
+            <Leaf size={30} />
+          </div>
+          <div>
+            {userInfo && userInfo.feedBackList.length > 0 && userInfo.feedBackList.map((item, index) => (
+              <div key={index}>
+                <div className="font-extrabold text-[20px] flex items-center gap-3 underline">Phản hồi {index + 1}: {item.rating_point == 1 ? <Star fill="yellow" /> : <Star />}</div>
+                <div className="whitespace-pre-line mt-2 text-sm text-gray-600">{item.content}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <HeaderTitle title="Chỉnh sửa thông tin cá nhân" />
       <form id="profile-form" className="mt-5" onSubmit={handleSubmit}>
         <div className="flex gap-5 items-center">
