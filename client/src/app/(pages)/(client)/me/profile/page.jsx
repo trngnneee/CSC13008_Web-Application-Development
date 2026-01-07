@@ -105,13 +105,27 @@ export default function ProfilePage() {
             </div>
             <Leaf size={30} />
           </div>
-          <div>
-            {userInfo && userInfo.feedBackList.length > 0 && userInfo.feedBackList.map((item, index) => (
-              <div key={index}>
-                <div className="font-extrabold text-[20px] flex items-center gap-3 underline">Phản hồi {index + 1}: {item.rating_point == 1 ? <Star fill="yellow" /> : <Star />}</div>
+          <div className="space-y-4 mt-4">
+            {userInfo && userInfo.feedBackList && userInfo.feedBackList.length > 0 && userInfo.feedBackList.map((item, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold text-[16px] flex items-center gap-2">
+                    <span>Đánh giá từ: {item.reviewer_name || "Người dùng"}</span>
+                    {item.rating_point == 1 ? <Star fill="yellow" className="text-yellow-500" /> : <Star className="text-gray-400" />}
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded ${item.reviewer_role === 'seller' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                    {item.reviewer_role === 'seller' ? 'Người bán' : 'Người mua'}
+                  </span>
+                </div>
+                {item.product_name && (
+                  <div className="text-xs text-gray-500 mt-1">Sản phẩm: {item.product_name}</div>
+                )}
                 <div className="whitespace-pre-line mt-2 text-sm text-gray-600">{item.content}</div>
               </div>
             ))}
+            {(!userInfo?.feedBackList || userInfo.feedBackList.length === 0) && (
+              <div className="text-gray-500 text-center py-4">Chưa có đánh giá nào</div>
+            )}
           </div>
         </div>
       </div>

@@ -226,19 +226,20 @@ export const getRatingStatus = async (id_order, id_user) => {
     throw new Error("Bạn không có quyền xem thông tin đơn hàng này");
   }
 
-  // Get all ratings for this product from service_judge
-  const ratings = await db("service_judge")
+  // Get all ratings for this product from rating table
+  const ratings = await db("rating")
     .where("id_product", order.id_product);
 
-  const hasWinnerRated = ratings.some(r => r.id_user === order.id_user);
-  const hasSellerRated = ratings.some(r => r.id_user === sellerId);
+  // Winner rated = winner is reviewer (rates seller)
+  const hasWinnerRated = ratings.some(r => r.reviewer_id === order.id_user);
+  // Seller rated = seller is reviewer (rates winner)
+  const hasSellerRated = ratings.some(r => r.reviewer_id === sellerId);
 
-  // Check if current user has rated
-  const myRating = ratings.find(r => r.id_user === id_user);
+  // Check if current user has rated (current user is reviewer)
+  const myRating = ratings.find(r => r.reviewer_id === id_user);
   
-  // Get the rating I received (the other party rated me)
-  const otherPartyId = isWinner ? sellerId : order.id_user;
-  const ratingReceived = ratings.find(r => r.id_user === otherPartyId);
+  // Get the rating I received (I am reviewee)
+  const ratingReceived = ratings.find(r => r.reviewee_id === id_user);
 
   // Determine if rating is allowed
   const allowedStatuses = ["pending_rating", "completed"];
@@ -410,9 +411,10 @@ export const rateOrder = async (id_order, id_rater, score, comment) => {
 
   // Use transaction
   return await db.transaction(async (trx) => {
-    // Check if already rated (PRIMARY KEY: id_product + id_user)
-    const existingRating = await trx("service_judge")
-      .where("id_user", id_rater)
+    // Check if already rated (unique: id_product + reviewer_id + reviewee_id)
+    const existingRating = await trx("rating")
+      .where("reviewer_id", id_rater)
+      .where("reviewee_id", id_to_user)
       .where("id_product", order.id_product)
       .first();
 
@@ -420,57 +422,37 @@ export const rateOrder = async (id_order, id_rater, score, comment) => {
       throw new Error("Bạn đã đánh giá đơn hàng này rồi");
     }
 
-    // Insert rating record into service_judge
-    await trx("service_judge")
+    // Insert into rating table
+    // Note: user_point is automatically updated by database trigger
+    await trx("rating")
       .insert({
         id_product: order.id_product,
-        id_user: id_rater,
+        reviewer_id: id_rater,
+        reviewee_id: id_to_user,
+        reviewer_role: isWinner ? "bidder" : "seller",
         content: comment || "",
         rating_point: score,
+        created_at: new Date(),
       });
 
     const newRating = {
       id_product: order.id_product,
-      id_user: id_rater,
+      reviewer_id: id_rater,
+      reviewee_id: id_to_user,
+      reviewer_role: isWinner ? "bidder" : "seller",
       content: comment || "",
       rating_point: score,
     };
 
-    // Update user_point for the rated user (id_to_user)
-    const userPoint = await trx("user_point")
-      .where("id_user", id_to_user)
-      .first();
-
-    if (userPoint) {
-      const newPlus = score > 0 ? (userPoint.number_of_plus || 0) + 1 : (userPoint.number_of_plus || 0);
-      const newMinus = score < 0 ? (userPoint.number_of_minus || 0) + 1 : (userPoint.number_of_minus || 0);
-      const total = newPlus + newMinus;
-      const newJudgePoint = total > 0 ? newPlus / total : 0;
-
-      await trx("user_point")
-        .where("id_user", id_to_user)
-        .update({
-          number_of_plus: newPlus,
-          number_of_minus: newMinus,
-          judge_point: newJudgePoint,
-        });
-    } else {
-      // Create user_point if not exists
-      await trx("user_point").insert({
-        id_user: id_to_user,
-        judge_point: score > 0 ? 1 : 0,
-        number_of_plus: score > 0 ? 1 : 0,
-        number_of_minus: score < 0 ? 1 : 0,
-      });
-    }
-
     // Check if both parties have rated
-    const ratings = await trx("service_judge")
+    const ratings = await trx("rating")
       .where("id_product", order.id_product)
-      .select("id_user");
+      .select("reviewer_id");
 
-    const hasWinnerRated = ratings.some(r => r.id_user === order.id_user);
-    const hasSellerRated = ratings.some(r => r.id_user === sellerId);
+    // Winner rated = winner is reviewer
+    const hasWinnerRated = ratings.some(r => r.reviewer_id === order.id_user);
+    // Seller rated = seller is reviewer
+    const hasSellerRated = ratings.some(r => r.reviewer_id === sellerId);
 
     if (hasWinnerRated && hasSellerRated) {
       // Both rated, mark order as completed
@@ -523,46 +505,25 @@ export const cancelOrder = async (id_order, id_seller) => {
       .update({ status: "cancelled" });
 
     // Auto-rate winner with -1 (as per spec)
-    // Check if seller hasn't already rated
-    const existingRating = await trx("service_judge")
-      .where("id_user", id_seller)
+    // Check if seller hasn't already rated this winner
+    const existingRating = await trx("rating")
+      .where("reviewer_id", id_seller)
+      .where("reviewee_id", order.id_user)
       .where("id_product", order.id_product)
       .first();
 
     if (!existingRating) {
-      // Create auto-rating from seller to winner in service_judge
-      await trx("service_judge").insert({
+      // Create auto-rating from seller to winner in rating table
+      // Note: user_point is automatically updated by database trigger
+      await trx("rating").insert({
         id_product: order.id_product,
-        id_user: id_seller,
+        reviewer_id: id_seller,
+        reviewee_id: order.id_user,
+        reviewer_role: "seller",
         content: "Người thắng đấu giá không hoàn thành thanh toán",
         rating_point: -1,
+        created_at: new Date(),
       });
-
-      // Update user_point for winner (add minus)
-      const winnerPoint = await trx("user_point")
-        .where("id_user", order.id_user)
-        .first();
-
-      if (winnerPoint) {
-        const newMinus = (winnerPoint.number_of_minus || 0) + 1;
-        const newPlus = winnerPoint.number_of_plus || 0;
-        const total = newPlus + newMinus;
-        const newJudgePoint = total > 0 ? newPlus / total : 0;
-
-        await trx("user_point")
-          .where("id_user", order.id_user)
-          .update({
-            number_of_minus: newMinus,
-            judge_point: newJudgePoint,
-          });
-      } else {
-        await trx("user_point").insert({
-          id_user: order.id_user,
-          judge_point: 0,
-          number_of_plus: 0,
-          number_of_minus: 1,
-        });
-      }
     }
 
     return { success: true };

@@ -50,9 +50,17 @@ export const getUserPoint = async (id_user) => {
 };
 
 export const getUserFeedBackList = async (id_user) => {
-  const feedBackList = await db('service_judge')
-    .select('*')
-    .where({ id_user });
+  // Get ratings where this user is the reviewee (received ratings)
+  const feedBackList = await db('rating')
+    .select(
+      'rating.*',
+      'reviewer.fullname as reviewer_name',
+      'product.name as product_name'
+    )
+    .leftJoin('user as reviewer', 'rating.reviewer_id', 'reviewer.id_user')
+    .leftJoin('product', 'rating.id_product', 'product.id_product')
+    .where('rating.reviewee_id', id_user)
+    .orderBy('rating.created_at', 'desc');
   return feedBackList;
 }
 
