@@ -1,180 +1,182 @@
-﻿b27885f | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Giß╗¢i hß║ín chiß╗üu cao feedback
-c6190d4 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Add autobid
-9d871a6 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Add autobid
-a91418f | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-a94bce2 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Feat: Hiß╗ân thß╗ï ds feedback cß╗ºa bidder cho seller thß║Ñy, fix lß║íi bidder c├│ thß╗â thß║Ñy ds feedback cß╗ºa seller
-e061478 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-cf19475 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Add send email feature
-fc0e46d | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Feat: Hiß╗ân thß╗ï ds feedback cho sß║ún phß║⌐m
-0df76c6 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Change from service_judge to rating
-67448b9 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-e3e0f00 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Hiß╗ân thß╗ï ─æiß╗âm ─æ├ính gi├í v├á chi tiß║┐t ─æ├ính gi├í
-0a52703 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-c5e1653 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Fix: Gß╗¡i mail khi kick v├á hß╗ôi phß╗Ñc ─æß║Ñu gi├í
-b78544c | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Feat thanh to├ín
-1ff968e | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Fix: Gi├í trong detail
-f567b0a | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Feat: Hiß╗ân thß╗ï ds ng╞░ß╗¥i tham gia bid vß╗¢i 2 trß║íng th├íi kick + ko kick, phß╗Ñc hß╗ôi ng╞░ß╗¥i bß╗ï kick
-2e26965 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Feat: Hiß╗ân thß╗ï ds bidder ─æang tham gia ─æß║Ñu gi├í cho 1 sp, kick 1 bidder khß╗Åi phi├¬n ─æß║Ñu gi├í n├áy, bidder n├áy ko ─æ╞░ß╗úc bid sß║ún phß║⌐m n├áy nß╗»a
-374d052 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Bß╗Å xem tß║Ñt cß║ú
-17f01c5 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Fix: Wishlist button
-bd0eef0 | Người: trngnneee | Ngày: 2026-01-07 | Nội dung: Fix toast
-6be53ba | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Fix Xem danh s├ích sß║ún phß║⌐m ─æang tham gia ─æß║Ñu gi├í (bidding list)
-2ce3bd4 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Add danh s├ích sß║ún phß║⌐m ─æ├ú chiß║┐n thß║»ng, danh s├ích sß║ún phß║⌐m ─æang tham gia ─æß║Ñu gi├í, ─æ├ính gi├í sau khi ho├án tß║Ñt h├│a ─æ╞ín
-89552c0 | Người: khoavadienq | Ngày: 2026-01-07 | Nội dung: Fix product page and handle winer_order
-2931a01 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix color
-f2d7120 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-ff9740b | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: UI cho trang ds ─æß║Ñu gi├í cß╗ºa bidder + ds thß║»ng ─æß║Ñu gi├í, fix UI
-6433d85 | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-72c86dd | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: ─Éß╗ò data bid request ra product
-6aa00c1 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix: Recaptcha admin
-638c199 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix: UI product
-e44bb00 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix: UI phß║ºn bid req
-24fa433 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-6fca2c4 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix toast
-45c915d | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Fix bid
-3b4fa49 | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-b8e7e4f | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Fix
-37b8a8e | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix: skeleton cho category
-422fdf1 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Feat: reCaptCHA cho admin account
-71f37d5 | Người: trngnneee | Ngày: 2026-01-06 | Nội dung: Fix: Header + Wishlist button, sß╗¡a forgotpassword t├¼m th├¬m theo seller
-6629d3b | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Ra gi├í 1 sß║ún phß║⌐m ß╗ƒ view xem chi tiß║┐t sß║ún phß║⌐m
-3b55c41 | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Nhß╗»ng sß║ún phß║⌐m mß╗¢i ─æ─âng trong 30  ph├║t c├│ thß╗â hiß╗çn kh├íc
-863976c | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Update NavBar
-889bcb5 | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Top 5 sß║ún phß║⌐m c├│ nhiß╗üu l╞░ß╗út ra gi├í nhß║Ñt (sß║»p xß║┐p theo sß╗æ l╞░ß╗út giß║úm dß║ºn) Top 5 sß║ún phß║⌐m ch╞░a kß║┐t th├║c c├│ gi├í cao nhß║Ñt Top 5 sß║ún phß║⌐m gß║ºn kß║┐t th├║c (sß║»p xß║┐p theo thß╗¥i gian kß║┐t th├║c giß║úm dß║ºn)
-62a6c9a | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Fx logic UI cat product and user in admin
-649e57c | Người: khoavadienq | Ngày: 2026-01-06 | Nội dung: Add: edit password of user in admin role
-b597b17 | Người: trngnneee | Ngày: 2025-12-18 | Nội dung: Feat: UI hiß╗ân thß╗ï ds bidder y├¬u cß║ºu ─æ╞░ß╗úc bid sß║ún phß║⌐m
-f282937 | Người: trngnneee | Ngày: 2025-12-11 | Nội dung: Fix: Chß╗ë gß╗¡i email cho participants nß║┐u ng╞░ß╗¥i ─æang reply l├á seller v├á l├á chß╗º cß╗ºa product ─æ├│
-d93abf2 | Người: trngnneee | Ngày: 2025-12-11 | Nội dung: Feat: Gß╗¡i mail cho to├án bß╗Ö bidder/admin thgia trong 1 comment khi Seller reply
-1aa730f | Người: khoavadienq | Ngày: 2025-12-11 | Nội dung: Fix bid
-3a8d63b | Người: khoavadienq | Ngày: 2025-12-11 | Nội dung: Fix login and clear code
-c62e1d9 | Người: khoavadienq | Ngày: 2025-12-11 | Nội dung: Bid product logic
-a5658d2 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Fix: Th├¬m thß╗¥i gian kß║┐t th├║c ─æß║Ñu gi├í cho sß║ún phß║⌐m + Feat: Hiß╗ân thß╗ï sß║ún phß║⌐m mß╗¢i tß║ío nß╗òi bß║¡t h╞ín
-fae9124 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: ReCaptcha cho login/register cß╗ºa client
-e662c31 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Email th├┤ng b├ío vß╗ü comment mß╗¢i cho seller
-d4600bc | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Hß╗Åi ng╞░ß╗¥i b├ín
-150df5e | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m c├╣ng danh mß╗Ñc trong Detail
-c3ee2b6 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m gß║ºn kß║┐t th├║c
-b574608 | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-1469a79 | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: Add button thß╗¥i gian tß╗▒ ─æß╗Öng gia hß║ín in admin
-7a3123c | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Fix: Sß╗¡a bug chß╗ù th├¬m desc history
-fa6c42f | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Add watch list trong detail page
-93d4bc6 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Hiß╗ân thß╗ï desc theo thß╗¥i gian trong Detail Page
-8d86862 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Code ─æß╗â c├áo data + Sß╗¡a hiß╗ân thß╗ï Desc + Login ß║⌐n Desc d├ái trong detail page
-d0d58fe | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Code ─æß╗â c├áo data + sß╗¡a giao diß╗çn description cß╗ºa sß║ún phß║⌐m
-90d109c | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: Th├¬m admin tß╗▒ chß╗ënh tß╗▒ ─æß╗Öng gia hß║ín
-22ec098 | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: Feat: Thß╗¥i ─æiß╗âm kß║┐t th├║c
-1605fc5 | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: Feat: Thß╗¥i ─æiß╗âm kß║┐t th├║c
-a5968fe | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Xem lß╗ïch sß╗¡ chß╗ënh sß╗¡a desc cho 1 sß║ún phß║⌐m + Add th├¬m desc
-8ba8c03 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Add wishlist, Remove Wishlist v├á hiß╗ân thß╗ï ra ds y├¬u th├¡ch
-0605ca1 | Người: khoavadienq | Ngày: 2025-12-10 | Nội dung: .
-3455ae6 | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: ─Éß╗ò data ra giao diß╗çn Category + Ph├ón trang, ─Éß╗ò data ra giao diß╗çn Danh mß╗Ñc + Ph├ón trang + Lß╗ìc gi├í giß║úm/t─âng dß║ºn, Ngày kß║┐t th├║c giß║úm/t─âng dß║ºn
-f8be9bb | Người: trngnneee | Ngày: 2025-12-10 | Nội dung: Feat: Sß║»p xß║┐p kß║┐t quß║ú search theo gi├í t─âng dß║ºn/giß║úm dß║ºn, Ngày kß║┐t th├║c t─âng dß║ºn/giß║úm giß║ºn. Skeleton loading cho productItem
-1ba2dbd | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: FTS cho client
-9307768 | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: Hiß╗ân thß╗ï detail + Top sß║ún phß║⌐m c├│ gi├í cao nhß║Ñt
-485cf1f | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m cß╗ºa Seller ─æ├│ + Pagination
-f81d7ae | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: Seller tß║ío sß║ún phß║⌐m
-df07281 | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: Client logout
-6cc8dd6 | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Feat: ─Éß╗òi mß║¡t khß║⌐u cho client
-ec5dbaf | Người: trngnneee | Ngày: 2025-12-09 | Nội dung: Fix: Login logic + Feat: Duyß╗çt y├¬u cß║ºu trß╗ƒ th├ánh Seller
-acd1ddc | Người: khoavadienq | Ngày: 2025-12-07 | Nội dung: Add middleware
-4024b2d | Người: khoavadienq | Ngày: 2025-12-07 | Nội dung: Delete list product
-b7797c8 | Người: khoavadienq | Ngày: 2025-12-07 | Nội dung: Update, delete, add product and save img in supabase storage
-17c36fe | Người: khoavadienq | Ngày: 2025-12-07 | Nội dung: add forgot password
-6bc4adf | Người: trngnneee | Ngày: 2025-12-05 | Nội dung: Feat: Update tß╗½ Bidder l├¬n Seller
-ef1d4f7 | Người: trngnneee | Ngày: 2025-12-05 | Nội dung: Feat: ─Éß╗ò data ra trang chi tiß║┐t sß║ún phß║⌐m (Thiß║┐u v├ái tr╞░ß╗¥ng)
-ca1f272 | Người: khoavadienq | Ngày: 2025-12-05 | Nội dung: up picture and img to supabase storage
-d95b6ba | Người: khoavadienq | Ngày: 2025-12-05 | Nội dung: Fix forgot pass
-90e0874 | Người: trngnneee | Ngày: 2025-12-05 | Nội dung: Feat: UI tß║ío, quß║ún l├╜ v├á th├¬m th├┤ng tin sß║ún phß║⌐m cß╗ºa Seller
-d189ac4 | Người: trngnneee | Ngày: 2025-12-05 | Nội dung: UI cho trang quß║ún l├╜ c├í nh├ón cß╗ºa Bidder
-9e51c2a | Người: trngnneee | Ngày: 2025-12-04 | Nội dung: Fix logic search cho category v├á product ß╗ƒ Admin th├ánh fts
-db120e6 | Người: trngnneee | Ngày: 2025-12-04 | Nội dung: Demo ─æß╗ò data ra Section3 cß╗ºa Home
-352e08a | Người: trngnneee | Ngày: 2025-12-04 | Nội dung: Feat: Middleware + Authentication for client, Search Button on Header fix
-7fce5f2 | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Update logic chß╗ënh sß╗¡a cho FE vß╗ü phß║ºn role
-8271ccc | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Update user information
-82e4a1a | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Update category
-37b5fa8 | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Delete single user + Delete user list
-9947fce | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Pagination + Search User at Admin, add logic for slug while creating new User
-bd25116 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-d301bb6 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: update login register
-052bb91 | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Fix: Slug search
-915f2e3 | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Create new user from admin dashboard
-2d45ec3 | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: UI cho trang quß║ún l├╜ ng╞░ß╗¥i d├╣ng + seller, ─æß╗ò data ra user
-c96691f | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Feat: Logout
-0b9dad1 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-63ba211 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: fix api total-page
-317365d | Người: trngnneee | Ngày: 2025-12-03 | Nội dung: Connect FE with client account API
-4acfb07 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: Add API doc
-c20e995 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung: Get product by cat and pagging
-151af16 | Người: khoavadienq | Ngày: 2025-12-03 | Nội dung:  upgrade role from bidder to seller
-42409f6 | Người: khoavadienq | Ngày: 2025-12-02 | Nội dung: done product admin
-f04851a | Người: khoavadienq | Ngày: 2025-12-02 | Nội dung: feature of category in admin role
-09c2f4e | Người: khoavadienq | Ngày: 2025-12-02 | Nội dung: dont delete cat if there has product inside
-c5439c9 | Người: khoavadienq | Ngày: 2025-12-02 | Nội dung: Update login register user
-f1ce640 | Người: trngnneee | Ngày: 2025-11-26 | Nội dung: Login/Register/Forgotpassword for client integration
-e549fc8 | Người: khoavadienq | Ngày: 2025-11-25 | Nội dung: client account features
-80edf0c | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-e7b8047 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: ///
-4787063 | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Giß╗» lß║íi data demo
-2be2a56 | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Fix conflict
-a39590e | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Connect socket FE vß╗¢i BE
-975d325 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Change change-direct.html
-c576800 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-a0e5efd | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: update verify email
-29e2da6 | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Redirect lß║íi FE url sau khi verify email
-c98ed6c | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Verify email sau khi ─æ─âng k├╜ vß╗¢i FE
-820d9ee | Người: trngnneee | Ngày: 2025-11-20 | Nội dung: Delete list of product admin
-08eecf8 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Change role user
-b0c2bcd | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Change role user
-9afbfd4 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Connect socket and send data to dashboard client
-5fed5d9 | Người: khoavadienq | Ngày: 2025-11-20 | Nội dung: Update verify sign up by gmail
-212f255 | Người: khoavadienq | Ngày: 2025-11-19 | Nội dung: Delete list product
-321e4a4 | Người: trngnneee | Ngày: 2025-11-14 | Nội dung: ─Éß╗ò data ra admin dashboard cho product, ph├ón trang, t├¼m kiß║┐m, x├│a single item
-be0f47c | Người: khoavadienq | Ngày: 2025-11-14 | Nội dung: Fix bug and add middleware
-6252c79 | Người: khoavadienq | Ngày: 2025-11-14 | Nội dung: Add middleware
-67a0cda | Người: khoavadienq | Ngày: 2025-11-14 | Nội dung: Get all user and product
-a7576f6 | Người: trngnneee | Ngày: 2025-11-13 | Nội dung: T├¡nh n─âng x├│a list cat, import dß╗» liß╗çu product ─æß╗â hß║ín chß║┐ th├¬m tay
-09f1db8 | Người: khoavadienq | Ngày: 2025-11-13 | Nội dung: Insert product, conflict somthing
-81dca1e | Người: khoavadienq | Ngày: 2025-11-13 | Nội dung: Delete list cat
-b178624 | Người: khoavadienq | Ngày: 2025-11-13 | Nội dung: Split file
-162ab63 | Người: khoavadienq | Ngày: 2025-11-12 | Nội dung: Update del parent cat
-c7f2a0c | Người: khoavadienq | Ngày: 2025-11-12 | Nội dung: Delete cat
-92a14ee | Người: khoavadienq | Ngày: 2025-11-12 | Nội dung: Merge insert cat
-ca123ff | Người: khoavadienq | Ngày: 2025-11-12 | Nội dung: Done upload csv
-0b1c603 | Người: khoavadienq | Ngày: 2025-11-12 | Nội dung: Done upload csv
-664349c | Người: trngnneee | Ngày: 2025-11-12 | Nội dung: Fetch Delete cho Fe
-7246a9d | Người: trngnneee | Ngày: 2025-11-12 | Nội dung: Hiß╗ân thß╗ï danh s├ích danh mß╗Ñc ra bß║úng, t├¡nh n─âng t├¼m kiß║┐m theo t├¬n v├á ph├ón trang
-a811a70 | Người: trngnneee | Ngày: 2025-11-12 | Nội dung: T├¡nh n─âng tß║ío Danh mß╗Ñc
-32c6e08 | Người: trngnneee | Ngày: 2025-11-12 | Nội dung: Trang kß║┐t quß║ú t├¼m kiß║┐m
-b31eb6d | Người: trngnneee | Ngày: 2025-11-10 | Nội dung: Trang danh s├ích danh mß╗Ñc, danh s├ích sß║ún phß║⌐m cß╗ºa tß╗½ng danh mß╗Ñc, trang chi tiß║┐t sß║ún phß║⌐m
-232643a | Người: trngnneee | Ngày: 2025-11-10 | Nội dung: UI ─æ─âng nhß║¡p/─æ─âng k├╜/qu├¬n mk/x├íc thß╗▒c otp/─æß╗òi mß║¡t khß║⌐u client
-bd4e2a3 | Người: trngnneee | Ngày: 2025-11-09 | Nội dung: Landing page
-749232e | Người: trngnneee | Ngày: 2025-11-06 | Nội dung: T├¡nh n─âng import v├á gß╗¡i CSV cho BE
-a17571f | Người: khoavadienq | Ngày: 2025-11-05 | Nội dung: Upload CSV file
-0e372eb | Người: khoavadienq | Ngày: 2025-11-04 | Nội dung: Add
-69844f0 | Người: trngnneee | Ngày: 2025-11-03 | Nội dung: Xong t├¡nh n─âng qu├¬n mß║¡t khß║⌐u, x├íc thß╗▒c OTP, reset mß║¡t khß║⌐u (Ch╞░a implement gß╗¡i mail)
-5be1070 | Người: trngnneee | Ngày: 2025-11-02 | Nội dung: T├¡nh n─âng ─æ─âng nhß║¡p/─æ─âng k├╜, tß║ío ─æ╞░ß╗¥ng dß║½n bß║úo mß║¡t cho admin
-4107854 | Người: khoavadienq | Ngày: 2025-11-02 | Nội dung: Connect DB
-d51299d | Người: khoavadienq | Ngày: 2025-11-02 | Nội dung: Connect DB
-bc83d7a | Người: trngnneee | Ngày: 2025-11-02 | Nội dung: Change file .env.example
-14b8866 | Người: trngnneee | Ngày: 2025-11-02 | Nội dung: Demo connect + register
-bfb3e27 | Người: trngnneee | Ngày: 2025-11-01 | Nội dung: UI cho trang tß║ío danh mß╗Ñc, tß║ío sß║ún phß║⌐m, tß║ío ng╞░ß╗¥i d├╣ng
-998f79a | Người: trngnneee | Ngày: 2025-11-01 | Nội dung: Restructure the API project
-402bab9 | Người: trngnneee | Ngày: 2025-11-01 | Nội dung: Added collected data from Tiki
-b7eb675 | Người: trngnneee | Ngày: 2025-10-31 | Nội dung: Fix background
-5318c6f | Người: trngnneee | Ngày: 2025-10-31 | Nội dung: UI for dashboard (Missing edit + trash page)
-807adf2 | Người: trngnneee | Ngày: 2025-10-31 | Nội dung: Fix README follow NextJS
-305daed | Người: trngnneee | Ngày: 2025-10-31 | Nội dung: Delete homework folder
-f76b1f8 | Người: trngnneee | Ngày: 2025-10-31 | Nội dung: UI for admin dashboard (Missing table)
-5fa9cc9 | Người: trngnneee | Ngày: 2025-10-13 | Nội dung: AOS added
-789c174 | Người: trngnneee | Ngày: 2025-10-13 | Nội dung: Fix landing page
-1d95804 | Người: khoavadienq | Ngày: 2025-10-13 | Nội dung: Done hw1
-d549a96 | Người: khoavadienq | Ngày: 2025-10-11 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-10b4b46 | Người: khoavadienq | Ngày: 2025-10-11 | Nội dung: Add index and about
-eaec263 | Người: trngnneee | Ngày: 2025-10-09 | Nội dung: Add cors
-b71006c | Người: trngnneee | Ngày: 2025-10-08 | Nội dung: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
-c4c7f2e | Người: trngnneee | Ngày: 2025-10-08 | Nội dung: Homework
-5067d13 | Người: khoavadienq | Ngày: 2025-10-08 | Nội dung: import cors
-3a4fe72 | Người: khoavadienq | Ngày: 2025-10-08 | Nội dung: Initiallize server
-2aa7c4a | Người: trngnneee | Ngày: 2025-10-08 | Nội dung: Add main README
-4c89315 | Người: trngnneee | Ngày: 2025-10-08 | Nội dung: Client
+﻿7756a4c | Student: trngnneee | Date: 2026-01-07 | Content: Fix: End skeleton load
+87d4cec | Student: khoavadienq | Date: 2026-01-07 | Content: Fix cat
+b27885f | Student: trngnneee | Date: 2026-01-07 | Content: Giß╗¢i hß║ín chiß╗üu cao feedback
+c6190d4 | Student: khoavadienq | Date: 2026-01-07 | Content: Add autobid
+9d871a6 | Student: khoavadienq | Date: 2026-01-07 | Content: Add autobid
+a91418f | Student: trngnneee | Date: 2026-01-07 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+a94bce2 | Student: trngnneee | Date: 2026-01-07 | Content: Feat: Hiß╗ân thß╗ï ds feedback cß╗ºa bidder cho seller thß║Ñy, fix lß║íi bidder c├│ thß╗â thß║Ñy ds feedback cß╗ºa seller
+e061478 | Student: khoavadienq | Date: 2026-01-07 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+cf19475 | Student: khoavadienq | Date: 2026-01-07 | Content: Add send email feature
+fc0e46d | Student: trngnneee | Date: 2026-01-07 | Content: Feat: Hiß╗ân thß╗ï ds feedback cho sß║ún phß║⌐m
+0df76c6 | Student: khoavadienq | Date: 2026-01-07 | Content: Change from service_judge to rating
+67448b9 | Student: trngnneee | Date: 2026-01-07 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+e3e0f00 | Student: trngnneee | Date: 2026-01-07 | Content: Hiß╗ân thß╗ï ─æiß╗âm ─æ├ính gi├í v├á chi tiß║┐t ─æ├ính gi├í
+0a52703 | Student: khoavadienq | Date: 2026-01-07 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+c5e1653 | Student: trngnneee | Date: 2026-01-07 | Content: Fix: Gß╗¡i mail khi kick v├á hß╗ôi phß╗Ñc ─æß║Ñu gi├í
+b78544c | Student: khoavadienq | Date: 2026-01-07 | Content: Feat thanh to├ín
+1ff968e | Student: trngnneee | Date: 2026-01-07 | Content: Fix: Gi├í trong detail
+f567b0a | Student: trngnneee | Date: 2026-01-07 | Content: Feat: Hiß╗ân thß╗ï ds ng╞░ß╗¥i tham gia bid vß╗¢i 2 trß║íng th├íi kick + ko kick, phß╗Ñc hß╗ôi ng╞░ß╗¥i bß╗ï kick
+2e26965 | Student: trngnneee | Date: 2026-01-07 | Content: Feat: Hiß╗ân thß╗ï ds bidder ─æang tham gia ─æß║Ñu gi├í cho 1 sp, kick 1 bidder khß╗Åi phi├¬n ─æß║Ñu gi├í n├áy, bidder n├áy ko ─æ╞░ß╗úc bid sß║ún phß║⌐m n├áy nß╗»a
+374d052 | Student: trngnneee | Date: 2026-01-07 | Content: Bß╗Å xem tß║Ñt cß║ú
+17f01c5 | Student: trngnneee | Date: 2026-01-07 | Content: Fix: Wishlist button
+bd0eef0 | Student: trngnneee | Date: 2026-01-07 | Content: Fix toast
+6be53ba | Student: khoavadienq | Date: 2026-01-07 | Content: Fix Xem danh s├ích sß║ún phß║⌐m ─æang tham gia ─æß║Ñu gi├í (bidding list)
+2ce3bd4 | Student: khoavadienq | Date: 2026-01-07 | Content: Add danh s├ích sß║ún phß║⌐m ─æ├ú chiß║┐n thß║»ng, danh s├ích sß║ún phß║⌐m ─æang tham gia ─æß║Ñu gi├í, ─æ├ính gi├í sau khi ho├án tß║Ñt h├│a ─æ╞ín
+89552c0 | Student: khoavadienq | Date: 2026-01-07 | Content: Fix product page and handle winer_order
+2931a01 | Student: trngnneee | Date: 2026-01-06 | Content: Fix color
+f2d7120 | Student: trngnneee | Date: 2026-01-06 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+ff9740b | Student: trngnneee | Date: 2026-01-06 | Content: UI cho trang ds ─æß║Ñu gi├í cß╗ºa bidder + ds thß║»ng ─æß║Ñu gi├í, fix UI
+6433d85 | Student: khoavadienq | Date: 2026-01-06 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+72c86dd | Student: khoavadienq | Date: 2026-01-06 | Content: ─Éß╗ò data bid request ra product
+6aa00c1 | Student: trngnneee | Date: 2026-01-06 | Content: Fix: Recaptcha admin
+638c199 | Student: trngnneee | Date: 2026-01-06 | Content: Fix: UI product
+e44bb00 | Student: trngnneee | Date: 2026-01-06 | Content: Fix: UI phß║ºn bid req
+24fa433 | Student: trngnneee | Date: 2026-01-06 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+6fca2c4 | Student: trngnneee | Date: 2026-01-06 | Content: Fix toast
+45c915d | Student: khoavadienq | Date: 2026-01-06 | Content: Fix bid
+3b4fa49 | Student: khoavadienq | Date: 2026-01-06 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+b8e7e4f | Student: khoavadienq | Date: 2026-01-06 | Content: Fix
+37b8a8e | Student: trngnneee | Date: 2026-01-06 | Content: Fix: skeleton cho category
+422fdf1 | Student: trngnneee | Date: 2026-01-06 | Content: Feat: reCaptCHA cho admin account
+71f37d5 | Student: trngnneee | Date: 2026-01-06 | Content: Fix: Header + Wishlist button, sß╗¡a forgotpassword t├¼m th├¬m theo seller
+6629d3b | Student: khoavadienq | Date: 2026-01-06 | Content: Ra gi├í 1 sß║ún phß║⌐m ß╗ƒ view xem chi tiß║┐t sß║ún phß║⌐m
+3b55c41 | Student: khoavadienq | Date: 2026-01-06 | Content: Nhß╗»ng sß║ún phß║⌐m mß╗¢i ─æ─âng trong 30  ph├║t c├│ thß╗â hiß╗çn kh├íc
+863976c | Student: khoavadienq | Date: 2026-01-06 | Content: Update NavBar
+889bcb5 | Student: khoavadienq | Date: 2026-01-06 | Content: Top 5 sß║ún phß║⌐m c├│ nhiß╗üu l╞░ß╗út ra gi├í nhß║Ñt (sß║»p xß║┐p theo sß╗æ l╞░ß╗út giß║úm dß║ºn) Top 5 sß║ún phß║⌐m ch╞░a kß║┐t th├║c c├│ gi├í cao nhß║Ñt Top 5 sß║ún phß║⌐m gß║ºn kß║┐t th├║c (sß║»p xß║┐p theo thß╗¥i gian kß║┐t th├║c giß║úm dß║ºn)
+62a6c9a | Student: khoavadienq | Date: 2026-01-06 | Content: Fx logic UI cat product and user in admin
+649e57c | Student: khoavadienq | Date: 2026-01-06 | Content: Add: edit password of user in admin role
+b597b17 | Student: trngnneee | Date: 2025-12-18 | Content: Feat: UI hiß╗ân thß╗ï ds bidder y├¬u cß║ºu ─æ╞░ß╗úc bid sß║ún phß║⌐m
+f282937 | Student: trngnneee | Date: 2025-12-11 | Content: Fix: Chß╗ë gß╗¡i email cho participants nß║┐u ng╞░ß╗¥i ─æang reply l├á seller v├á l├á chß╗º cß╗ºa product ─æ├│
+d93abf2 | Student: trngnneee | Date: 2025-12-11 | Content: Feat: Gß╗¡i mail cho to├án bß╗Ö bidder/admin thgia trong 1 comment khi Seller reply
+1aa730f | Student: khoavadienq | Date: 2025-12-11 | Content: Fix bid
+3a8d63b | Student: khoavadienq | Date: 2025-12-11 | Content: Fix login and clear code
+c62e1d9 | Student: khoavadienq | Date: 2025-12-11 | Content: Bid product logic
+a5658d2 | Student: trngnneee | Date: 2025-12-10 | Content: Fix: Th├¬m thß╗¥i gian kß║┐t th├║c ─æß║Ñu gi├í cho sß║ún phß║⌐m + Feat: Hiß╗ân thß╗ï sß║ún phß║⌐m mß╗¢i tß║ío nß╗òi bß║¡t h╞ín
+fae9124 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: ReCaptcha cho login/register cß╗ºa client
+e662c31 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Email th├┤ng b├ío vß╗ü comment mß╗¢i cho seller
+d4600bc | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Hß╗Åi ng╞░ß╗¥i b├ín
+150df5e | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m c├╣ng danh mß╗Ñc trong Detail
+c3ee2b6 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m gß║ºn kß║┐t th├║c
+b574608 | Student: khoavadienq | Date: 2025-12-10 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+1469a79 | Student: khoavadienq | Date: 2025-12-10 | Content: Add button thß╗¥i gian tß╗▒ ─æß╗Öng gia hß║ín in admin
+7a3123c | Student: trngnneee | Date: 2025-12-10 | Content: Fix: Sß╗¡a bug chß╗ù th├¬m desc history
+fa6c42f | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Add watch list trong detail page
+93d4bc6 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Hiß╗ân thß╗ï desc theo thß╗¥i gian trong Detail Page
+8d86862 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Code ─æß╗â c├áo data + Sß╗¡a hiß╗ân thß╗ï Desc + Login ß║⌐n Desc d├ái trong detail page
+d0d58fe | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Code ─æß╗â c├áo data + sß╗¡a giao diß╗çn description cß╗ºa sß║ún phß║⌐m
+90d109c | Student: khoavadienq | Date: 2025-12-10 | Content: Th├¬m admin tß╗▒ chß╗ënh tß╗▒ ─æß╗Öng gia hß║ín
+22ec098 | Student: khoavadienq | Date: 2025-12-10 | Content: Feat: Thß╗¥i ─æiß╗âm kß║┐t th├║c
+1605fc5 | Student: khoavadienq | Date: 2025-12-10 | Content: Feat: Thß╗¥i ─æiß╗âm kß║┐t th├║c
+a5968fe | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Xem lß╗ïch sß╗¡ chß╗ënh sß╗¡a desc cho 1 sß║ún phß║⌐m + Add th├¬m desc
+8ba8c03 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Add wishlist, Remove Wishlist v├á hiß╗ân thß╗ï ra ds y├¬u th├¡ch
+0605ca1 | Student: khoavadienq | Date: 2025-12-10 | Content: .
+3455ae6 | Student: trngnneee | Date: 2025-12-10 | Content: Feat: ─Éß╗ò data ra giao diß╗çn Category + Ph├ón trang, ─Éß╗ò data ra giao diß╗çn Danh mß╗Ñc + Ph├ón trang + Lß╗ìc gi├í giß║úm/t─âng dß║ºn, ng├áy kß║┐t th├║c giß║úm/t─âng dß║ºn
+f8be9bb | Student: trngnneee | Date: 2025-12-10 | Content: Feat: Sß║»p xß║┐p kß║┐t quß║ú search theo gi├í t─âng dß║ºn/giß║úm dß║ºn, ng├áy kß║┐t th├║c t─âng dß║ºn/giß║úm giß║ºn. Skeleton loading cho productItem
+1ba2dbd | Student: trngnneee | Date: 2025-12-09 | Content: Feat: FTS cho client
+9307768 | Student: trngnneee | Date: 2025-12-09 | Content: Feat: Hiß╗ân thß╗ï detail + Top sß║ún phß║⌐m c├│ gi├í cao nhß║Ñt
+485cf1f | Student: trngnneee | Date: 2025-12-09 | Content: Feat: Hiß╗ân thß╗ï ds sß║ún phß║⌐m cß╗ºa Seller ─æ├│ + Pagination
+f81d7ae | Student: trngnneee | Date: 2025-12-09 | Content: Feat: Seller tß║ío sß║ún phß║⌐m
+df07281 | Student: trngnneee | Date: 2025-12-09 | Content: Feat: Client logout
+6cc8dd6 | Student: trngnneee | Date: 2025-12-09 | Content: Feat: ─Éß╗òi mß║¡t khß║⌐u cho client
+ec5dbaf | Student: trngnneee | Date: 2025-12-09 | Content: Fix: Login logic + Feat: Duyß╗çt y├¬u cß║ºu trß╗ƒ th├ánh Seller
+acd1ddc | Student: khoavadienq | Date: 2025-12-07 | Content: Add middleware
+4024b2d | Student: khoavadienq | Date: 2025-12-07 | Content: Delete list product
+b7797c8 | Student: khoavadienq | Date: 2025-12-07 | Content: Update, delete, add product and save img in supabase storage
+17c36fe | Student: khoavadienq | Date: 2025-12-07 | Content: add forgot password
+6bc4adf | Student: trngnneee | Date: 2025-12-05 | Content: Feat: Update tß╗½ Bidder l├¬n Seller
+ef1d4f7 | Student: trngnneee | Date: 2025-12-05 | Content: Feat: ─Éß╗ò data ra trang chi tiß║┐t sß║ún phß║⌐m (Thiß║┐u v├ái tr╞░ß╗¥ng)
+ca1f272 | Student: khoavadienq | Date: 2025-12-05 | Content: up picture and img to supabase storage
+d95b6ba | Student: khoavadienq | Date: 2025-12-05 | Content: Fix forgot pass
+90e0874 | Student: trngnneee | Date: 2025-12-05 | Content: Feat: UI tß║ío, quß║ún l├╜ v├á th├¬m th├┤ng tin sß║ún phß║⌐m cß╗ºa Seller
+d189ac4 | Student: trngnneee | Date: 2025-12-05 | Content: UI cho trang quß║ún l├╜ c├í nh├ón cß╗ºa Bidder
+9e51c2a | Student: trngnneee | Date: 2025-12-04 | Content: Fix logic search cho category v├á product ß╗ƒ Admin th├ánh fts
+db120e6 | Student: trngnneee | Date: 2025-12-04 | Content: Demo ─æß╗ò data ra Section3 cß╗ºa Home
+352e08a | Student: trngnneee | Date: 2025-12-04 | Content: Feat: Middleware + Authentication for client, Search Button on Header fix
+7fce5f2 | Student: trngnneee | Date: 2025-12-03 | Content: Update logic chß╗ënh sß╗¡a cho FE vß╗ü phß║ºn role
+8271ccc | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Update user information
+82e4a1a | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Update category
+37b5fa8 | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Delete single user + Delete user list
+9947fce | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Pagination + Search User at Admin, add logic for slug while creating new User
+bd25116 | Student: khoavadienq | Date: 2025-12-03 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+d301bb6 | Student: khoavadienq | Date: 2025-12-03 | Content: update login register
+052bb91 | Student: trngnneee | Date: 2025-12-03 | Content: Fix: Slug search
+915f2e3 | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Create new user from admin dashboard
+2d45ec3 | Student: trngnneee | Date: 2025-12-03 | Content: UI cho trang quß║ún l├╜ ng╞░ß╗¥i d├╣ng + seller, ─æß╗ò data ra user
+c96691f | Student: trngnneee | Date: 2025-12-03 | Content: Feat: Logout
+0b9dad1 | Student: khoavadienq | Date: 2025-12-03 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+63ba211 | Student: khoavadienq | Date: 2025-12-03 | Content: fix api total-page
+317365d | Student: trngnneee | Date: 2025-12-03 | Content: Connect FE with client account API
+4acfb07 | Student: khoavadienq | Date: 2025-12-03 | Content: Add API doc
+c20e995 | Student: khoavadienq | Date: 2025-12-03 | Content: Get product by cat and pagging
+151af16 | Student: khoavadienq | Date: 2025-12-03 | Content:  upgrade role from bidder to seller
+42409f6 | Student: khoavadienq | Date: 2025-12-02 | Content: done product admin
+f04851a | Student: khoavadienq | Date: 2025-12-02 | Content: feature of category in admin role
+09c2f4e | Student: khoavadienq | Date: 2025-12-02 | Content: dont delete cat if there has product inside
+c5439c9 | Student: khoavadienq | Date: 2025-12-02 | Content: Update login register user
+f1ce640 | Student: trngnneee | Date: 2025-11-26 | Content: Login/Register/Forgotpassword for client integration
+e549fc8 | Student: khoavadienq | Date: 2025-11-25 | Content: client account features
+80edf0c | Student: khoavadienq | Date: 2025-11-20 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+e7b8047 | Student: khoavadienq | Date: 2025-11-20 | Content: ///
+4787063 | Student: trngnneee | Date: 2025-11-20 | Content: Giß╗» lß║íi data demo
+2be2a56 | Student: trngnneee | Date: 2025-11-20 | Content: Fix conflict
+a39590e | Student: trngnneee | Date: 2025-11-20 | Content: Connect socket FE vß╗¢i BE
+975d325 | Student: khoavadienq | Date: 2025-11-20 | Content: Change change-direct.html
+c576800 | Student: khoavadienq | Date: 2025-11-20 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+a0e5efd | Student: khoavadienq | Date: 2025-11-20 | Content: update verify email
+29e2da6 | Student: trngnneee | Date: 2025-11-20 | Content: Redirect lß║íi FE url sau khi verify email
+c98ed6c | Student: trngnneee | Date: 2025-11-20 | Content: Verify email sau khi ─æ─âng k├╜ vß╗¢i FE
+820d9ee | Student: trngnneee | Date: 2025-11-20 | Content: Delete list of product admin
+08eecf8 | Student: khoavadienq | Date: 2025-11-20 | Content: Change role user
+b0c2bcd | Student: khoavadienq | Date: 2025-11-20 | Content: Change role user
+9afbfd4 | Student: khoavadienq | Date: 2025-11-20 | Content: Connect socket and send data to dashboard client
+5fed5d9 | Student: khoavadienq | Date: 2025-11-20 | Content: Update verify sign up by gmail
+212f255 | Student: khoavadienq | Date: 2025-11-19 | Content: Delete list product
+321e4a4 | Student: trngnneee | Date: 2025-11-14 | Content: ─Éß╗ò data ra admin dashboard cho product, ph├ón trang, t├¼m kiß║┐m, x├│a single item
+be0f47c | Student: khoavadienq | Date: 2025-11-14 | Content: Fix bug and add middleware
+6252c79 | Student: khoavadienq | Date: 2025-11-14 | Content: Add middleware
+67a0cda | Student: khoavadienq | Date: 2025-11-14 | Content: Get all user and product
+a7576f6 | Student: trngnneee | Date: 2025-11-13 | Content: T├¡nh n─âng x├│a list cat, import dß╗» liß╗çu product ─æß╗â hß║ín chß║┐ th├¬m tay
+09f1db8 | Student: khoavadienq | Date: 2025-11-13 | Content: Insert product, conflict somthing
+81dca1e | Student: khoavadienq | Date: 2025-11-13 | Content: Delete list cat
+b178624 | Student: khoavadienq | Date: 2025-11-13 | Content: Split file
+162ab63 | Student: khoavadienq | Date: 2025-11-12 | Content: Update del parent cat
+c7f2a0c | Student: khoavadienq | Date: 2025-11-12 | Content: Delete cat
+92a14ee | Student: khoavadienq | Date: 2025-11-12 | Content: Merge insert cat
+ca123ff | Student: khoavadienq | Date: 2025-11-12 | Content: Done upload csv
+0b1c603 | Student: khoavadienq | Date: 2025-11-12 | Content: Done upload csv
+664349c | Student: trngnneee | Date: 2025-11-12 | Content: Fetch Delete cho Fe
+7246a9d | Student: trngnneee | Date: 2025-11-12 | Content: Hiß╗ân thß╗ï danh s├ích danh mß╗Ñc ra bß║úng, t├¡nh n─âng t├¼m kiß║┐m theo t├¬n v├á ph├ón trang
+a811a70 | Student: trngnneee | Date: 2025-11-12 | Content: T├¡nh n─âng tß║ío Danh mß╗Ñc
+32c6e08 | Student: trngnneee | Date: 2025-11-12 | Content: Trang kß║┐t quß║ú t├¼m kiß║┐m
+b31eb6d | Student: trngnneee | Date: 2025-11-10 | Content: Trang danh s├ích danh mß╗Ñc, danh s├ích sß║ún phß║⌐m cß╗ºa tß╗½ng danh mß╗Ñc, trang chi tiß║┐t sß║ún phß║⌐m
+232643a | Student: trngnneee | Date: 2025-11-10 | Content: UI ─æ─âng nhß║¡p/─æ─âng k├╜/qu├¬n mk/x├íc thß╗▒c otp/─æß╗òi mß║¡t khß║⌐u client
+bd4e2a3 | Student: trngnneee | Date: 2025-11-09 | Content: Landing page
+749232e | Student: trngnneee | Date: 2025-11-06 | Content: T├¡nh n─âng import v├á gß╗¡i CSV cho BE
+a17571f | Student: khoavadienq | Date: 2025-11-05 | Content: Upload CSV file
+0e372eb | Student: khoavadienq | Date: 2025-11-04 | Content: Add
+69844f0 | Student: trngnneee | Date: 2025-11-03 | Content: Xong t├¡nh n─âng qu├¬n mß║¡t khß║⌐u, x├íc thß╗▒c OTP, reset mß║¡t khß║⌐u (Ch╞░a implement gß╗¡i mail)
+5be1070 | Student: trngnneee | Date: 2025-11-02 | Content: T├¡nh n─âng ─æ─âng nhß║¡p/─æ─âng k├╜, tß║ío ─æ╞░ß╗¥ng dß║½n bß║úo mß║¡t cho admin
+4107854 | Student: khoavadienq | Date: 2025-11-02 | Content: Connect DB
+d51299d | Student: khoavadienq | Date: 2025-11-02 | Content: Connect DB
+bc83d7a | Student: trngnneee | Date: 2025-11-02 | Content: Change file .env.example
+14b8866 | Student: trngnneee | Date: 2025-11-02 | Content: Demo connect + register
+bfb3e27 | Student: trngnneee | Date: 2025-11-01 | Content: UI cho trang tß║ío danh mß╗Ñc, tß║ío sß║ún phß║⌐m, tß║ío ng╞░ß╗¥i d├╣ng
+998f79a | Student: trngnneee | Date: 2025-11-01 | Content: Restructure the API project
+402bab9 | Student: trngnneee | Date: 2025-11-01 | Content: Added collected data from Tiki
+b7eb675 | Student: trngnneee | Date: 2025-10-31 | Content: Fix background
+5318c6f | Student: trngnneee | Date: 2025-10-31 | Content: UI for dashboard (Missing edit + trash page)
+807adf2 | Student: trngnneee | Date: 2025-10-31 | Content: Fix README follow NextJS
+305daed | Student: trngnneee | Date: 2025-10-31 | Content: Delete homework folder
+f76b1f8 | Student: trngnneee | Date: 2025-10-31 | Content: UI for admin dashboard (Missing table)
+5fa9cc9 | Student: trngnneee | Date: 2025-10-13 | Content: AOS added
+789c174 | Student: trngnneee | Date: 2025-10-13 | Content: Fix landing page
+1d95804 | Student: khoavadienq | Date: 2025-10-13 | Content: Done hw1
+d549a96 | Student: khoavadienq | Date: 2025-10-11 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+10b4b46 | Student: khoavadienq | Date: 2025-10-11 | Content: Add index and about
+eaec263 | Student: trngnneee | Date: 2025-10-09 | Content: Add cors
+b71006c | Student: trngnneee | Date: 2025-10-08 | Content: Merge branch 'main' of https://github.com/trngnneee/CSC13008_Web-Application-Development
+c4c7f2e | Student: trngnneee | Date: 2025-10-08 | Content: Homework
+5067d13 | Student: khoavadienq | Date: 2025-10-08 | Content: import cors
+3a4fe72 | Student: khoavadienq | Date: 2025-10-08 | Content: Initiallize server
+2aa7c4a | Student: trngnneee | Date: 2025-10-08 | Content: Add main README
+4c89315 | Student: trngnneee | Date: 2025-10-08 | Content: Client
