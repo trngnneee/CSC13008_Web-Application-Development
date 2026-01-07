@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { FeedbackListDetail } from "./FeedbackListDetail";
 
 export const BidderList = () => {
   const { id } = useParams();
@@ -163,6 +164,7 @@ export const BidderList = () => {
                       </AlertDialogContent>
                     </AlertDialog>
                   )}
+                  <FeedbackListDetail id_user={bidder.id_user} />
                 </td>
               </tr>
             ))}

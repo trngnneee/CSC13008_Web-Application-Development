@@ -4,15 +4,16 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-export const FeedbackList = ({ role }) => {
+export const FeedbackListDetail = ({ id_user }) => {
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/feedback?role=${role}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/feedback/${id_user}`, {
         method: "GET",
       })
         .then((res) => res.json())
         .then((data) => {
+          console.log(data);
           setFeedbacks(data.data)
         });
     };
@@ -22,13 +23,13 @@ export const FeedbackList = ({ role }) => {
   return (
     <>
       <Dialog>
-        <DialogTrigger className="text-sm text-gray-600 hover:underline mb-5">(Xem đánh giá)</DialogTrigger>
+        <DialogTrigger className="text-sm text-gray-600 hover:underline mb-5 translate-y-2.5">(Xem đánh giá)</DialogTrigger>
         <DialogContent
           style={{ maxWidth: "1000px" }}
         >
           <div className="space-y-4 mb-10">
-            <DialogTitle className="text-[30px] font-extrabold mb-2.5">Đánh giá của người dùng cho Seller này:</DialogTitle>
-            {feedbacks.length > 0 && feedbacks.map((fb, index) => (
+            <DialogTitle className="text-[30px] font-extrabold mb-2.5">Đánh giá của Bidder này:</DialogTitle>
+            {feedbacks.length > 0 ? feedbacks.map((fb, index) => (
               <div
                 key={index}
                 className="flex gap-4 rounded-lg border p-4"
@@ -63,7 +64,9 @@ export const FeedbackList = ({ role }) => {
                   </p>
                 </div>
               </div>
-            ))}
+            )) : (
+              <p>Chưa có đánh giá nào.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
