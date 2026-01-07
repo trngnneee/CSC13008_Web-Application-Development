@@ -12,7 +12,9 @@ import {
   findVerifyEmailToken, 
   markVerifyTokenUsed, 
   changeUserRole,
-  getUserWatchList
+  getUserWatchList,
+  getUserPoint,
+  getUserFeedBackList
 } from "./user.service.js";
 import { OTPGenerate } from "../helper/otp.helper.js";
 import { sendVarifyMail, sendOTPMail } from "../helper/mail.helper.js";
@@ -142,6 +144,10 @@ export const handleVerifyToken = async (token) => {
     
     const watchList = await getUserWatchList(id_user);
 
+    const userpoint = await getUserPoint(id_user);
+
+    const feedBackList = await getUserFeedBackList(id_user);
+
     return {
       success: true,
       message: "Xác thực token thành công!",
@@ -151,7 +157,9 @@ export const handleVerifyToken = async (token) => {
         email: existUser.email,
         role: existUser.role,
         date_of_birth: existUser.date_of_birth,
-        watchList: watchList || []
+        watchList: watchList || [],
+        user_point: userpoint,
+        feedBackList: feedBackList || []
       }
     };
   } catch (error) {

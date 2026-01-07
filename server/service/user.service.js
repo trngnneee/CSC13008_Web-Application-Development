@@ -41,6 +41,21 @@ export const getUserWatchList = async (id_user) => {
   return watchList.map(item => item.id_product);
 }
 
+export const getUserPoint = async (id_user) => {
+  const userpoint = await db('user_point')
+    .where({ id_user })
+    .first('judge_point');
+  
+  return userpoint ? userpoint.judge_point : 0;
+};
+
+export const getUserFeedBackList = async (id_user) => {
+  const feedBackList = await db('service_judge')
+    .select('*')
+    .where({ id_user });
+  return feedBackList;
+}
+
 export const addUser = async ({ fullname, email, password, date_of_birth = null, role, status }) => {
   if (!fullname || !email || !password || !role || !status) {
     throw new Error('Thiếu thông tin bắt buộc: fullname, email, password, role, status');
