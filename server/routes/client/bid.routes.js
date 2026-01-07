@@ -32,5 +32,18 @@ router.post('/product/:id_product/kick', verifyToken, authorizeRole("seller"), b
 
 // Seller phục hồi người đấu giá đã bị kick khỏi sản phẩm đấu giá của mình
 router.post('/product/:id_product/recover', verifyToken, authorizeRole("seller"), bidController.recoverBidderPost);
+
+// =====================================================
+// AUTO-BID ROUTES
+// =====================================================
+
+// Place or update auto-bid
+router.post('/auto', verifyToken, authorizeRole("bidder", "seller"), bidController.placeAutoBidPost);
+
+// Get user's auto-bid for a product
+router.get('/auto/:id_product', verifyToken, authorizeRole("bidder", "seller"), bidController.getAutoBidGet);
+
+// Delete user's auto-bid
+router.delete('/auto/:id_product', verifyToken, authorizeRole("bidder", "seller"), bidController.deleteAutoBidDelete);
     
 export default router;

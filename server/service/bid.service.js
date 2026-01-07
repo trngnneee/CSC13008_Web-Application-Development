@@ -271,6 +271,17 @@ export const placeBid = async (id_product, bid_price, id_user) => {
       // Don't throw - bid was successful, email is secondary
     }
 
+    // Run auto-bid engine after manual bid (non-blocking)
+    if (!isImmediatePurchase) {
+      setImmediate(async () => {
+        try {
+          await runAutoBidEngine(id_product);
+        } catch (autoBidError) {
+          console.error("Auto-bid engine error:", autoBidError);
+        }
+      });
+    }
+
     return {
       status: "success",
       message: isImmediatePurchase ? "Mua ngay thành công! Bạn là người thắng đấu giá." : "Đấu giá thành công",
@@ -605,3 +616,376 @@ export const recoverBidderToProduct = (id_product, id_bidder) => {
     .where("id_user", id_bidder)
     .del();
 }
+
+export const placeAutoBid = async (id_product, max_bid, id_user) => {
+  const numericMaxBid = Number(max_bid);
+  if (isNaN(numericMaxBid) || numericMaxBid <= 0) {
+    throw new Error("Giá đấu giá tự động phải là số dương hợp lệ");
+  }
+
+  // Get product
+  const product = await db("product")
+    .where("id_product", id_product)
+    .first();
+
+  if (!product) {
+    throw new Error("Sản phẩm không tồn tại");
+  }
+
+  // Validate product status
+  if (product.status !== 'active') {
+    throw new Error("Phiên đấu giá đã kết thúc hoặc không còn hoạt động");
+  }
+
+  // Validate end_date_time
+  if (product.end_date_time && new Date() >= new Date(product.end_date_time)) {
+    throw new Error("Phiên đấu giá đã kết thúc");
+  }
+
+  // Check seller cannot auto-bid on own product
+  const sellerId = product.updated_by || product.created_by;
+  if (sellerId === id_user) {
+    throw new Error("Bạn không thể đấu giá sản phẩm của chính mình");
+  }
+
+  // Check if user is kicked
+  const kickRecord = await db("kick")
+    .where("id_product", id_product)
+    .where("id_user", id_user)
+    .first();
+  if (kickRecord) {
+    throw new Error("Bạn đã bị kick khỏi phiên đấu giá này");
+  }
+
+  // Check user rating
+  const bidder = await db("user")
+    .select("user.*", "user_point.judge_point", "user_point.number_of_plus", "user_point.number_of_minus")
+    .leftJoin("user_point", "user.id_user", "user_point.id_user")
+    .where("user.id_user", id_user)
+    .first();
+
+  if (!bidder) {
+    throw new Error("Người dùng không tồn tại");
+  }
+
+  const plus = Number(bidder.number_of_plus || 0);
+  const minus = Number(bidder.number_of_minus || 0);
+  const total = plus + minus;
+  const ratingPercent = total > 0 ? (plus / total) : 0;
+
+  // Rating must be >= 80% to use auto-bid
+  if (total > 0 && ratingPercent < 0.8) {
+    throw new Error(
+      `Điểm đánh giá của bạn (${(ratingPercent * 100).toFixed(1)}%) chưa đủ điều kiện (yêu cầu ≥ 80%)`
+    );
+  }
+
+  // If no rating, check for approved bid_request
+  if (ratingPercent === 0) {
+    const approvedRequest = await db("bid_request")
+      .where("id_bidder", id_user)
+      .where("id_product", id_product)
+      .where("id_seller", sellerId)
+      .where("status", "approved")
+      .first();
+
+    if (!approvedRequest) {
+      throw new Error("Bạn cần được seller phê duyệt trước khi đặt auto-bid");
+    }
+  }
+
+  // Validate max_bid >= current_price + pricing_step
+  const currentPrice = product.price !== null ? Number(product.price) : Number(product.starting_price || 0);
+  const pricingStep = Number(product.pricing_step || 0);
+  const minMaxBid = currentPrice + pricingStep;
+
+  if (numericMaxBid < minMaxBid) {
+    throw new Error(
+      `Giá auto-bid tối thiểu phải là ${parseInt(minMaxBid).toLocaleString("vi-VN")} VND`
+    );
+  }
+
+  // Check if user already has auto-bid for this product
+  const existingAutoBid = await db("auto_bid")
+    .where("id_product", id_product)
+    .where("id_user", id_user)
+    .first();
+
+  let autoBidResult;
+
+  if (existingAutoBid) {
+    // Update existing auto-bid
+    [autoBidResult] = await db("auto_bid")
+      .where("id_bid", existingAutoBid.id_bid)
+      .update({
+        max_bid: numericMaxBid,
+      })
+      .returning("*");
+  } else {
+    // Insert new auto-bid
+    [autoBidResult] = await db("auto_bid")
+      .insert({
+        id_product,
+        id_user,
+        max_bid: numericMaxBid,
+      })
+      .returning("*");
+  }
+
+  // Run auto-bid engine after placing/updating auto-bid
+  await runAutoBidEngine(id_product);
+
+  return {
+    status: "success",
+    message: existingAutoBid ? "Cập nhật auto-bid thành công" : "Đặt auto-bid thành công",
+    data: autoBidResult,
+  };
+};
+
+/**
+ * Get user's auto-bid for a product
+ */
+export const getAutoBid = async (id_product, id_user) => {
+  const autoBid = await db("auto_bid")
+    .where("id_product", id_product)
+    .where("id_user", id_user)
+    .first();
+
+  return autoBid || null;
+};
+
+/**
+ * Delete user's auto-bid for a product
+ */
+export const deleteAutoBid = async (id_product, id_user) => {
+  const deleted = await db("auto_bid")
+    .where("id_product", id_product)
+    .where("id_user", id_user)
+    .del();
+
+  if (!deleted) {
+    throw new Error("Không tìm thấy auto-bid để xóa");
+  }
+
+  return { status: "success", message: "Đã xóa auto-bid" };
+};
+
+/**
+ * Auto-bid engine - processes auto-bids for a product
+ * Called when: new auto-bid created/updated, manual bid placed
+ */
+export const runAutoBidEngine = async (id_product) => {
+  console.log("=== AUTO-BID ENGINE START ===", id_product);
+
+  return await db.transaction(async (trx) => {
+    // Step 1: Lock product with FOR UPDATE
+    const product = await trx("product")
+      .where("id_product", id_product)
+      .where("status", "active")
+      .forUpdate()
+      .first();
+
+    if (!product) {
+      console.log("Product not found or not active");
+      return null;
+    }
+
+    // Check if auction ended
+    if (product.end_date_time && new Date() >= new Date(product.end_date_time)) {
+      console.log("Auction has ended");
+      return null;
+    }
+
+    const currentPrice = product.price !== null ? Number(product.price) : Number(product.starting_price || 0);
+    const pricingStep = Number(product.pricing_step || 0);
+    const immediatePrice = product.immediate_purchase_price ? Number(product.immediate_purchase_price) : null;
+
+    console.log("Current price:", currentPrice, "Pricing step:", pricingStep);
+
+    // Step 2: Get all auto-bids for this product (excluding kicked users)
+    const autoBids = await trx("auto_bid")
+      .select("auto_bid.*", "user.fullname", "user.email")
+      .leftJoin("user", "auto_bid.id_user", "user.id_user")
+      .leftJoin("kick", function() {
+        this.on("kick.id_user", "=", "auto_bid.id_user")
+            .andOn("kick.id_product", "=", "auto_bid.id_product");
+      })
+      .where("auto_bid.id_product", id_product)
+      .whereNull("kick.id_user") // Exclude kicked users
+      .orderBy("auto_bid.max_bid", "desc")
+
+
+    console.log("Auto-bids found:", autoBids.length);
+
+    if (autoBids.length === 0) {
+      console.log("No auto-bids found");
+      return null;
+    }
+
+    // Step 3: Calculate new price
+    let newPrice;
+    let winner = autoBids[0];
+
+    if (autoBids.length === 1) {
+      // Only one auto-bid: bid at minimum increment
+      newPrice = Math.min(Number(winner.max_bid), currentPrice + pricingStep);
+    } else {
+      // Multiple auto-bids: winner outbids runner-up
+      const runnerUp = autoBids[1];
+      newPrice = Math.min(
+        Number(winner.max_bid),
+        Number(runnerUp.max_bid) + pricingStep
+      );
+    }
+
+    console.log("Calculated new price:", newPrice);
+
+    // If new price <= current price, no action needed
+    if (newPrice <= currentPrice) {
+      console.log("New price not higher than current, stopping");
+      return null;
+    }
+
+    // Check for immediate purchase
+    let isImmediatePurchase = false;
+    if (immediatePrice && newPrice >= immediatePrice) {
+      newPrice = immediatePrice;
+      isImmediatePurchase = true;
+      console.log("Immediate purchase triggered at:", newPrice);
+    }
+
+    // Step 4: Insert bid record
+    const [newBid] = await trx("bid")
+      .insert({
+        id_product,
+        id_user: winner.id_user,
+        bid_price: newPrice,
+        time: new Date(),
+        is_auto_bid: true, // Mark as auto-bid
+      })
+      .returning("*");
+
+    console.log("Auto-bid inserted:", newBid);
+
+    // Update product price
+    const updateData = { price: newPrice };
+
+    if (isImmediatePurchase) {
+      updateData.status = "ended_success";
+      updateData.end_date_time = new Date();
+
+      // Create winner_order
+      await trx("winner_order").insert({
+        id_product,
+        id_user: winner.id_user,
+        address: "Chưa cung cấp",
+        status: "pending_payment",
+      });
+      console.log("Immediate purchase - winner order created");
+    }
+
+    await trx("product")
+      .where("id_product", id_product)
+      .update(updateData);
+
+    // Step 5: Anti-sniping - extend auction time if needed
+    if (!isImmediatePurchase) {
+      await extendAuctionTimeIfNeeded(trx, id_product);
+    }
+
+    console.log("=== AUTO-BID ENGINE SUCCESS ===");
+
+    // Send email notifications (outside transaction)
+    setImmediate(async () => {
+      try {
+        const productUrl = `${process.env.CLIENT_URL}/product/${id_product}`;
+        
+        // Send email to winner (auto-bid success)
+        if (winner.email) {
+          await sendBidSuccessMail(
+            winner.email,
+            winner.fullname,
+            product.name,
+            newPrice,
+            productUrl
+          );
+        }
+
+        // Send email to seller
+        const seller = await db("user").where("id_user", product.updated_by || product.created_by).first();
+        if (seller?.email) {
+          await sendNewBidNotificationMail(
+            seller.email,
+            seller.fullname,
+            product.name,
+            winner.fullname,
+            newPrice,
+            productUrl
+          );
+        }
+
+        // Send outbid notification to other auto-bidders
+        for (let i = 1; i < autoBids.length; i++) {
+          const outbidUser = autoBids[i];
+          if (outbidUser.email) {
+            await sendOutbidNotificationMail(
+              outbidUser.email,
+              outbidUser.fullname,
+              product.name,
+              newPrice,
+              productUrl
+            );
+          }
+        }
+      } catch (emailError) {
+        console.error("Failed to send auto-bid emails:", emailError);
+      }
+    });
+
+    return {
+      newBid,
+      winner: winner.id_user,
+      newPrice,
+      isImmediatePurchase,
+    };
+  });
+};
+
+/**
+ * Extend auction time if bid is placed near the end (anti-sniping)
+ */
+const extendAuctionTimeIfNeeded = async (trx, id_product) => {
+  const settings = await trx("auction_settings").first();
+  
+  if (!settings || !settings.extend_threshold_minutes || !settings.extend_duration_minutes) {
+    return false;
+  }
+
+  const product = await trx("product")
+    .where("id_product", id_product)
+    .first();
+
+  if (!product || !product.end_date_time) {
+    return false;
+  }
+
+  const now = new Date();
+  const endTime = new Date(product.end_date_time);
+  const thresholdMs = settings.extend_threshold_minutes * 60 * 1000;
+  const remainingMs = endTime.getTime() - now.getTime();
+
+  // If remaining time <= threshold, extend
+  if (remainingMs <= thresholdMs && remainingMs > 0) {
+    const extensionMs = settings.extend_duration_minutes * 60 * 1000;
+    const newEndTime = new Date(endTime.getTime() + extensionMs);
+
+    await trx("product")
+      .where("id_product", id_product)
+      .update({ end_date_time: newEndTime });
+
+    console.log(`Auction extended by ${settings.extend_duration_minutes} minutes to ${newEndTime}`);
+    return true;
+  }
+
+  return false;
+};

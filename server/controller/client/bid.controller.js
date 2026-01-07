@@ -204,3 +204,84 @@ export const recoverBidderPost = async (req, res) => {
     message: "Đã phục hồi người đấu giá cho sản phẩm đấu giá",
   })
 }
+
+// =====================================================
+// AUTO-BID CONTROLLERS
+// =====================================================
+
+/**
+ * Place or update auto-bid
+ * POST /product/bid/auto
+ */
+export const placeAutoBidPost = async (req, res) => {
+  try {
+    const { id_product, max_bid } = req.body;
+    const id_user = req.account.id_user;
+
+    if (!id_product || !max_bid) {
+      return res.status(400).json({
+        code: "error",
+        message: "Thiếu thông tin: id_product và max_bid là bắt buộc",
+      });
+    }
+
+    const result = await bidService.placeAutoBid(id_product, max_bid, id_user);
+
+    res.json({
+      code: "success",
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: "error",
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Get user's auto-bid for a product
+ * GET /product/bid/auto/:id_product
+ */
+export const getAutoBidGet = async (req, res) => {
+  try {
+    const { id_product } = req.params;
+    const id_user = req.account.id_user;
+
+    const autoBid = await bidService.getAutoBid(id_product, id_user);
+
+    res.json({
+      code: "success",
+      data: autoBid,
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: "error",
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Delete user's auto-bid
+ * DELETE /product/bid/auto/:id_product
+ */
+export const deleteAutoBidDelete = async (req, res) => {
+  try {
+    const { id_product } = req.params;
+    const id_user = req.account.id_user;
+
+    const result = await bidService.deleteAutoBid(id_product, id_user);
+
+    res.json({
+      code: "success",
+      message: result.message,
+    });
+  } catch (error) {
+    res.status(400).json({
+      code: "error",
+      message: error.message,
+    });
+  }
+};

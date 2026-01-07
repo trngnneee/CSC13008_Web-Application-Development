@@ -192,3 +192,79 @@ export const recoverBidderFromProduct = async (id_product, id_bidder) => {
 
   return data;
 }
+// =====================================================
+// AUTO-BID API FUNCTIONS
+// =====================================================
+
+/**
+ * Place or update auto-bid for a product
+ */
+export const placeAutoBid = async (id_product, max_bid) => {
+  const token = localStorage.getItem("clientToken");
+  
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/auto`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+    body: JSON.stringify({ id_product, max_bid }),
+  });
+
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Đặt auto-bid thất bại");
+  }
+
+  return data;
+}
+
+/**
+ * Get user's auto-bid for a product
+ */
+export const getAutoBid = async (id_product) => {
+  const token = localStorage.getItem("clientToken");
+  
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/auto/${id_product}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Lấy thông tin auto-bid thất bại");
+  }
+
+  return data;
+}
+
+/**
+ * Delete user's auto-bid for a product
+ */
+export const deleteAutoBid = async (id_product) => {
+  const token = localStorage.getItem("clientToken");
+  
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/bid/auto/${id_product}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token ? `Bearer ${token}` : "",
+    },
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  if (data.code !== "success") {
+    throw new Error(data.message || "Xóa auto-bid thất bại");
+  }
+
+  return data;
+}
