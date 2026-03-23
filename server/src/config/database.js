@@ -1,3 +1,4 @@
+import './env.js';
 import knex from 'knex';
 
 const db = knex({
