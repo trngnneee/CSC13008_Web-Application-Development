@@ -1,108 +1,132 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { dateTimeFormat } from "@/utils/date";
-import { commentReplyCreate, commentRootCreate, commentRootListToProduct } from "@/lib/clientAPI/comment";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { commentTreeFormat } from "@/helper/comment";
+import { useClientAuthContext } from "@/provider/clientAuthProvider";
+import { socket } from "@/lib/socket";
 
 export function CommentSection() {
   const { id } = useParams();
+  const { userInfo } = useClientAuthContext();
   const [commentList, setCommentList] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [replyText, setReplyText] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const promise = await commentRootListToProduct(id);
-      if (promise.code == "success") {
-        const mapped = commentTreeFormat(promise.commentList);
-        setCommentList(mapped);
-      }
-    };
-    fetchData();
-    setInterval(fetchData, 5000);
-  }, []);
+    // Join the product comment room
+    socket.emit("comment:join", { id_product: id });
 
-  const handleSendComment = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+    // Request initial comment list
+    socket.emit("comment:list", { id_product: id });
 
-    const finalData = {
-      id_product: id,
-      content: newComment
+    // Listen for the full comment list
+    const handleList = (comments) => {
+      const mapped = commentTreeFormat(comments);
+      setCommentList(mapped);
     };
 
-    const promise = commentRootCreate(finalData);
-    toast.promise(promise, {
-      loading: "Đang gửi bình luận...",
-      success: "Bình luận của bạn đã được gửi!",
-      error: (err) => `Lỗi khi gửi bình luận: ${err.message}`
-    })
-
-    const res = await promise;
-    const data = res.comment;
-
-    if (res.code != "success") return;
-
-    const cmt = {
-      id: data.id_comment,
-      user: data.user_name,
-      avatar: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data.user_name),
-      time: new Date(data.created_at).toISOString(),
-      content: data.content,
-      replies: []
+    // Listen for new comments broadcast in real-time
+    const handleNew = (data) => {
+      setCommentList((prev) => {
+        if (data.id_parent_comment) {
+          // It's a reply — add to the parent's replies
+          return prev.map((cmt) =>
+            cmt.id === data.id_parent_comment
+              ? {
+                  ...cmt,
+                  replies: [
+                    ...cmt.replies,
+                    {
+                      id: data.id_comment,
+                      parentId: data.id_parent_comment,
+                      replyTo: data.reply_to_user,
+                      user: data.user_name,
+                      avatar:
+                        "https://ui-avatars.com/api/?name=" +
+                        encodeURIComponent(data.user_name),
+                      time: new Date(data.created_at).toISOString(),
+                      content: data.content,
+                    },
+                  ],
+                }
+              : cmt
+          );
+        }
+        // It's a root comment — prepend
+        return [
+          {
+            id: data.id_comment,
+            user: data.user_name,
+            avatar:
+              "https://ui-avatars.com/api/?name=" +
+              encodeURIComponent(data.user_name),
+            time: new Date(data.created_at).toISOString(),
+            content: data.content,
+            replies: [],
+          },
+          ...prev,
+        ];
+      });
     };
 
-    setCommentList([cmt, ...commentList]);
-    setNewComment("");
-  };
-
-  const handleSendReply = async (parentId, replyToName, e) => {
-    e.preventDefault();
-    if (!replyText[parentId]?.trim()) return;
-
-    const finalData = {
-      id_product: id,
-      content: replyText[parentId],
-      id_parent_comment: parentId,
-      reply_to_user: replyToName
+    const handleError = (err) => {
+      toast.error(err.message || "Lỗi bình luận");
     };
 
-    const promise = commentReplyCreate(finalData);
-    toast.promise(promise, {
-      loading: "Đang gửi phản hồi...",
-      success: "Phản hồi của bạn đã được gửi!",
-      error: (err) => `Lỗi khi gửi phản hồi: ${err.message}`
-    });
+    socket.on("comment:list", handleList);
+    socket.on("comment:new", handleNew);
+    socket.on("comment:error", handleError);
 
-    const res = await promise;
-    const data = res.comment;
-    if (res.code != "success") return;
-
-    const newReply = {
-      id: data.id_comment,
-      parentId: data.id_parent_comment,
-      replyTo: data.reply_to_user,
-      user: data.user_name,
-      avatar: "https://ui-avatars.com/api/?name=" + encodeURIComponent(data.user_name),
-      time: new Date(data.created_at).toISOString(),
-      content: data.content,
+    return () => {
+      socket.emit("comment:leave", { id_product: id });
+      socket.off("comment:list", handleList);
+      socket.off("comment:new", handleNew);
+      socket.off("comment:error", handleError);
     };
+  }, [id]);
 
-    setCommentList(
-      commentList.map((cmt) =>
-        cmt.id === parentId
-          ? { ...cmt, replies: [...cmt.replies, newReply] }
-          : cmt
-      )
-    );
+  const handleSendComment = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!newComment.trim() || !userInfo) return;
 
-    setReplyText({ ...replyText, [parentId]: "" });
-  };
+      socket.emit("comment:create", {
+        id_product: id,
+        id_user: userInfo.id_user,
+        user_name: userInfo.fullname,
+        content: newComment,
+        role: userInfo.role,
+      });
+
+      setNewComment("");
+    },
+    [newComment, id, userInfo]
+  );
+
+  const handleSendReply = useCallback(
+    (parentId, replyToName, e) => {
+      e.preventDefault();
+      if (!replyText[parentId]?.trim() || !userInfo) return;
+
+      socket.emit("comment:reply", {
+        id_product: id,
+        id_user: userInfo.id_user,
+        user_name: userInfo.fullname,
+        content: replyText[parentId],
+        id_parent_comment: parentId,
+        reply_to_user: replyToName,
+        role: userInfo.role,
+      });
+
+      setReplyText({ ...replyText, [parentId]: "" });
+    },
+    [replyText, id, userInfo]
+  );
 
   return (
     <div className="my-[50px] bg-white shadow-xl border border-gray-100 p-10 rounded-xl max-h-[800px] overflow-y-scroll">

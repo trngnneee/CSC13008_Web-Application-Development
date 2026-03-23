@@ -137,15 +137,6 @@ export const getDescendantCategoryIds = async (rootId, trx = null) => {
   return allIds; // [id_root, id_child1, id_child2, ...]
 };
 
-export const getCategoryNamesByIds = async (ids, trx = null) => {
-  const kx = trx || db;
-  if (!ids?.length) return [];
-  const rows = await kx("category")
-    .select("name_category")
-    .whereIn("id_category", ids);
-  return rows.map(r => r.name_category);
-};
-
 export const deleteCategoryTree = async (id) => {
   // Lấy tên gốc
   const rootName = await getCategoryName(id);
@@ -181,11 +172,3 @@ export const isCatHasProducts = async (id) => {
   return !!product;
 }
 
-export const getCategoryID = async (name) => {
-  const category = await db("category")
-    .select("id_category")
-    .where("name_category", name)
-    .first();
-
-  return category ? category.id_category : null;
-}

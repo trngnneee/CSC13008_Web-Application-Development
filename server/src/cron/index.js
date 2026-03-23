@@ -1,0 +1,48 @@
+import cron from 'node-cron';
+import {
+  deleteExpiredVerifyTokens,
+  deleteExpiredForgotPasswordTokens,
+  downgradeExpiredSellers,
+} from '../services/user.service.js';
+import { processEndedAuctions } from '../services/auction.service.js';
+
+// Every minute — process ended auctions
+cron.schedule('* * * * *', async () => {
+  try {
+    const result = await processEndedAuctions();
+    if (result.processed > 0) {
+      console.log(`Đã xử lý ${result.processed} phiên đấu giá kết thúc`);
+    }
+  } catch (error) {
+    console.error('Cron error (process auctions):', error);
+  }
+});
+
+// Every 2 minutes — delete expired tokens
+cron.schedule('*/2 * * * *', async () => {
+  try {
+    const countEmailToken = await deleteExpiredVerifyTokens();
+    const countForgotToken = await deleteExpiredForgotPasswordTokens();
+
+    if (countForgotToken > 0) {
+      console.log(`Đã xoá ${countForgotToken} forgot password token hết hạn`);
+    }
+    if (countEmailToken > 0) {
+      console.log(`Đã xoá ${countEmailToken} verify email token hết hạn`);
+    }
+  } catch (error) {
+    console.error('Cron error (delete tokens):', error);
+  }
+});
+
+// Every hour — downgrade expired sellers back to bidder
+cron.schedule('0 * * * *', async () => {
+  try {
+    const count = await downgradeExpiredSellers();
+    if (count > 0) {
+      console.log(`Đã hạ ${count} seller(s) về bidder sau khi hết hạn 7 ngày`);
+    }
+  } catch (error) {
+    console.error('Cron error (downgrade sellers):', error);
+  }
+});
